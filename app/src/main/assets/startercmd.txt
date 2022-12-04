@@ -1,0 +1,1 @@
+adb shell sh /sdcard/Android/data/app.demo.framework/cache/starter.sh
