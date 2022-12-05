@@ -1,5 +1,6 @@
 package app.demo.framework;
 
+import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -14,7 +15,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import app.demo.framework.util.Constants;
+
 public class MainActivity extends AppCompatActivity {
+
+    static {
+        System.loadLibrary("binder_api");
+    }
     private final String TAG = "MainActivity";
 
     @Override
@@ -26,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
         test();
     }
 
-    private void test() {
-
+   private void test() {
+       Binder binder;
     }
 
 
@@ -37,9 +44,12 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(v -> {
             String content = String.valueOf(textInputEditText.getText());
             Log.i(TAG, "button.setOnClickListener: ");
+            addService(Constants.BINDER_SERVICE_NAME);
             Toast.makeText(MainActivity.this, content, Toast.LENGTH_SHORT).show();
         });
     }
+
+    private native int addService(String binderServiceName);
 
     private void copyShellFile() {
         final String fileName = "starter.sh";
