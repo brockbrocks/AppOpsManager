@@ -6,12 +6,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.RemoteException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import app.demo.framework.service.IAdd;
 
 public class TestProvider extends ContentProvider {
 
@@ -49,15 +47,8 @@ public class TestProvider extends ContentProvider {
     @Override
     public Bundle call(@NonNull String authority, @NonNull String method, @Nullable String arg, @Nullable Bundle extras) {
         Bundle bundle = new Bundle();
-        Binder binder = new IAdd.Stub() {
-            @Override
-            public int add(int a, int b) throws RemoteException {
-                return a + b;
-            }
-        };
+        Binder binder = null;
         bundle.putBinder("binder", binder);
         return bundle;
     }
-
-    private IAdd iAdd;
 }

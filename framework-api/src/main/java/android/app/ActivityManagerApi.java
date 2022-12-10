@@ -1,5 +1,7 @@
 package android.app;
 
+import android.content.pm.IPackageManager;
+
 import java.lang.reflect.Method;
 
 public class ActivityManagerApi {
@@ -14,7 +16,15 @@ public class ActivityManagerApi {
         return null;
     }
 
-    public final ContentProviderHolder getContentProvider(IApplicationThread caller, String callingPackage, String name, int userId, boolean stable) {
+    public static IPackageManager getPackageManager() {
+        try {
+            Method getPackageManagerMethod = ActivityThread.class.getDeclaredMethod("getPackageManager");
+            getPackageManagerMethod.setAccessible(true);
+            return (IPackageManager) getPackageManagerMethod.invoke(null);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
         return null;
     }
+
 }
