@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="app.jhau.appopsmanager.MainActivity">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textField"
@@ -21,7 +21,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_shell_cmd"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:text="ps -e" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

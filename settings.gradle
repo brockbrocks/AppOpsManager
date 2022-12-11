@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 rootProject.name = "FrameworkDemo"
 include ':app'
 include ':framework-api'
+include ':server'
