@@ -1,7 +1,10 @@
 package app.jhau.appopsmanager;
 
 import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import app.jhau.appopsmanager.R;
 import app.jhau.server.IAppOpsServer;
 import app.jhau.server.provider.ServerProvider;
 import app.jhau.server.util.Constants;
@@ -38,19 +40,26 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(v -> {
             String content = String.valueOf(textInputEditText.getText());
             Log.i(TAG, "button.setOnClickListener: ");
-            ContentResolver contentResolver = getContentResolver();
+            ContentResolver resolver = getContentResolver();
 
+            String execRet = null;
+            IBinder binder = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                Bundle bundle = contentResolver.call(ServerProvider.AUTHORITY, ServerProvider.GET_BINDER, "", null);
-                IAppOpsServer server = IAppOpsServer.Stub.asInterface(bundle.getBinder(Constants.SERVER_BINDER_KEY));
-                try {
-                    String execRet = server.execCommand(content);
-                    TextView textView = findViewById(R.id.tv_shell_result);
-                    textView.setText(execRet);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
+                Bundle bundle = resolver.call(ServerProvider.AUTHORITY_NAME, ServerProvider.GET_BINDER, "", null);
+                binder = bundle.getBinder(Constants.SERVER_BINDER_KEY);
+            } else {
+                Cursor cursor = resolver.query(Uri.parse(ServerProvider.AUTHORITY_URI), null,null, null,null);
+                binder = cursor.getExtras().getBinder(Constants.SERVER_BINDER_KEY);
+                cursor.close();
             }
+            IAppOpsServer server = IAppOpsServer.Stub.asInterface(binder);
+            try {
+                execRet = server.execCommand(content);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            TextView textView = findViewById(R.id.tv_shell_result);
+            textView.setText(execRet);
         });
     }
 

@@ -4,7 +4,7 @@
     <application>
         <provider
             android:name=".provider.ServerProvider"
-            android:authorities="com.jhau.server.provider"
+            android:authorities="app.jhau.server.provider"
             android:enabled="true"
             android:exported="true"
             android:multiprocess="false" />

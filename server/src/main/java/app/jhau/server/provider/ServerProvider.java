@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import app.jhau.server.BinderCursor;
 import app.jhau.server.util.Constants;
 
 public class ServerProvider extends ContentProvider {
     private static final String TAG = "ServerProvider";
 
-    public static final String AUTHORITY = "com.jhau.server.provider";
+    public static final String AUTHORITY_NAME = "app.jhau.server.provider";
+    public static final String AUTHORITY_URI = "content://" + AUTHORITY_NAME;
 
     public static final String SAVE_BINDER = "save_binder";
     public static final String GET_BINDER = "get_binder";
@@ -27,7 +29,9 @@ public class ServerProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+        BinderCursor cursor = new BinderCursor();
+        cursor.getExtras().putBinder(Constants.SERVER_BINDER_KEY, serverBinder);
+        return cursor;
     }
 
     @Override
@@ -47,6 +51,14 @@ public class ServerProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        serverBinder = (IBinder) values.get(Constants.SERVER_BINDER_KEY);
+        Log.i(TAG, "update: serverBinder=" + serverBinder);
+        return 0;
+    }
+
+    @Override
+    public int update(Uri uri, ContentValues values, Bundle extras) {
+        serverBinder = extras.getBinder(Constants.SERVER_BINDER_KEY);
         return 0;
     }
 
