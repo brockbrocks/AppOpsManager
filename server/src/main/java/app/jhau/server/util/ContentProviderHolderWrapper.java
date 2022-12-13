@@ -14,9 +14,9 @@ public class ContentProviderHolderWrapper {
 
     public IContentProvider getProvider() throws Throwable {
         try {
-            Field providerField = holder.getClass().getDeclaredField("provider");
-            providerField.setAccessible(true);
-            return (IContentProvider) providerField.get(holder);
+            Field field = holder.getClass().getDeclaredField("provider");
+            field.setAccessible(true);
+            return (IContentProvider) field.get(holder);
         } catch (Throwable e) {
             throw e;
         }

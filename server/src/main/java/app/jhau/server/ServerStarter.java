@@ -16,7 +16,6 @@ public class ServerStarter {
     private static final AppOpsServer appOpsServer = new AppOpsServer();
 
     public static void main(String[] args) {
-        System.out.println(TAG + " start");
         try {
             Looper.prepare();
             initServer();

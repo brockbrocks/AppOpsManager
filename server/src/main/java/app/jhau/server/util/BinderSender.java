@@ -14,40 +14,32 @@ import android.util.Log;
 import app.jhau.server.provider.ServerProvider;
 
 public class BinderSender {
-    public static void sendBinder(IBinder binder) {
-        try {
-            IContentProvider provider = getContentProvider();
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-                ContentValues values = ContentValuesUtil.putBinder(new ContentValues(), binder);
-                provider.update("", Uri.parse(ServerProvider.AUTHORITY_URI), values, null, null);
-            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
-                Bundle bundle = new Bundle();
-                bundle.putBinder(Constants.SERVER_BINDER_KEY, binder);
-                Log.i("ServerProvider", "sendBinder: ");
-                provider.call("", "", ServerProvider.AUTHORITY_NAME, ServerProvider.SAVE_BINDER, "", bundle);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                Bundle bundle = new Bundle();
-                bundle.putBinder(Constants.SERVER_BINDER_KEY, binder);
-                provider.call(new AttributionSource.Builder(Binder.getCallingUid()).build(), ServerProvider.AUTHORITY_NAME, ServerProvider.SAVE_BINDER, "", bundle);
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static IContentProvider getContentProvider() throws Throwable {
+    public static void sendBinder(IBinder binder) throws Throwable {
         final IBinder token = null;
         final int userId = 0;
         final String tag = null;
         Object holder;
+
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
             holder = ActivityManagerApi.getContentProviderExternal(ServerProvider.AUTHORITY_NAME, userId, token);
         } else {
             holder = ActivityManagerApi.getContentProviderExternal(ServerProvider.AUTHORITY_NAME, userId, token, tag);
         }
+
+        Bundle bundle = new Bundle();
+        bundle.putBinder(Constants.SERVER_BINDER_KEY, binder);
         ContentProviderHolderWrapper holderWrapper = new ContentProviderHolderWrapper(holder);
         IContentProvider provider = holderWrapper.getProvider();
-        return provider;
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            provider.call("", ServerProvider.SAVE_BINDER, "", bundle);
+        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            provider.call("", ServerProvider.AUTHORITY_NAME, ServerProvider.SAVE_BINDER, "", bundle);
+        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+            provider.call("", "", ServerProvider.AUTHORITY_NAME, ServerProvider.SAVE_BINDER, "", bundle);
+        } else {
+            AttributionSource attributionSource = new AttributionSource.Builder(Binder.getCallingUid()).build();
+            provider.call(attributionSource, ServerProvider.AUTHORITY_NAME, ServerProvider.SAVE_BINDER, "", bundle);
+        }
     }
 
 }

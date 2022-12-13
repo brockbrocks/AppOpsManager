@@ -4,14 +4,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +19,6 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import app.jhau.server.IAppOpsServer;
@@ -38,7 +34,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        copyShellFile();
+        try {
+            copyShellFile();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
         initView();
         test();
     }
@@ -85,35 +85,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void copyShellFile() {
+    private void copyShellFile() throws Throwable {
         final String fileName = "starter.sh";
         File file = new File(getExternalCacheDir(), fileName);
-        if (file.exists()) {
-            file.delete();
-        }
-        InputStream is = null;
-        FileOutputStream fos = null;
-        try {
-            is = getResources().getAssets().open(fileName);
-            fos = new FileOutputStream(new File(getExternalCacheDir(), fileName));
-            int len = -1;
-            byte[] buff = new byte[1024];
-            while ((len = is.read(buff, 0, buff.length)) != -1) {
-                fos.write(buff, 0, len);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
-                if (fos != null) {
-                    fos.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        if (file.exists()) file.delete();
+        InputStream is = getResources().getAssets().open(fileName);
+        FileOutputStream fos = new FileOutputStream(new File(getExternalCacheDir(), fileName));
+        int len = -1;
+        byte[] buff = new byte[1024];
+        while ((len = is.read(buff, 0, buff.length)) != -1) fos.write(buff, 0, len);
+        is.close();
+        fos.close();
     }
 }

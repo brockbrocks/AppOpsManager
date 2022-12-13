@@ -5,10 +5,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-import java.util.Calendar;
-
 import app.jhau.server.util.BinderSender;
-import app.jhau.server.util.LogUtil;
 
 public class IProcessObserverImpl extends IProcessObserver.Stub {
 
@@ -25,8 +22,11 @@ public class IProcessObserverImpl extends IProcessObserver.Stub {
     public void onForegroundActivitiesChanged(int pid, int uid, boolean foregroundActivities) throws RemoteException {
         if (uid == appUid && foregroundActivities) {
             Log.i("ServerProvider", "onForegroundActivitiesChanged: " + "pid=" + pid + " uid=" + uid + " foregroundActivities=" + foregroundActivities);
-            //String log = Calendar.getInstance().getTime() + "----" + "uid=" + uid + ", onForegroundActivitiesChanged=" + foregroundActivities;
-            BinderSender.sendBinder(server);
+            try {
+                BinderSender.sendBinder(server);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
     }
 
