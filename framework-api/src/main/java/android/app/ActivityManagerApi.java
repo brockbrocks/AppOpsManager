@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.IPackageManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.ServiceManager;
 
 import androidx.annotation.RequiresApi;
@@ -32,12 +33,11 @@ public class ActivityManagerApi {
         throw new IllegalStateException();
     }
 
-
     @RequiresApi(Build.VERSION_CODES.Q)
     public static Object getContentProviderExternal(String name, int userId, IBinder token, String tag) throws Throwable {
         Object am = IActivityManager.Stub.asInterface(ActivityManagerApi.am);
         for (Method method : am.getClass().getDeclaredMethods()) {
-            if (method.getName().equals("getContentProviderExternal")){
+            if (method.getName().equals("getContentProviderExternal")) {
                 method.setAccessible(true);
                 return method.invoke(am, name, userId, token, tag);
             }
@@ -54,6 +54,20 @@ public class ActivityManagerApi {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public static void registerProcessObserver(IProcessObserver observer) throws RemoteException, Throwable {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
+            Class<?> cls = Class.forName("android.app.ActivityManagerNative");
+            Method method = cls.getMethod("getDefault");
+            Object am = method.invoke(null, null);
+            Method registerMethod = cls.getMethod("registerProcessObserver", IProcessObserver.class);
+            registerMethod.invoke(am, observer);
+        } else {
+            IActivityManager am = IActivityManager.Stub.asInterface(ActivityManagerApi.am);
+            am.registerProcessObserver(observer);
+        }
     }
 
 }

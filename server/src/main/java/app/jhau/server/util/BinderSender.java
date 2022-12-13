@@ -2,14 +2,11 @@ package app.jhau.server.util;
 
 import android.app.ActivityManagerApi;
 import android.content.AttributionSource;
-import android.content.ContentValues;
 import android.content.IContentProvider;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
 import app.jhau.server.provider.ServerProvider;
 

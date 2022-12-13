@@ -26,7 +26,7 @@ public class LogUtil {
     public static void writeToFile(String log) {
         try {
             File file = new File(defaultPath, defaultFileName);
-            if (file.exists()) {
+            if (!file.exists()) {
                 file.createNewFile();
             }
             writeToFile(log, file);

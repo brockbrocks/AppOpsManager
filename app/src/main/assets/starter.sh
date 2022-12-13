@@ -13,12 +13,5 @@ echo "# ClassPath = ${classpath}"
 echo "# SDK = ${sdk_version}"
 echo "#-----------End-----------"
 
-case sdk_version in
-30)
-  #adb shell sh /storage/emulated/0/Android/data/moe.shizuku.privileged.api/start.sh
-  #cp /sdcard/Android/data/app.jhau.appopsmanager/cache/starter.sh
-  ;;
-esac
-
 export LD_LIBRARY_PATH
 app_process -Djava.class.path="$classpath" /system/bin app.jhau.server.ServerStarter

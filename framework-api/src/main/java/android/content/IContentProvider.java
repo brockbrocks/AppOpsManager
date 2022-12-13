@@ -19,7 +19,7 @@ public interface IContentProvider extends IInterface {
             throws RemoteException;
 
     //Android S-T
-    public Bundle call(AttributionSource attributionSource, String authority,
-                       String method, String arg, Bundle extras) throws RemoteException;
+    public Bundle call(AttributionSource attributionSource, String authority, String method, String arg, Bundle extras)
+            throws RemoteException;
 }
 
