@@ -26,6 +26,17 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+
+    <Button
+        android:id="@+id/btn_copy_cmd"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="Copy"
+        app:layout_constraintEnd_toStartOf="@id/btn_exec"
+        app:layout_constraintTop_toBottomOf="@+id/textField" />
+
     <Button
         android:id="@+id/btn_exec"
         android:layout_width="wrap_content"

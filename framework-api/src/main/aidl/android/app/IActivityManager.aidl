@@ -9,6 +9,5 @@ interface IActivityManager {
 
     //Android Q and later
     ContentProviderHolder getContentProviderExternal(in String name, int userId, in IBinder token, String tag);
-
     //ContentProviderHolder getContentProviderExternal(in String name, int userId, in IBinder token);
 }

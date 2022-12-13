@@ -1,8 +1,11 @@
-package app.jhau.appopsmanager.util;
+package app.jhau.server.util;
 
 import android.annotation.SuppressLint;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+
 import app.jhau.server.BuildConfig;
 
 public class LogUtil {
@@ -31,5 +34,16 @@ public class LogUtil {
             e.printStackTrace();
         }
 
+    }
+
+    public static void appendToFile(String log) {
+        try {
+            FileWriter fw = new FileWriter(defaultPath + "/" + defaultFileName, true);
+            fw.write(log);
+            fw.write("\n");
+            fw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

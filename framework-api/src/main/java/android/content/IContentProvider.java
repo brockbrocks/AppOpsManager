@@ -7,8 +7,15 @@ import android.os.RemoteException;
 
 
 public interface IContentProvider extends IInterface {
-    public Bundle call(String callingPkg, String authority, String method,
-                       String arg, Bundle extras) throws RemoteException;
+
+    //Android S and later
+    public Bundle call(AttributionSource attributionSource, String authority,
+                       String method, String arg, Bundle extras) throws RemoteException;
+
+    //From Android 3.0 to Android Q
+    public Bundle call(String callingPkg, String attributionTag, String authority,
+                       String method, String arg, Bundle extras) throws RemoteException;
+
 
     public int update(String callingPkg, Uri url, ContentValues values, String selection,
                       String[] selectionArgs) throws RemoteException;

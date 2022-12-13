@@ -1,1 +1,10 @@
 adb shell sh /sdcard/Android/data/app.jhau.appopsmanager/cache/starter.sh
+
+adb shell sh /storage/emulated/0/Android/data/app.jhau.appopsmanager/start.sh
+
+# R
+adb shell
+package="app.jhau.appopsmanager"
+path=$(pm path $package)
+classpath=${path#*"package:"}
+app_process -Djava.class.path="$classpath" /system/bin app.jhau.server.ServerStarter

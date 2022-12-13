@@ -35,8 +35,14 @@ public class ActivityManagerApi {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     public static Object getContentProviderExternal(String name, int userId, IBinder token, String tag) throws Throwable {
-        IActivityManager am = IActivityManager.Stub.asInterface(ActivityManagerApi.am);
-        return am.getContentProviderExternal(name, userId, token, tag);
+        Object am = IActivityManager.Stub.asInterface(ActivityManagerApi.am);
+        for (Method method : am.getClass().getDeclaredMethods()) {
+            if (method.getName().equals("getContentProviderExternal")){
+                method.setAccessible(true);
+                return method.invoke(am, name, userId, token, tag);
+            }
+        }
+        throw new IllegalStateException();
     }
 
     public static IPackageManager getPackageManager() {

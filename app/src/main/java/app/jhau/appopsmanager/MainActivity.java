@@ -1,13 +1,20 @@
 package app.jhau.appopsmanager;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +28,7 @@ import java.io.InputStream;
 import app.jhau.server.IAppOpsServer;
 import app.jhau.server.provider.ServerProvider;
 import app.jhau.server.util.Constants;
+import app.jhau.server.util.ServerStarterUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         copyShellFile();
         initView();
+        test();
+    }
+
+    private void test() {
+        Log.i(TAG, "ServerProvider: " + ServerStarterUtil.getCommand(this));
     }
 
     private void initView() {
@@ -48,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 Bundle bundle = resolver.call(ServerProvider.AUTHORITY_NAME, ServerProvider.GET_BINDER, "", null);
                 binder = bundle.getBinder(Constants.SERVER_BINDER_KEY);
             } else {
-                Cursor cursor = resolver.query(Uri.parse(ServerProvider.AUTHORITY_URI), null,null, null,null);
+                Cursor cursor = resolver.query(Uri.parse(ServerProvider.AUTHORITY_URI), null, null, null, null);
                 binder = cursor.getExtras().getBinder(Constants.SERVER_BINDER_KEY);
                 cursor.close();
             }
@@ -60,6 +73,14 @@ public class MainActivity extends AppCompatActivity {
             }
             TextView textView = findViewById(R.id.tv_shell_result);
             textView.setText(execRet);
+        });
+
+        Button button1 = findViewById(R.id.btn_copy_cmd);
+        button1.setOnClickListener(v -> {
+            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData data = ClipData.newPlainText("cmd", ServerStarterUtil.getCommand(MainActivity.this));
+            clipboardManager.setPrimaryClip(data);
+            Toast.makeText(MainActivity.this, "Copy success", Toast.LENGTH_SHORT).show();
         });
     }
 
