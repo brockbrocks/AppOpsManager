@@ -46,4 +46,15 @@ public class LogUtil {
             e.printStackTrace();
         }
     }
+
+    public static void appendToDataLocalTmpDir(String log) {
+        try {
+            FileWriter fw = new FileWriter("/data/local/tmp/app.log", true);
+            fw.write(log);
+            fw.write("\n");
+            fw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -44,7 +44,7 @@ public class ActivityManagerApi {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
             Class<?> cls = Class.forName("android.app.ActivityManagerNative");
             Method method = cls.getMethod("getDefault");
-            Object am = method.invoke(null, null);
+            Object am = method.invoke(null);
             Method registerMethod = cls.getMethod("registerProcessObserver", IProcessObserver.class);
             registerMethod.invoke(am, observer);
         } else {

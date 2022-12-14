@@ -14,4 +14,4 @@ echo "# SDK = ${sdk_version}"
 echo "#-----------End-----------"
 
 export LD_LIBRARY_PATH
-app_process -Djava.class.path="$classpath" /system/bin app.jhau.server.ServerStarter
+app_process -Djava.class.path="$classpath" /system/bin --nice-name=appops_server app.jhau.server.ServerStarter

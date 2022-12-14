@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void test() {
-        Log.i(TAG, "ServerProvider: " + ServerStarterUtil.getCommand(this));
+        //Log.i(TAG, "ServerProvider: " + ServerStarterUtil.getCommand(this));
     }
 
     private void initView() {
