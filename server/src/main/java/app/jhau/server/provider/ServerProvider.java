@@ -10,9 +10,10 @@ import android.util.Log;
 
 import app.jhau.server.BinderCursor;
 import app.jhau.server.BuildConfig;
+import app.jhau.server.util.Constants;
 
 public class ServerProvider extends ContentProvider {
-    private static final String TAG = "ServerProvider";
+    private static final String TAG = Constants.DEBUG_TAG;
 
     public static final String SERVER_BINDER_KEY = "binder";
     public static final String AUTHORITY_NAME = BuildConfig.SERVER_ID + ".provider";
