@@ -18,7 +18,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "FrameworkDemo"
+rootProject.name = "AppOpsManager"
 include ':app'
 include ':framework-api'
 include ':server'

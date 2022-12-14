@@ -17,6 +17,7 @@ android {
     buildTypes {
         all {
             buildConfigField "String", "APPLICATION_ID", "\"${rootProject.ext.applicationId}\""
+            buildConfigField "String", "SERVER_ID", "\"${rootProject.ext.serverId}\""
         }
 
         release {

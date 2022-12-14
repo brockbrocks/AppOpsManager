@@ -9,6 +9,7 @@ ext {
     minSdk = 23
     targetSdk = 33
     applicationId = "app.jhau.appopsmanager"
+    serverId = "app.jhau.server"
     versionCode = 1
     versionName ="1.0"
 }
