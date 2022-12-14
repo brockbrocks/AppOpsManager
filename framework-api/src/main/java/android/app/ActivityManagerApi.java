@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.IPackageManager;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.os.ServiceManager;
 
 import androidx.annotation.RequiresApi;
@@ -14,10 +13,6 @@ import java.lang.reflect.Method;
 public class ActivityManagerApi {
 
     private static final IBinder am = ServiceManager.getService(Context.ACTIVITY_SERVICE);
-
-    public static IBinder getService() {
-        return am;
-    }
 
     public static Object getContentProviderExternal(String name, int userId, IBinder token) throws Throwable {
         Class<?> cls = Class.forName("android.app.ActivityManagerNative");
@@ -45,19 +40,7 @@ public class ActivityManagerApi {
         throw new IllegalStateException();
     }
 
-    public static IPackageManager getPackageManager() {
-        try {
-            Method getPackageManagerMethod = ActivityThread.class.getDeclaredMethod("getPackageManager");
-            getPackageManagerMethod.setAccessible(true);
-            return (IPackageManager) getPackageManagerMethod.invoke(null);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    public static void registerProcessObserver(IProcessObserver observer) throws RemoteException, Throwable {
+    public static void registerProcessObserver(IProcessObserver observer) throws Throwable {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
             Class<?> cls = Class.forName("android.app.ActivityManagerNative");
             Method method = cls.getMethod("getDefault");

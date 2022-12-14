@@ -9,12 +9,13 @@ import android.os.IBinder;
 import android.util.Log;
 
 import app.jhau.server.BinderCursor;
-import app.jhau.server.util.Constants;
+import app.jhau.server.BuildConfig;
 
 public class ServerProvider extends ContentProvider {
     private static final String TAG = "ServerProvider";
 
-    public static final String AUTHORITY_NAME = "app.jhau.server.provider";
+    public static final String SERVER_BINDER_KEY = "binder";
+    public static final String AUTHORITY_NAME = BuildConfig.SERVER_ID + ".provider";
     public static final String AUTHORITY_URI = "content://" + AUTHORITY_NAME;
 
     public static final String SAVE_BINDER = "save_binder";
@@ -30,7 +31,7 @@ public class ServerProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         BinderCursor cursor = new BinderCursor();
-        cursor.getExtras().putBinder(Constants.SERVER_BINDER_KEY, serverBinder);
+        cursor.getExtras().putBinder(SERVER_BINDER_KEY, serverBinder);
         return cursor;
     }
 
@@ -51,14 +52,6 @@ public class ServerProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        serverBinder = (IBinder) values.get(Constants.SERVER_BINDER_KEY);
-        Log.i(TAG, "update: serverBinder=" + serverBinder);
-        return 0;
-    }
-
-    @Override
-    public int update(Uri uri, ContentValues values, Bundle extras) {
-        serverBinder = extras.getBinder(Constants.SERVER_BINDER_KEY);
         return 0;
     }
 
@@ -67,12 +60,12 @@ public class ServerProvider extends ContentProvider {
         Bundle bundle = null;
         switch (method) {
             case SAVE_BINDER:
-                this.serverBinder = extras.getBinder(Constants.SERVER_BINDER_KEY);
+                this.serverBinder = extras.getBinder(SERVER_BINDER_KEY);
                 Log.i(TAG, "call: " + SAVE_BINDER);
                 break;
             case GET_BINDER:
                 bundle = new Bundle();
-                bundle.putBinder(Constants.SERVER_BINDER_KEY, serverBinder);
+                bundle.putBinder(SERVER_BINDER_KEY, serverBinder);
                 Log.i(TAG, "call: " + GET_BINDER);
                 break;
             default:

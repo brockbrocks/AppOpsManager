@@ -23,7 +23,6 @@ import java.io.InputStream;
 
 import app.jhau.server.IAppOpsServer;
 import app.jhau.server.provider.ServerProvider;
-import app.jhau.server.util.Constants;
 import app.jhau.server.util.ServerStarterUtil;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,10 +58,10 @@ public class MainActivity extends AppCompatActivity {
             IBinder binder = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                 Bundle bundle = resolver.call(ServerProvider.AUTHORITY_NAME, ServerProvider.GET_BINDER, "", null);
-                binder = bundle.getBinder(Constants.SERVER_BINDER_KEY);
+                binder = bundle.getBinder(ServerProvider.SERVER_BINDER_KEY);
             } else {
                 Cursor cursor = resolver.query(Uri.parse(ServerProvider.AUTHORITY_URI), null, null, null, null);
-                binder = cursor.getExtras().getBinder(Constants.SERVER_BINDER_KEY);
+                binder = cursor.getExtras().getBinder(ServerProvider.SERVER_BINDER_KEY);
                 cursor.close();
             }
             IAppOpsServer server = IAppOpsServer.Stub.asInterface(binder);

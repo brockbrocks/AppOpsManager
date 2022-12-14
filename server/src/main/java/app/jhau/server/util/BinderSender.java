@@ -3,7 +3,6 @@ package app.jhau.server.util;
 import android.app.ActivityManagerApi;
 import android.content.AttributionSource;
 import android.content.IContentProvider;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -24,9 +23,9 @@ public class BinderSender {
         }
 
         Bundle bundle = new Bundle();
-        bundle.putBinder(Constants.SERVER_BINDER_KEY, binder);
-        ContentProviderHolderWrapper holderWrapper = new ContentProviderHolderWrapper(holder);
-        IContentProvider provider = holderWrapper.getProvider();
+        bundle.putBinder(ServerProvider.SERVER_BINDER_KEY, binder);
+//        ContentProviderHolderWrapper holderWrapper = ;
+        IContentProvider provider = new ContentProviderHolderWrapper(holder).getProvider();
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
             provider.call("", ServerProvider.SAVE_BINDER, "", bundle);
         } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
@@ -34,7 +33,7 @@ public class BinderSender {
         } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
             provider.call("", "", ServerProvider.AUTHORITY_NAME, ServerProvider.SAVE_BINDER, "", bundle);
         } else {
-            AttributionSource attributionSource = new AttributionSource.Builder(Binder.getCallingUid()).build();
+            AttributionSource attributionSource = new AttributionSource.Builder(android.os.Process.myUid()).build();
             provider.call(attributionSource, ServerProvider.AUTHORITY_NAME, ServerProvider.SAVE_BINDER, "", bundle);
         }
     }

@@ -22,7 +22,7 @@
             android:id="@+id/et_shell_cmd"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="ps -e" />
+            android:text="pm path app.jhau.appopsmanager" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
