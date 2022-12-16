@@ -19,7 +19,7 @@ public class PackageManagerApi {
                 return (ApplicationInfo) method.invoke(pm, packageName, flags, userId);
             }
         }
-        throw new IllegalStateException();
+        throw new IllegalStateException("ApplicationInfo.getApplicationInfo() unknown exception");
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

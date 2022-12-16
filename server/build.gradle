@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'app.jhau.server'
+    namespace rootProject.ext.serverId
     compileSdk rootProject.ext.compileSdk
 
     defaultConfig {
@@ -27,6 +27,7 @@ android {
 
         release {
             minifyEnabled false
+            consumerProguardFiles 'consumer-rules.pro'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -38,12 +39,6 @@ android {
         cmake {
             path file('src/main/cpp/CMakeLists.txt')
             version '3.18.1'
-        }
-    }
-
-    packagingOptions {
-        jniLibs {
-            useLegacyPackaging false
         }
     }
 }

@@ -6,13 +6,11 @@ import android.content.pm.PackageManagerApi;
 import android.os.Build;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Enumeration;
 
 import app.jhau.server.util.BinderSender;
 import app.jhau.server.util.Constants;
@@ -20,10 +18,6 @@ import app.jhau.server.util.Constants;
 public class AppOpsServer extends IAppOpsServer.Stub {
 
     private static final String TAG = Constants.DEBUG_TAG;
-
-    public static final String SERVER_NICK_NAME = "appops_server";
-
-    //private final IBinder mServer = new AppOpsServer();
 
     @Override
     public String execCommand(String cmd) throws RemoteException {
@@ -51,8 +45,6 @@ public class AppOpsServer extends IAppOpsServer.Stub {
     }
 
     public static void main(String[] args) throws Throwable {
-        Log.i(Constants.DEBUG_TAG, "AppOpsServer.main()");
-
         //prepare
         Looper.prepare();
         AppOpsServer appOpsServer = new AppOpsServer();
