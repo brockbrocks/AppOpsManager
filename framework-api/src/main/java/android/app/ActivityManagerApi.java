@@ -1,7 +1,6 @@
 package android.app;
 
 import android.content.Context;
-import android.content.pm.IPackageManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.ServiceManager;

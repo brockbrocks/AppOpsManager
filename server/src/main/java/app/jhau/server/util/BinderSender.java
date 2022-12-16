@@ -24,7 +24,7 @@ public class BinderSender {
 
         Bundle bundle = new Bundle();
         bundle.putBinder(ServerProvider.SERVER_BINDER_KEY, binder);
-//        ContentProviderHolderWrapper holderWrapper = ;
+
         IContentProvider provider = new ContentProviderHolderWrapper(holder).getProvider();
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
             provider.call("", ServerProvider.SAVE_BINDER, "", bundle);

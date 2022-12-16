@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import app.jhau.server.BinderCursor;
 import app.jhau.server.BuildConfig;
 import app.jhau.server.util.Constants;
 
@@ -26,14 +25,15 @@ public class ServerProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        return true;
+        return false;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        BinderCursor cursor = new BinderCursor();
-        cursor.getExtras().putBinder(SERVER_BINDER_KEY, serverBinder);
-        return cursor;
+//        BinderCursor cursor = new BinderCursor();
+//        cursor.getExtras().putBinder(SERVER_BINDER_KEY, serverBinder);
+//        return cursor;
+        return null;
     }
 
     @Override

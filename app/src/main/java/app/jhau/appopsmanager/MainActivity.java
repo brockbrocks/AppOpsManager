@@ -4,11 +4,9 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,19 +49,11 @@ public class MainActivity extends AppCompatActivity {
         Button button = findViewById(R.id.btn_exec);
         button.setOnClickListener(v -> {
             String content = String.valueOf(textInputEditText.getText());
-            Log.i(TAG, "button.setOnClickListener: ");
             ContentResolver resolver = getContentResolver();
-
             String execRet = null;
             IBinder binder = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                Bundle bundle = resolver.call(ServerProvider.AUTHORITY_NAME, ServerProvider.GET_BINDER, "", null);
-                binder = bundle.getBinder(ServerProvider.SERVER_BINDER_KEY);
-            } else {
-                Cursor cursor = resolver.query(Uri.parse(ServerProvider.AUTHORITY_URI), null, null, null, null);
-                binder = cursor.getExtras().getBinder(ServerProvider.SERVER_BINDER_KEY);
-                cursor.close();
-            }
+            Bundle bundle = resolver.call(Uri.parse(ServerProvider.AUTHORITY_URI), ServerProvider.GET_BINDER, "", null);
+            binder = bundle.getBinder(ServerProvider.SERVER_BINDER_KEY);
             IAppOpsServer server = IAppOpsServer.Stub.asInterface(binder);
             try {
                 execRet = server.execCommand(content);
@@ -90,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         if (file.exists()) file.delete();
         InputStream is = getResources().getAssets().open(fileName);
         FileOutputStream fos = new FileOutputStream(new File(getExternalCacheDir(), fileName));
-        int len = -1;
+        int len;
         byte[] buff = new byte[1024];
         while ((len = is.read(buff, 0, buff.length)) != -1) fos.write(buff, 0, len);
         is.close();
