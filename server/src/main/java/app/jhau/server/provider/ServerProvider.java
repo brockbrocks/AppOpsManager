@@ -30,9 +30,6 @@ public class ServerProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-//        BinderCursor cursor = new BinderCursor();
-//        cursor.getExtras().putBinder(SERVER_BINDER_KEY, serverBinder);
-//        return cursor;
         return null;
     }
 

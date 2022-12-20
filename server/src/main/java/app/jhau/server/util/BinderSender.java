@@ -6,11 +6,15 @@ import android.content.IContentProvider;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import app.jhau.server.provider.ServerProvider;
 
 public class BinderSender {
+    private static final String TAG = Constants.DEBUG_TAG;
+
     public static void sendBinder(IBinder binder) throws Throwable {
+        Log.i(TAG, "sendBinder(), pid=" + android.os.Process.myPid());
         final IBinder token = null;
         final int userId = 0;
         final String tag = null;

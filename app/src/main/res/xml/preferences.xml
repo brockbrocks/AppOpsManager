@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="normal">
+        <Preference
+            android:icon="@drawable/ic_power_off"
+            android:key="kill_server"
+            android:singleLine="true"
+            android:title="kill server" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="others">
+        <Preference
+            android:icon="@drawable/ic_terminal"
+            android:key="shell_terminal"
+            android:title="shell terminal" />
+    </PreferenceCategory>
+</PreferenceScreen>

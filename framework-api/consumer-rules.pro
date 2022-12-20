@@ -1,6 +1,7 @@
 -keep public class android.app.ActivityThread
 -keep public class android.app.IActivityManager{*;}
 -keep public class android.app.IActivityManager$Stub{*;}
+-keep public class android.app.ActivityManagerNative{*;}
 -keep public class android.app.IProcessObserver{*;}
 
 -keep public class android.content.pm.IPackageManager{*;}

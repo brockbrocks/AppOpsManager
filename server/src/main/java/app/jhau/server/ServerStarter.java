@@ -4,6 +4,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManagerApi;
 import android.os.Build;
 
+import java.io.InputStreamReader;
+
 import app.jhau.server.util.Constants;
 
 public class ServerStarter {
@@ -12,6 +14,10 @@ public class ServerStarter {
     public static void main(String[] args) throws Throwable {
         System.out.println("ServerStarter execute.");
         try {
+            if (checkServerExist()) {
+                System.out.println("Server already exists.");
+                return;
+            }
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
                 startServerNative();
             } else {
@@ -21,6 +27,17 @@ public class ServerStarter {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    private static boolean checkServerExist() throws Throwable {
+        String[] cmd = new String[]{"sh", "-c", "ps | grep " + Constants.SERVER_NICK_NAME};
+        char[] buf = new char[512];
+        InputStreamReader isr = new InputStreamReader(Runtime.getRuntime().exec(cmd).getInputStream());
+        StringBuilder ret = new StringBuilder();
+        int len;
+        while ((len = isr.read(buf)) != -1) ret.append(buf, 0, len);
+        isr.close();
+        return ret.toString().contains(Constants.SERVER_NICK_NAME);
     }
 
     static void startAppOpsServer() throws Throwable {
@@ -44,12 +61,11 @@ public class ServerStarter {
     }
 
     static {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
             String classPath = System.getProperty("java.class.path");
             String libPath = classPath + "!/lib/" + Build.SUPPORTED_ABIS[0] + "/libserver.so";
             System.load(libPath);
-        }
-
+//        }
     }
 
     private native static void startServerNative();

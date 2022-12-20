@@ -19,17 +19,11 @@ public class IProcessObserverImpl extends IProcessObserver.Stub {
 
     @Override
     public void onForegroundActivitiesChanged(int pid, int uid, boolean foregroundActivities) throws RemoteException {
-//        String log = "onForegroundActivitiesChanged: pid=" + pid +
-//                ", uid=" + uid +
-//                ", foregroundActivities=" + foregroundActivities;
-//        LogUtil.appendToFile(log);
         if (uid == appUid && foregroundActivities) {
-//            System.out.println("onForegroundActivitiesChanged: " + "pid=" + pid + " uid=" + uid + " foregroundActivities=" + foregroundActivities);
-//            Log.i("ServerProvider", "onForegroundActivitiesChanged: " + "pid=" + pid + " uid=" + uid + " foregroundActivities=" + foregroundActivities);
             try {
                 BinderSender.sendBinder(server);
             } catch (Throwable e) {
-                e.printStackTrace();
+                throw new RemoteException(e.getMessage());
             }
         }
     }

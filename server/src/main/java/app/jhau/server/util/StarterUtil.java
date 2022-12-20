@@ -1,7 +1,11 @@
 package app.jhau.server.util;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,6 +13,7 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 
 import app.jhau.server.BuildConfig;
+import app.jhau.server.provider.ServerProvider;
 
 public class StarterUtil {
 
@@ -43,5 +48,11 @@ public class StarterUtil {
         fw.write(content.toString());
         fw.close();
         br.close();
+    }
+
+    public static boolean checkServerExist(Context ctx) throws Throwable {
+        Bundle bundle = ctx.getContentResolver().call(Uri.parse(ServerProvider.AUTHORITY_URI), ServerProvider.GET_BINDER, "", null);
+        IBinder binder = bundle.getBinder(ServerProvider.SERVER_BINDER_KEY);
+        return binder != null;
     }
 }

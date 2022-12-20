@@ -2,11 +2,15 @@ package android.content.pm;
 
 import android.os.Build;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.UserHandle;
 
+import androidx.annotation.DeprecatedSinceApi;
 import androidx.annotation.RequiresApi;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class PackageManagerApi {
     private static final IBinder pm = ServiceManager.getService("package");
@@ -33,4 +37,23 @@ public class PackageManagerApi {
         }
         throw new IllegalStateException();
     }
+
+    public static List<PackageInfo> getInstalledPackages(int flags, int userId) throws Throwable {
+        IPackageManager pm = IPackageManager.Stub.asInterface(PackageManagerApi.pm);
+        return (List<PackageInfo>) pm.getInstalledPackages(flags, userId).getList();
+    }
+
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
+    public static List<ApplicationInfo> getInstalledApplications(int flags, int userId) throws Throwable {
+        IPackageManager pm = IPackageManager.Stub.asInterface(PackageManagerApi.pm);
+        return (List<ApplicationInfo>) pm.getInstalledApplications(flags, userId).getList();
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    public static List<ApplicationInfo> getInstalledApplications(long flags, int userId) throws Throwable {
+        IPackageManager pm = IPackageManager.Stub.asInterface(PackageManagerApi.pm);
+        return (List<ApplicationInfo>) pm.getInstalledApplications(flags, userId).getList();
+    }
+
+
 }
