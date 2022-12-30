@@ -20,10 +20,10 @@ public class StarterUtil {
     private static final String TAG = Constants.DEBUG_TAG;
 
     public static String getCommand(Context context) {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            String filePath = context.getExternalCacheDir().getPath();
-            return "adb shell sh " + filePath + "/" + Constants.STARTER_SH_FILE_NAME;
-        }
+//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+//            String filePath = context.getExternalCacheDir().getPath();
+//            return "adb shell sh " + filePath + "/" + Constants.STARTER_SH_FILE_NAME;
+//        }
         String packagePath = context.getPackageResourcePath();
         return "adb shell app_process -Djava.class.path=" + packagePath + " /system/bin " + Constants.STARTER_CLASSNAME;
     }

@@ -38,4 +38,8 @@ public interface IPackageManager extends IInterface {
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     public ParceledListSlice getInstalledApplications(long flags, int userId) throws RemoteException;
+
+    boolean isPackageAvailable(String packageName, int userId) throws RemoteException;
+
+    String getNameForUid(int uid) throws RemoteException;
 }

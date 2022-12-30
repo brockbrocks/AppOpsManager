@@ -7,8 +7,11 @@ import android.content.pm.PackageManagerApi;
 import android.os.Build;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileDescriptor;
 import java.io.InputStreamReader;
 import java.util.List;
 
@@ -16,14 +19,25 @@ import app.jhau.server.util.BinderSender;
 import app.jhau.server.util.Constants;
 
 public class AppOpsServer {
+    private static String TAG = Constants.DEBUG_TAG;
 
     private final AppOpsServerThread appOpsServerThread = new AppOpsServerThread();
+    ApkObserverCompat apkObserver;
 
-    private void init() throws Throwable {
+    private void run() throws Throwable {
+        Looper.prepare();
         ApplicationInfo appInfo = getApplicationInfo();
-        //ActivityManagerApi.registerUidObserver(new IUidObserverImpl());
         ActivityManagerApi.registerProcessObserver(new IProcessObserverImpl(appInfo.uid, appOpsServerThread));
+        String sourceDir = appInfo.sourceDir;
+        String apkPath = sourceDir.substring(0, sourceDir.lastIndexOf(File.separator));
+        apkObserver = new ApkObserverCompat.Build()
+                .setCallback(() -> {
+                    Log.i(TAG, "AppOpsServer exit.");
+                    System.exit(0);
+                }).filePath(apkPath).build();
+        apkObserver.startWatching();
         BinderSender.sendBinder(appOpsServerThread);
+        Looper.loop();
     }
 
     private ApplicationInfo getApplicationInfo() throws Throwable {
@@ -34,7 +48,14 @@ public class AppOpsServer {
         }
     }
 
-    private static class AppOpsServerThread extends IAppOpsServer.Stub {
+    public static class AppOpsServerThread extends IAppOpsServer.Stub {
+        private String apkPath;
+
+        ApkObserverCompat apkObserver;
+
+        {
+
+        }
 
         @Override
         public String execCommand(String cmd) throws RemoteException {
@@ -54,7 +75,8 @@ public class AppOpsServer {
         public void killServer() throws RemoteException {
             try {
                 BinderSender.sendBinder(null);
-                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);
+//                android.os.Process.killProcess(android.os.Process.myPid());
             } catch (Throwable e) {
                 throw new RemoteException(e.getMessage());
             }
@@ -82,12 +104,22 @@ public class AppOpsServer {
                 throw new RemoteException(e.getMessage());
             }
         }
+
+        static {
+            String classPath = System.getProperty("java.class.path");
+            Log.i(TAG, "static initializer: classPath=" + classPath);
+            String libPath = classPath + "!/lib/" + Build.SUPPORTED_ABIS[0] + "/libserver.so";
+            System.load(libPath);
+        }
+
+        public native String getCmdlineByPid(int pid);
     }
 
     public static void main(String[] args) throws Throwable {
-        Looper.prepare();
-        new AppOpsServer().init();
-        Looper.loop();
+        Log.i("AppOpsServer", "AppOpsServer start.");
+//        Looper.prepare();
+        new AppOpsServer().run();
+//        Looper.loop();
     }
 
 }

@@ -2,9 +2,7 @@ package android.content.pm;
 
 import android.os.Build;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.os.UserHandle;
 
 import androidx.annotation.DeprecatedSinceApi;
 import androidx.annotation.RequiresApi;
@@ -55,5 +53,15 @@ public class PackageManagerApi {
         return (List<ApplicationInfo>) pm.getInstalledApplications(flags, userId).getList();
     }
 
+
+    public static boolean isPackageAvailable(String packageName, int userId) throws Throwable {
+        IPackageManager pm = IPackageManager.Stub.asInterface(PackageManagerApi.pm);
+        return pm.isPackageAvailable(packageName, userId);
+    }
+
+    public static String getNameForUid(int uid) throws Throwable {
+        IPackageManager pm = IPackageManager.Stub.asInterface(PackageManagerApi.pm);
+        return pm.getNameForUid(uid);
+    }
 
 }

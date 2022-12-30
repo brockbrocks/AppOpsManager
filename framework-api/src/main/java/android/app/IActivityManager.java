@@ -27,16 +27,7 @@ public interface IActivityManager extends IInterface {
     }
 
     public void registerProcessObserver(IProcessObserver observer) throws RemoteException;
-    //public void unregisterProcessObserver(IProcessObserver observer) throws RemoteException;
-
-    //Android M
-    void registerUidObserver(IUidObserver observer) throws RemoteException;
-    //Android N
-    void registerUidObserver(IUidObserver observer, int which) throws RemoteException;
-    //Android Q
-    void registerUidObserver(IUidObserver observer, int which, int cutpoint, String callingPackage);
-    //Android M,N
-    //void unregisterUidObserver(IUidObserver observer) throws RemoteException;
+    public void unregisterProcessObserver(IProcessObserver observer) throws RemoteException;
 
     //Android Q and later
     public ContentProviderHolder getContentProviderExternal(String name, int userId, IBinder token, String tag) throws RemoteException;

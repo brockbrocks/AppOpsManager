@@ -11,16 +11,6 @@ import java.lang.reflect.Method;
 
 public class ActivityManagerApi {
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    public static final int UID_OBSERVER_PROCSTATE = 1 << 0;
-    @RequiresApi(Build.VERSION_CODES.N)
-    public static final int UID_OBSERVER_GONE = 1 << 1;
-    @RequiresApi(Build.VERSION_CODES.N)
-    public static final int UID_OBSERVER_IDLE = 1 << 2;
-    @RequiresApi(Build.VERSION_CODES.N)
-    public static final int UID_OBSERVER_ACTIVE = 1 << 3;
-
-
     private static final IBinder am = ServiceManager.getService(Context.ACTIVITY_SERVICE);
 
     public static Object getContentProviderExternal(String name, int userId, IBinder token) throws Throwable {
@@ -57,17 +47,6 @@ public class ActivityManagerApi {
             am = IActivityManager.Stub.asInterface(ActivityManagerApi.am);
         }
         am.registerProcessObserver(observer);
-    }
-
-    public static void registerUidObserver(IUidObserver observer) throws Throwable {
-        IActivityManager am = getService();
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            am.registerUidObserver(observer);
-        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
-            am.registerUidObserver(observer, UID_OBSERVER_PROCSTATE | UID_OBSERVER_GONE | UID_OBSERVER_IDLE | UID_OBSERVER_ACTIVE);
-        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            am.registerUidObserver(observer, 0, 0, "");
-        }
     }
 
     private static IActivityManager getService() {

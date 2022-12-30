@@ -12,4 +12,4 @@ echo "# SDK = ${sdk}"
 echo "#-----------End-----------"
 
 export CLASSPATH=$classpath
-app_process -Djava.library.path=${libpath}:/system/lib:/vendor/lib /system/bin %%%starterclassname%%%
+app_process -Djava.library.path=${libpath} /system/bin %%%starterclassname%%%
