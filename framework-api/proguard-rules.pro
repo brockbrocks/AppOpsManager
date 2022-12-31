@@ -19,7 +19,3 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
-
--keep public class android.app.ActivityManagerApi
--keep public class android.app.ActivityThreadApi
--keep public class android.content.pm.PackageManagerApi

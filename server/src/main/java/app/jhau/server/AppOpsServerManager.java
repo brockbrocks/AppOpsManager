@@ -2,7 +2,6 @@ package app.jhau.server;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -13,18 +12,6 @@ import java.util.List;
 import app.jhau.server.provider.ServerProvider;
 
 public class AppOpsServerManager {
-
-    public static List<PackageInfo> getInstalledPackageList(Context context) {
-        IBinder binder = getAppOpsServerBinder(context);
-        IAppOpsServer appOpsServer = IAppOpsServer.Stub.asInterface(binder);
-        if (appOpsServer == null) return null;
-        try {
-            return appOpsServer.getInstalledPackages();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public static List<ApplicationInfo> getInstalledApplications(Context context) {
         IBinder binder = getAppOpsServerBinder(context);

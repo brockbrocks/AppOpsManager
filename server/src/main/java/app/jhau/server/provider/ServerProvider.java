@@ -59,12 +59,12 @@ public class ServerProvider extends ContentProvider {
         switch (method) {
             case SAVE_BINDER:
                 this.serverBinder = extras.getBinder(SERVER_BINDER_KEY);
-                Log.i(TAG, "call: " + SAVE_BINDER);
+                Log.i(TAG, "call: " + SAVE_BINDER + ", binder=" + serverBinder);
                 break;
             case GET_BINDER:
                 bundle = new Bundle();
                 bundle.putBinder(SERVER_BINDER_KEY, serverBinder);
-                Log.i(TAG, "call: " + GET_BINDER);
+                Log.i(TAG, "call: " + GET_BINDER + ", binder=" + serverBinder);
                 break;
             default:
                 break;

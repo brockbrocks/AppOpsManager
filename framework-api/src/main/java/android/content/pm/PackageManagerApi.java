@@ -36,11 +36,6 @@ public class PackageManagerApi {
         throw new IllegalStateException();
     }
 
-    public static List<PackageInfo> getInstalledPackages(int flags, int userId) throws Throwable {
-        IPackageManager pm = IPackageManager.Stub.asInterface(PackageManagerApi.pm);
-        return (List<PackageInfo>) pm.getInstalledPackages(flags, userId).getList();
-    }
-
     @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
     public static List<ApplicationInfo> getInstalledApplications(int flags, int userId) throws Throwable {
         IPackageManager pm = IPackageManager.Stub.asInterface(PackageManagerApi.pm);

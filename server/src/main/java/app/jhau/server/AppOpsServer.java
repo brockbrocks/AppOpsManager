@@ -87,16 +87,6 @@ public class AppOpsServer {
             }
         }
 
-        @Override
-        public List<PackageInfo> getInstalledPackages() throws RemoteException {
-            try {
-                return PackageManagerApi.getInstalledPackages(0, 0);
-            } catch (Throwable e) {
-                e.printStackTrace();
-                throw new RemoteException(e.getMessage());
-            }
-        }
-
         static {
             String classPath = System.getProperty("java.class.path");
             String libPath = classPath + "!/lib/" + Build.SUPPORTED_ABIS[0] + "/libserver.so";

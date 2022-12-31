@@ -21,17 +21,7 @@ public interface IPackageManager extends IInterface {
         public IBinder asBinder() {
             return null;
         }
-
-        @Override
-        public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            return false;
-        }
     }
-
-
-    public ParceledListSlice getInstalledPackages(int flags, int userId) throws RemoteException;
-
-    //public ParceledListSlice getInstalledPackages(long flags, int userId) throws RemoteException;
 
     @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
     public ParceledListSlice getInstalledApplications(int flags, int userId) throws RemoteException;

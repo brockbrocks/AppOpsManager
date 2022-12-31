@@ -5,5 +5,4 @@ interface IAppOpsServer {
     String execCommand(String cmd);
     void killServer();
     List<ApplicationInfo> getInstalledApplications();
-    List<PackageInfo> getInstalledPackages();
 }
