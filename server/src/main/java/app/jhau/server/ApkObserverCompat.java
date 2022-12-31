@@ -1,7 +1,6 @@
 package app.jhau.server;
 
 import android.os.FileObserver;
-import android.util.Log;
 
 import java.io.File;
 
@@ -21,11 +20,10 @@ public class ApkObserverCompat extends FileObserver {
         if (event == FileObserver.DELETE) {
             stopWatching();
             if (callback != null) callback.call();
-           // Log.i("app.jhau.appopsmanager", "onEvent: 文件删除" + ", path=" + path);
         }
     }
 
-    public static interface Callback {
+    public interface Callback {
         void call();
     }
 
@@ -52,8 +50,9 @@ public class ApkObserverCompat extends FileObserver {
                 apkObserver = new ApkObserverCompat(new File(filePath), FileObserver.DELETE);
             }
             apkObserver.callback = callback;
+            filePath = null;
+            callback = null;
             return apkObserver;
-
         }
     }
 }

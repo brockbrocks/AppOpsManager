@@ -49,13 +49,6 @@ public class AppOpsServer {
     }
 
     public static class AppOpsServerThread extends IAppOpsServer.Stub {
-        private String apkPath;
-
-        ApkObserverCompat apkObserver;
-
-        {
-
-        }
 
         @Override
         public String execCommand(String cmd) throws RemoteException {
@@ -76,7 +69,6 @@ public class AppOpsServer {
             try {
                 BinderSender.sendBinder(null);
                 System.exit(0);
-//                android.os.Process.killProcess(android.os.Process.myPid());
             } catch (Throwable e) {
                 throw new RemoteException(e.getMessage());
             }
@@ -107,7 +99,6 @@ public class AppOpsServer {
 
         static {
             String classPath = System.getProperty("java.class.path");
-            Log.i(TAG, "static initializer: classPath=" + classPath);
             String libPath = classPath + "!/lib/" + Build.SUPPORTED_ABIS[0] + "/libserver.so";
             System.load(libPath);
         }
@@ -117,9 +108,7 @@ public class AppOpsServer {
 
     public static void main(String[] args) throws Throwable {
         Log.i("AppOpsServer", "AppOpsServer start.");
-//        Looper.prepare();
         new AppOpsServer().run();
-//        Looper.loop();
     }
 
 }
