@@ -1,4 +1,4 @@
-package app.jhau.appopsmanager.ui.activity.appdetail
+package app.jhau.appopsmanager.ui.appdetail
 
 import android.content.Context
 import android.content.Intent

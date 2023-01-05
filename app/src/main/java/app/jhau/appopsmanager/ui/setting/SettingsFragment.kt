@@ -1,11 +1,11 @@
-package app.jhau.appopsmanager.ui.activity.setting
+package app.jhau.appopsmanager.ui.setting
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import app.jhau.appopsmanager.R
-import app.jhau.appopsmanager.ui.activity.terminal.TerminalActivity
+import app.jhau.appopsmanager.ui.terminal.TerminalActivity
 import app.jhau.server.AppOpsServerManager
 
 class SettingsFragment : PreferenceFragmentCompat() {

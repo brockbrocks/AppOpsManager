@@ -1,4 +1,4 @@
-package app.jhau.appopsmanager.ui.activity.setting
+package app.jhau.appopsmanager.ui.setting
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package app.jhau.appopsmanager.ui.activity.guide
+package app.jhau.appopsmanager.ui.guide
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -28,17 +28,6 @@ class GuideActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_guide)
-        try {
-            lifecycleScope.launchWhenCreated {
-                launch(Dispatchers.IO) {
-                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) StarterUtil.createShellFile(
-                        applicationContext
-                    )
-                }
-            }
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
         initView()
     }
 

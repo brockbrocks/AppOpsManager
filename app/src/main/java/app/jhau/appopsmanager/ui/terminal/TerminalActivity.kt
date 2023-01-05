@@ -1,4 +1,4 @@
-package app.jhau.appopsmanager.ui.activity.terminal
+package app.jhau.appopsmanager.ui.terminal
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

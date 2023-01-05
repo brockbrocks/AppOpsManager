@@ -13,16 +13,11 @@ import app.jhau.server.provider.ServerProvider;
 
 public class AppOpsServerManager {
 
-    public static List<ApplicationInfo> getInstalledApplications(Context context) {
+    public static List<ApplicationInfo> getInstalledApplications(Context context) throws Throwable {
         IBinder binder = getAppOpsServerBinder(context);
         IAppOpsServer appOpsServer = IAppOpsServer.Stub.asInterface(binder);
         if (appOpsServer == null) return null;
-        try {
-            return appOpsServer.getInstalledApplications();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return appOpsServer.getInstalledApplications();
     }
 
     public static void killServer(Context context) {

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,20 +14,22 @@
         android:theme="@style/Theme.AppOpsManager"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activity.terminal.TerminalActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".ui.activity.setting.SettingsActivity"
-            android:exported="false"></activity>
-        <activity
-            android:name=".ui.activity.appdetail.AppDetailActivity"
+            android:name=".ui.terminal.TerminalActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activity.SplashActivity"
+            android:name=".ui.setting.SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.appdetail.AppDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.app.AppActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.guide.GuideActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.AppOpsManager.Starting">
             <intent-filter>
@@ -35,12 +38,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activity.home.HomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.guide.GuideActivity"
-            android:exported="true" />
     </application>
 
 </manifest>
