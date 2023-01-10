@@ -1,18 +1,20 @@
 <resources>
+    <style name="Theme.AppOpsManager" parent="Theme.Material3.DayNight">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
 
-<!--    <style name="Theme.AppOpsManager" parent="Theme.Material3.DayNight">-->
-<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
-<!--        <item name="colorOnPrimary">@color/colorOnPrimary</item>-->
+        <item name="colorAccent">@color/colorAccent</item>
 
-<!--        &lt;!&ndash;consume&ndash;&gt;-->
-<!--        <item name="android:statusBarColor">@color/colorBackground</item>-->
-<!--        <item name="android:windowLightStatusBar">false</item>-->
-<!--        <item name="android:colorBackground">@color/colorBackground</item>-->
-<!--        <item name="actionBarStyle">@style/Theme.AppOpsManager.actionBarStyle</item>-->
-<!--    </style>-->
+        <!--consume-->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="actionBarStyle">@style/Theme.AppOpsManager.actionBarStyle</item>
+        <item name="materialCardViewStyle">@style/Theme.AppOpsManager.materialCardViewStyle</item>
+    </style>
 
-<!--    <style name="Theme.AppOpsManager.actionBarStyle" parent="@style/Widget.Material3.Light.ActionBar.Solid">-->
-<!--        <item name="background">@drawable/bg_actionbar</item>-->
-<!--        <item name="elevation">0dp</item>-->
-<!--    </style>-->
+    <style name="Theme.AppOpsManager.materialCardViewStyle" parent="@style/Widget.Material3.CardView.Filled">
+<!--        <item name="cardBackgroundColor">?attr/colorSurfaceVariant</item>-->
+    </style>
 </resources>

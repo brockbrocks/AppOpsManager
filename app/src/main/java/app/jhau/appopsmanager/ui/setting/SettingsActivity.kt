@@ -15,13 +15,7 @@ class SettingsActivity : AppCompatActivity() {
             setHomeAsUpIndicator(R.drawable.ic_arrow_back)
             setDisplayHomeAsUpEnabled(true)
         }
-//        val toolBar = findViewById<MaterialToolbar>(R.id.topAppBar)
-//        toolBar.apply {
-//            setNavigationIcon(R.drawable.ic_arrow_back)
-//            setNavigationOnClickListener {
-//                finish()
-//            }
-//        }
+
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.setting_container, SettingsFragment())

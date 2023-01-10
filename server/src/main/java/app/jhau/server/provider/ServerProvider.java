@@ -6,12 +6,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
-import app.jhau.appopsmanager.IServerObserver;
 import app.jhau.server.BuildConfig;
 import app.jhau.server.util.Constants;
 
@@ -118,6 +116,4 @@ public class ServerProvider extends ContentProvider {
             return Method.UNKNOWN;
         }
     }
-
-
 }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import app.jhau.appopsmanager.IServerObserver
@@ -50,6 +51,7 @@ class GuideActivity : AppCompatActivity() {
         supportActionBar?.apply {
             title = "Guide"
         }
+        findViewById<TextView>(R.id.tv_line2)?.text = StarterUtil.getCommand(this)
         findViewById<Button>(R.id.btn_copy)?.setOnClickListener {
             val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val data = ClipData.newPlainText("cmd", StarterUtil.getCommand(this@GuideActivity))

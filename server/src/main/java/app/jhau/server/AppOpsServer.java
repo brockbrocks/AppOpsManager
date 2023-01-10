@@ -1,5 +1,6 @@
 package app.jhau.server;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManagerApi;
 import android.content.IContentProvider;
 import android.content.pm.ApplicationInfo;
@@ -53,6 +54,7 @@ public class AppOpsServer {
         }
     }
 
+    @SuppressLint("UnsafeDynamicallyLoadedCode")
     public static class AppOpsServerThread extends IAppOpsServer.Stub {
 
         @Override
