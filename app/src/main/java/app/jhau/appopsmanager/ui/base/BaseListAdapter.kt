@@ -16,19 +16,19 @@ abstract class BaseListAdapter<T, VB : ViewBinding> :
     fun submitList(newItems: List<T>) {
         val oldItems = items
         items = newItems
-        val areItemsSame: (T, T) -> Boolean = { oldItem, newItem ->
-            areItemsSame(oldItem, newItem)
+        val areItemsTheSame: (T, T) -> Boolean = { oldItem, newItem ->
+            areItemsTheSame(oldItem, newItem)
         }
         val artContentsTheSame: (T, T) -> Boolean = { oldItem, newItem ->
             areContentsTheSame(oldItem, newItem)
         }
         val diffUtilCallback =
-            DiffUtilCallback(oldItems, newItems, areItemsSame, artContentsTheSame)
+            DiffUtilCallback(oldItems, newItems, areItemsTheSame, artContentsTheSame)
         val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
         diffResult.dispatchUpdatesTo(this)
     }
 
-    abstract fun areItemsSame(oldItem: T, newItem: T): Boolean
+    abstract fun areItemsTheSame(oldItem: T, newItem: T): Boolean
     abstract fun areContentsTheSame(oldItem: T, newItem: T): Boolean
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<VB> {

@@ -1,10 +1,15 @@
 package android.app;
 
+import android.content.IContentProvider;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
+
+import androidx.annotation.DeprecatedSinceApi;
+import androidx.annotation.RequiresApi;
 
 public interface IActivityManager extends IInterface {
 
@@ -27,8 +32,17 @@ public interface IActivityManager extends IInterface {
     }
 
     public void registerProcessObserver(IProcessObserver observer) throws RemoteException;
+
     public void unregisterProcessObserver(IProcessObserver observer) throws RemoteException;
 
-    //Android Q and later
-    public ContentProviderHolder getContentProviderExternal(String name, int userId, IBinder token, String tag) throws RemoteException;
+    @RequiresApi(Build.VERSION_CODES.O)
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.Q)
+    public android.app.ContentProviderHolder getContentProviderExternal(String name, int userId, IBinder token) throws RemoteException;
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    public android.app.ContentProviderHolder getContentProviderExternal(String name, int userId, IBinder token, String tag) throws RemoteException;
+
+    public static class ContentProviderHolder {
+        public IContentProvider provider;
+    }
 }

@@ -45,4 +45,5 @@ android {
 
 dependencies {
     implementation project(path: ':framework-api')
+    implementation "androidx.annotation:annotation:1.5.0"
 }

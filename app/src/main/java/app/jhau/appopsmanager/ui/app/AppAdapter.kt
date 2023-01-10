@@ -1,11 +1,12 @@
 package app.jhau.appopsmanager.ui.app
 
 import app.jhau.appopsmanager.databinding.ItemAppListBinding
+import app.jhau.appopsmanager.ui.appdetail.AppDetailActivity
 import app.jhau.appopsmanager.ui.base.BaseListAdapter
 
 class AppAdapter : BaseListAdapter<AppItemUiState, ItemAppListBinding>() {
 
-    override fun areItemsSame(oldItem: AppItemUiState, newItem: AppItemUiState): Boolean {
+    override fun areItemsTheSame(oldItem: AppItemUiState, newItem: AppItemUiState): Boolean {
         return oldItem == newItem
     }
 
@@ -20,7 +21,7 @@ class AppAdapter : BaseListAdapter<AppItemUiState, ItemAppListBinding>() {
             tvAppName.text = appItemUiState.appName
             tvApplicationId.text = appItemUiState.packageName
             root.setOnClickListener {
-                //
+                AppDetailActivity.start(holder.itemView.context, items[position])
             }
         }
     }

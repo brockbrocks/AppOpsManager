@@ -18,8 +18,8 @@ public class ApkObserverCompat extends FileObserver {
     @Override
     public void onEvent(int event, String path) {
         if (event == FileObserver.DELETE) {
-            stopWatching();
             if (callback != null) callback.call();
+            stopWatching();
         }
     }
 

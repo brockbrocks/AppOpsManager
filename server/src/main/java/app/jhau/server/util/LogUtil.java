@@ -1,10 +1,12 @@
 package app.jhau.server.util;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.lang.reflect.Method;
 
 import app.jhau.server.BuildConfig;
 
@@ -55,6 +57,15 @@ public class LogUtil {
             fw.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void logMethod(Object obj, String methodName) {
+        if (BuildConfig.DEBUG) {
+            for (Method method : obj.getClass().getDeclaredMethods()) {
+                if (method.getName().equals(methodName))
+                    Log.i("logMethod", methodName + "=" + method);
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import app.jhau.framework.ContentProviderHolderWrapper;
 import app.jhau.server.provider.ServerProvider;
 
 public class BinderSender {
@@ -29,16 +30,18 @@ public class BinderSender {
         Bundle bundle = new Bundle();
         bundle.putBinder(ServerProvider.SERVER_BINDER_KEY, binder);
 
-        IContentProvider provider = new ContentProviderHolderWrapper(holder).getProvider();
+        IContentProvider provider = new ContentProviderHolderWrapper(holder).provider;
+//        IContentProvider provider = new ContentProviderHolderWrapper(holder).getProvider();
+//        IContentProvider provider = new ContentProviderHolderWrapper(holder).provider;
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            provider.call("", ServerProvider.SAVE_BINDER, "", bundle);
+            provider.call("", ServerProvider.Method.SAVE_BINDER.key, "", bundle);
         } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            provider.call("", ServerProvider.AUTHORITY_NAME, ServerProvider.SAVE_BINDER, "", bundle);
+            provider.call("", ServerProvider.AUTHORITY_NAME, ServerProvider.Method.SAVE_BINDER.key, "", bundle);
         } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
-            provider.call("", "", ServerProvider.AUTHORITY_NAME, ServerProvider.SAVE_BINDER, "", bundle);
+            provider.call("", "", ServerProvider.AUTHORITY_NAME, ServerProvider.Method.SAVE_BINDER.key, "", bundle);
         } else {
             AttributionSource attributionSource = new AttributionSource.Builder(android.os.Process.myUid()).build();
-            provider.call(attributionSource, ServerProvider.AUTHORITY_NAME, ServerProvider.SAVE_BINDER, "", bundle);
+            provider.call(attributionSource, ServerProvider.AUTHORITY_NAME, ServerProvider.Method.SAVE_BINDER.key, "", bundle);
         }
     }
 

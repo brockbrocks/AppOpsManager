@@ -30,7 +30,7 @@ public class AppOpsServerManager {
     }
 
     private static IBinder getAppOpsServerBinder(Context context) {
-        Bundle bundle = context.getContentResolver().call(Uri.parse(ServerProvider.AUTHORITY_URI), ServerProvider.GET_BINDER, "", null);
+        Bundle bundle = context.getContentResolver().call(Uri.parse(ServerProvider.AUTHORITY_URI), ServerProvider.Method.GET_BINDER.key, "", null);
         return bundle.getBinder(ServerProvider.SERVER_BINDER_KEY);
     }
 

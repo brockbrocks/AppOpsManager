@@ -1,22 +1,26 @@
 package app.jhau.server;
 
 import android.app.ActivityManagerApi;
+import android.content.IContentProvider;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManagerApi;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import app.jhau.appopsmanager.IServerObserver;
+import app.jhau.server.provider.ServerProvider;
 import app.jhau.server.util.BinderSender;
 import app.jhau.server.util.Constants;
+import app.jhau.server.util.ServerProviderUtil;
 
 public class AppOpsServer {
     private static String TAG = Constants.DEBUG_TAG;
@@ -37,6 +41,7 @@ public class AppOpsServer {
                 }).filePath(apkPath).build();
         apkObserver.startWatching();
         BinderSender.sendBinder(appOpsServerThread);
+        ServerProviderUtil.getServerObserver(0).onServerActivated();
         Looper.loop();
     }
 

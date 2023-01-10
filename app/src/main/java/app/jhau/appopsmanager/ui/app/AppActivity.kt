@@ -3,6 +3,7 @@ package app.jhau.appopsmanager.ui.app
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -37,24 +38,36 @@ class AppActivity : BaseBindingActivity<ActivityAppBinding, AppViewModel>() {
     }
 
     private fun initView() {
-        binding.topAppBar.apply {
-            setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.settings -> {
-                        val intent = Intent(this@AppActivity, SettingsActivity::class.java)
-                        intent.action = Intent.ACTION_VIEW
-                        startActivity(intent)
-                    }
-                    else -> {}
-                }
-                true
-            }
-        }
+//        binding.topAppBar.apply {
+//            setOnMenuItemClickListener {
+//                when (it.itemId) {
+//                    R.id.settings -> {
+//                        val intent = Intent(this@AppActivity, SettingsActivity::class.java)
+//                        intent.action = Intent.ACTION_VIEW
+//                        startActivity(intent)
+//                    }
+//                    else -> {}
+//                }
+//                true
+//            }
+//        }
         binding.rvApp.adapter = AppAdapter()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.settings -> {
+                val intent = Intent(this@AppActivity, SettingsActivity::class.java)
+                intent.action = Intent.ACTION_VIEW
+                startActivity(intent)
+            }
+            else -> {}
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/md_theme_light_secondaryContainer">
+    android:color="@color/colorPrimary">
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="16dp" />
-            <solid android:color="@color/md_theme_light_onPrimary" />
+            <solid android:color="@color/colorBackground"/>
         </shape>
     </item>
 </ripple>

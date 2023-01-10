@@ -4,6 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.appdetail.AppDetailActivity">
+    android:paddingStart="24dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="24dp">
+
+    <ImageView
+        android:id="@+id/iv_app_detail"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@mipmap/ic_launcher" />
+
+    <Space
+        android:id="@+id/space0"
+        android:layout_width="10dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/iv_app_detail"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_app_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/space0"
+        app:layout_constraintTop_toTopOf="@+id/iv_app_detail"
+        tools:text="appName" />
+
+    <TextView
+        android:id="@+id/app_application_id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/tv_app_version"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_app_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_app_name"
+        tools:text="application_id" />
+
+    <TextView
+        android:id="@+id/tv_app_version"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_app_detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/app_application_id"
+        tools:text="version" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
