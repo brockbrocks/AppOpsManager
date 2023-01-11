@@ -1,13 +1,9 @@
 package app.jhau.server;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManagerApi;
-import android.content.IContentProvider;
+import android.app.IProcessObserver;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManagerApi;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.util.Log;
@@ -17,45 +13,92 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import app.jhau.appopsmanager.IServerObserver;
-import app.jhau.server.provider.ServerProvider;
-import app.jhau.server.util.BinderSender;
+import app.jhau.framework_api.ActivityManagerApi;
+import app.jhau.framework_api.PackageManagerApi;
 import app.jhau.server.util.Constants;
 import app.jhau.server.util.ServerProviderUtil;
 
 public class AppOpsServer {
-    private static String TAG = Constants.DEBUG_TAG;
+    private static final String TAG = Constants.DEBUG_TAG;
 
-    private final AppOpsServerThread appOpsServerThread = new AppOpsServerThread();
-    ApkObserverCompat apkObserver;
+    private final AppOpsServerThread mServerThread = new AppOpsServerThread();
+    private int userId;
+    private int appUid;
+    private String apkPath;
+
+    private ApkFileObserver apkObserver;
+    private IProcessObserver iProcessObserver = new IProcessObserver.Stub() {
+
+        @Override
+        public void onForegroundActivitiesChanged(int pid, int uid, boolean foregroundActivities) throws RemoteException {
+            try {
+                if (uid == appUid && foregroundActivities) {
+                    sendServerBinderToApplication(mServerThread);
+                }
+            } catch (Throwable e) {
+                throw new RemoteException(e.getMessage());
+            }
+        }
+
+        @Override
+        public void onProcessStateChanged(int pid, int uid, int procState) throws RemoteException {
+
+        }
+
+        @Override
+        public void onProcessDied(int pid, int uid) throws RemoteException {
+
+        }
+
+        @Override
+        public void onForegroundServicesChanged(int pid, int uid, int serviceTypes) throws RemoteException {
+
+        }
+    };
 
     private void run() throws Throwable {
         Looper.prepare();
+        userId = getUserId();
         ApplicationInfo appInfo = getApplicationInfo();
-        ActivityManagerApi.registerProcessObserver(new IProcessObserverImpl(appInfo.uid, appOpsServerThread));
-        String sourceDir = appInfo.sourceDir;
-        String apkPath = sourceDir.substring(0, sourceDir.lastIndexOf(File.separator));
-        apkObserver = new ApkObserverCompat.Build()
+        appUid = appInfo.uid;
+        apkPath = appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf(File.separator));
+        apkObserver = new ApkFileObserver.Build()
                 .setCallback(() -> {
-                    Log.i(TAG, "AppOpsServer exit.");
-                    System.exit(0);
+                    try {
+                        boolean isPackageAvailable = PackageManagerApi.isPackageAvailable(Constants.APPLICATION_ID, userId);
+                        Log.i(TAG, "isPackageAvailable=" + isPackageAvailable);
+                        if (!isPackageAvailable) {
+                            Log.i(TAG, "AppOpsServer exit.");
+                            System.exit(0);
+                        }
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                        System.exit(0);
+                    }
                 }).filePath(apkPath).build();
         apkObserver.startWatching();
-        BinderSender.sendBinder(appOpsServerThread);
-        ServerProviderUtil.getServerObserver(0).onServerActivated();
+        registerProcessObserver(iProcessObserver);
+        sendServerBinderToApplication(mServerThread);
+        mServerThread.onActivated();
         Looper.loop();
     }
 
     private ApplicationInfo getApplicationInfo() throws Throwable {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return PackageManagerApi.getApplicationInfo(Constants.APPLICATION_ID, 0, 0);
-        } else {
-            return PackageManagerApi.getApplicationInfo(Constants.APPLICATION_ID, 0L, 0);
-        }
+        return PackageManagerApi.getApplicationInfo(Constants.APPLICATION_ID, 0L, 0);
     }
+
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     public static class AppOpsServerThread extends IAppOpsServer.Stub {
+        private IServerActivatedObserver serverActivatedObserver;
+
+        static {
+            String classPath = System.getProperty("java.class.path");
+            String libPath = classPath + "!/lib/" + Build.SUPPORTED_ABIS[0] + "/libserver.so";
+            System.load(libPath);
+        }
+
+        public native String getCmdlineByPid(int pid);
 
         @Override
         public String execCommand(String cmd) throws RemoteException {
@@ -74,7 +117,6 @@ public class AppOpsServer {
         @Override
         public void killServer() throws RemoteException {
             try {
-                BinderSender.sendBinder(null);
                 System.exit(0);
             } catch (Throwable e) {
                 throw new RemoteException(e.getMessage());
@@ -84,9 +126,6 @@ public class AppOpsServer {
         @Override
         public List<ApplicationInfo> getInstalledApplications() throws RemoteException {
             try {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                    return PackageManagerApi.getInstalledApplications(0, 0);
-                }
                 return PackageManagerApi.getInstalledApplications(0L, 0);
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -94,13 +133,34 @@ public class AppOpsServer {
             }
         }
 
-        static {
-            String classPath = System.getProperty("java.class.path");
-            String libPath = classPath + "!/lib/" + Build.SUPPORTED_ABIS[0] + "/libserver.so";
-            System.load(libPath);
+        @Override
+        public void registerServerActivatedObserverOnce(IServerActivatedObserver observer) throws RemoteException {
+            serverActivatedObserver = observer;
         }
 
-        public native String getCmdlineByPid(int pid);
+        public void onActivated() throws Throwable {
+            if (serverActivatedObserver != null) {
+                serverActivatedObserver.onActivated();
+                serverActivatedObserver = null;
+            }
+        }
+
+        public int getUserId() {
+            return 0;
+        }
+
+    }
+
+    public void sendServerBinderToApplication(AppOpsServerThread serverThread) throws Throwable {
+        ServerProviderUtil.sendServerBinderToApplication(serverThread, getUserId());
+    }
+
+    public void registerProcessObserver(IProcessObserver iProcessObserver) throws Throwable {
+        ActivityManagerApi.registerProcessObserver(iProcessObserver);
+    }
+
+    private int getUserId() {
+        return 0;
     }
 
     public static void main(String[] args) throws Throwable {

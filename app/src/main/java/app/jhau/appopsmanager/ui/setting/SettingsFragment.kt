@@ -14,19 +14,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
         findPreference<Preference>("kill_server")?.setOnPreferenceClickListener {
-            AppOpsServerManager.killServer(context)
+            AppOpsServerManager.killServer(requireActivity().application)
             val intent = Intent(this@SettingsFragment.context, GuideActivity::class.java)
             intent.action = Intent.ACTION_VIEW
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
-            activity?.finish()
+            requireActivity().finish()
             true
         }
         findPreference<Preference>("shell_terminal")?.setOnPreferenceClickListener {
             context?.let {
                 val intent = Intent(context, TerminalActivity::class.java)
                 intent.action = Intent.ACTION_VIEW
-                intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)
             }
             true

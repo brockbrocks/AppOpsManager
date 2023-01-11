@@ -1,13 +1,17 @@
 package android.app;
 
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.RemoteException;
 
+import androidx.annotation.DeprecatedSinceApi;
+import androidx.annotation.RequiresApi;
+
 public interface IProcessObserver extends IInterface {
 
-    public static abstract class Stub extends Binder implements IProcessObserver {
+    abstract class Stub extends Binder implements IProcessObserver {
 
         public static IProcessObserver asInterface(IBinder obj) {
             return null;
@@ -15,19 +19,17 @@ public interface IProcessObserver extends IInterface {
 
         @Override
         public IBinder asBinder() {
-            return this;
+            return null;
         }
     }
 
-    //M,N,O,P,Q,R,S,T
-    public void onForegroundActivitiesChanged(int pid, int uid, boolean foregroundActivities) throws RemoteException;
+    void onForegroundActivitiesChanged(int pid, int uid, boolean foregroundActivities) throws RemoteException;
 
-    //M,N
-    public void onProcessStateChanged(int pid, int uid, int procState) throws RemoteException;
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.O)
+    void onProcessStateChanged(int pid, int uid, int procState) throws RemoteException;
 
-    //M,N,O,P,Q,R,S,T
-    public void onProcessDied(int pid, int uid) throws RemoteException;
+    void onProcessDied(int pid, int uid) throws RemoteException;
 
-    //Q,R,S,T
-    public void onForegroundServicesChanged(int pid, int uid, int serviceTypes) throws RemoteException;
+    @RequiresApi(Build.VERSION_CODES.Q)
+    void onForegroundServicesChanged(int pid, int uid, int serviceTypes) throws RemoteException;
 }

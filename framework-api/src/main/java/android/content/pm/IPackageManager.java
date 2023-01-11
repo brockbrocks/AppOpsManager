@@ -4,14 +4,13 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.IInterface;
-import android.os.Parcel;
 import android.os.RemoteException;
 
 import androidx.annotation.DeprecatedSinceApi;
 import androidx.annotation.RequiresApi;
 
 public interface IPackageManager extends IInterface {
-    public static abstract class Stub extends Binder implements IPackageManager {
+    abstract class Stub extends Binder implements IPackageManager {
 
         public static IPackageManager asInterface(IBinder obj) {
             return null;
@@ -24,12 +23,17 @@ public interface IPackageManager extends IInterface {
     }
 
     @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
-    public ParceledListSlice getInstalledApplications(int flags, int userId) throws RemoteException;
+    ParceledListSlice getInstalledApplications(int flags, int userId) throws RemoteException;
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    public ParceledListSlice getInstalledApplications(long flags, int userId) throws RemoteException;
+    ParceledListSlice getInstalledApplications(long flags, int userId) throws RemoteException;
 
     boolean isPackageAvailable(String packageName, int userId) throws RemoteException;
 
     String getNameForUid(int uid) throws RemoteException;
+
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
+    ApplicationInfo getApplicationInfo(String packageName, int flags ,int userId) throws RemoteException;
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    ApplicationInfo getApplicationInfo(String packageName, long flags ,int userId) throws RemoteException;
 }

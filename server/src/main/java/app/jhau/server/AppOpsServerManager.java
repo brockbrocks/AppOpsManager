@@ -1,42 +1,57 @@
 package app.jhau.server;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import app.jhau.server.provider.ServerProvider;
 
 public class AppOpsServerManager {
+    private static final String TAG = "AppOpsServerManager";
 
-    public static List<ApplicationInfo> getInstalledApplications(Context context) throws Throwable {
-        IBinder binder = getAppOpsServerBinder(context);
-        IAppOpsServer appOpsServer = IAppOpsServer.Stub.asInterface(binder);
-        if (appOpsServer == null) return null;
-        return appOpsServer.getInstalledApplications();
+    public static List<ApplicationInfo> getInstalledApplications(Application application) {
+        try {
+            IAppOpsServer appOpsServer = getAppOpsServerBinder(application);
+            if (appOpsServer == null) return null;
+            return appOpsServer.getInstalledApplications();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public static void killServer(Context context) {
+    public static void killServer(Application application) {
         try {
-            IAppOpsServer appOpsServer = IAppOpsServer.Stub.asInterface(getAppOpsServerBinder(context));
+            IAppOpsServer appOpsServer = getAppOpsServerBinder(application);
+            if (appOpsServer == null) return;
             appOpsServer.killServer();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    private static IBinder getAppOpsServerBinder(Context context) {
-        Bundle bundle = context.getContentResolver().call(Uri.parse(ServerProvider.AUTHORITY_URI), ServerProvider.Method.GET_BINDER.key, "", null);
-        return bundle.getBinder(ServerProvider.SERVER_BINDER_KEY);
+    private static IAppOpsServer getAppOpsServerBinder(Application application) {
+        try {
+            Method method = application.getClass().getMethod("getIAppOpsServer");
+            return (IAppOpsServer) method.invoke(application);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public static String execCommand(Context context, String cmd) {
+    public static String execCommand(Application application, String cmd) {
         try {
-            IAppOpsServer appOpsServer = IAppOpsServer.Stub.asInterface(getAppOpsServerBinder(context));
+            IAppOpsServer appOpsServer = getAppOpsServerBinder(application);
+            if (appOpsServer == null) return null;
             return appOpsServer.execCommand(cmd);
         } catch (RemoteException e) {
             e.printStackTrace();

@@ -1,29 +1,22 @@
 package app.jhau.server.util;
 
+import android.app.Application;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 
 import app.jhau.server.BuildConfig;
-import app.jhau.server.provider.ServerProvider;
 
 public class StarterUtil {
 
     private static final String TAG = Constants.DEBUG_TAG;
 
     public static String getCommand(Context context) {
-//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-//            String filePath = context.getExternalCacheDir().getPath();
-//            return "adb shell sh " + filePath + "/" + Constants.STARTER_SH_FILE_NAME;
-//        }
         String packagePath = context.getPackageResourcePath();
         return "adb shell app_process -Djava.class.path=" + packagePath + " /system/bin " + Constants.STARTER_CLASSNAME;
     }
@@ -50,11 +43,13 @@ public class StarterUtil {
         br.close();
     }
 
-    public static boolean checkServerExist(Context ctx) throws Throwable {
-        Bundle bundle = ctx.getContentResolver().call(Uri.parse(ServerProvider.AUTHORITY_URI), ServerProvider.Method.GET_BINDER.key, "", null);
-        IBinder binder = bundle.getBinder(ServerProvider.SERVER_BINDER_KEY);
-        boolean ret = binder != null;
-        Log.i(TAG, "checkServerExist: ret=" + ret);
-        return ret;
+    public static boolean checkServerExist(Application application) {
+        try {
+            Method method = application.getClass().getMethod("getIAppOpsServer");
+            return method.invoke(application) != null;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

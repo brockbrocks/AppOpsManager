@@ -5,9 +5,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
+import app.jhau.appopsmanager.App
 import app.jhau.appopsmanager.R
-import app.jhau.server.AppOpsServerManager
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
 
 class TerminalActivity : AppCompatActivity() {
@@ -22,11 +21,8 @@ class TerminalActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_exec)?.let {
             it.setOnClickListener {
-                val etCmdContent = findViewById<TextInputEditText>(R.id.et_cmd_content)
-                val ret = AppOpsServerManager.execCommand(
-                    applicationContext,
-                    etCmdContent.text?.trim().toString()
-                )
+                val cmd = findViewById<TextInputEditText>(R.id.et_cmd_content)
+                val ret = (application as App).iAppOpsServer.execCommand(cmd.text.toString().trim())
                 findViewById<TextView>(R.id.tv_cmd_ret).text = ret
             }
         }

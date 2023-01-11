@@ -38,19 +38,6 @@ class AppActivity : BaseBindingActivity<ActivityAppBinding, AppViewModel>() {
     }
 
     private fun initView() {
-//        binding.topAppBar.apply {
-//            setOnMenuItemClickListener {
-//                when (it.itemId) {
-//                    R.id.settings -> {
-//                        val intent = Intent(this@AppActivity, SettingsActivity::class.java)
-//                        intent.action = Intent.ACTION_VIEW
-//                        startActivity(intent)
-//                    }
-//                    else -> {}
-//                }
-//                true
-//            }
-//        }
         binding.rvApp.adapter = AppAdapter()
     }
 

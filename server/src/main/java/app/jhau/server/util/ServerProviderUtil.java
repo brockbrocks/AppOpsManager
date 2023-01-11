@@ -1,38 +1,37 @@
 package app.jhau.server.util;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManagerApi;
 import android.content.AttributionSource;
 import android.content.IContentProvider;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 
-import app.jhau.appopsmanager.IServerObserver;
+import app.jhau.framework_api.ActivityManagerApi;
+import app.jhau.server.AppOpsServer;
 import app.jhau.server.provider.ServerProvider;
 
 public class ServerProviderUtil {
 
     @SuppressLint("DeprecatedSinceApi")
-    public static IServerObserver getServerObserver(int userId) throws Throwable {
+    public static void sendServerBinderToApplication(AppOpsServer.AppOpsServerThread serverThread, int userId) throws Throwable{
         IContentProvider provider;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            provider = ActivityManagerApi.getContentProviderExternalNew(ServerProvider.AUTHORITY_NAME, userId, null).provider;
+            provider = ActivityManagerApi.getContentProviderExternal(ServerProvider.AUTHORITY_NAME, userId, null).provider;
         } else {
-            provider = ActivityManagerApi.getContentProviderExternalNew(ServerProvider.AUTHORITY_NAME, userId, null, null).provider;
+            provider = ActivityManagerApi.getContentProviderExternal(ServerProvider.AUTHORITY_NAME, userId, null, null).provider;
         }
-        Bundle ret;
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            ret = provider.call(null, ServerProvider.Method.GET_BINDER.str, null, null);
-        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            ret = provider.call((String) null, ServerProvider.AUTHORITY_NAME, ServerProvider.Method.GET_BINDER.str, null, null);
-        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
-            ret = provider.call(null, null, ServerProvider.AUTHORITY_NAME, ServerProvider.Method.GET_BINDER.str, null, null);
-        } else {
-            AttributionSource attributionSource = new AttributionSource.Builder(Binder.getCallingUid()).build();
-            ret = provider.call(attributionSource, ServerProvider.AUTHORITY_NAME, ServerProvider.Method.GET_BINDER.str, null, null);
-        }
-        return IServerObserver.Stub.asInterface(ret.getBinder(ServerProvider.SERVER_OBSERVER_BINDER_KEY));
-    }
 
+        Bundle bundle = new Bundle();
+        bundle.putBinder(ServerProvider.SERVER_BINDER_KEY, serverThread.asBinder());
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            provider.call(null, ServerProvider.Method.SAVE_BINDER.str, null, bundle);
+        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            provider.call((String) null, ServerProvider.AUTHORITY_NAME, ServerProvider.Method.SAVE_BINDER.str, null, bundle);
+        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+            provider.call(null, null, ServerProvider.AUTHORITY_NAME, ServerProvider.Method.SAVE_BINDER.str, null, bundle);
+        } else {
+            AttributionSource attributionSource = new AttributionSource.Builder(android.os.Process.myUid()).build();
+            provider.call(attributionSource, ServerProvider.AUTHORITY_NAME, ServerProvider.Method.SAVE_BINDER.str, null, bundle);
+        }
+    }
 }
