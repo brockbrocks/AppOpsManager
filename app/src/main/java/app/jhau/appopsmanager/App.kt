@@ -51,13 +51,15 @@ class App : Application() {
         override fun onActivityDestroyed(activity: Activity) {
             if (activityCount.decrementAndGet() == 0) {
                 Log.i(TAG, "onActivityDestroyed: $activity")
-                android.os.Process.killProcess(android.os.Process.myPid())
+                //todo: fixes bug
+//                android.os.Process.killProcess(android.os.Process.myPid())
             }
         }
     }
 
     override fun onCreate() {
         super.onCreate()
+        application = this
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
     }
 
@@ -67,5 +69,9 @@ class App : Application() {
             Log.i(TAG, "registerServerActivatedObserverOnce")
             this.iAppOpsServer.registerServerActivatedObserverOnce(iServerActivatedObserver)
         }
+    }
+
+    companion object{
+        lateinit var application: Application
     }
 }

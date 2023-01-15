@@ -3,6 +3,8 @@ package app.jhau.server;
 import android.annotation.SuppressLint;
 import android.app.IProcessObserver;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.UserInfo;
 import android.os.Build;
 import android.os.Looper;
 import android.os.RemoteException;
@@ -26,7 +28,7 @@ public class AppOpsServer {
     private int appUid;
     private String apkPath;
 
-    private ApkFileObserver apkObserver;
+    private AppObserver appObserver = new AppObserver();
     private IProcessObserver iProcessObserver = new IProcessObserver.Stub() {
 
         @Override
@@ -58,33 +60,61 @@ public class AppOpsServer {
 
     private void run() throws Throwable {
         Looper.prepare();
-        userId = getUserId();
-        ApplicationInfo appInfo = getApplicationInfo();
-        appUid = appInfo.uid;
-        apkPath = appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf(File.separator));
-        apkObserver = new ApkFileObserver.Build()
-                .setCallback(() -> {
-                    try {
-                        boolean isPackageAvailable = PackageManagerApi.isPackageAvailable(Constants.APPLICATION_ID, userId);
-                        Log.i(TAG, "isPackageAvailable=" + isPackageAvailable);
-                        if (!isPackageAvailable) {
-                            Log.i(TAG, "AppOpsServer exit.");
-                            System.exit(0);
-                        }
-                    } catch (Throwable e) {
-                        e.printStackTrace();
-                        System.exit(0);
-                    }
-                }).filePath(apkPath).build();
-        apkObserver.startWatching();
+        updateAppInfo();
+        registerAppObserver();
         registerProcessObserver(iProcessObserver);
         sendServerBinderToApplication(mServerThread);
         mServerThread.onActivated();
         Looper.loop();
     }
 
-    private ApplicationInfo getApplicationInfo() throws Throwable {
-        return PackageManagerApi.getApplicationInfo(Constants.APPLICATION_ID, 0L, 0);
+    private void updateAppInfo() {
+        userId = getCurrentUserId();
+        ApplicationInfo appInfo = getApplicationInfo(userId);
+        appUid = appInfo != null ? appInfo.uid : -1;
+        apkPath = resolveApkPath(appInfo);
+    }
+
+    private String resolveApkPath(ApplicationInfo appInfo) {
+        if (appInfo == null) return "";
+        String sourceDir = appInfo.sourceDir;
+        return sourceDir.substring(0, sourceDir.lastIndexOf(File.separator));
+    }
+
+    private void registerAppObserver() {
+        appObserver.observe(apkPath, userId, event -> {
+            switch (event) {
+                case REMOVE:
+                    killServer();
+                    break;
+                case UPDATE:
+                    updateAppInfo();
+                    registerAppObserver();
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
+    private void killServer() {
+        appObserver.stopObserve();
+        Log.i(TAG, "AppOpsServer exit.");
+        System.exit(0);
+    }
+
+    private void unRegisterAppObserver() {
+        appObserver.stopObserve();
+    }
+
+
+    private ApplicationInfo getApplicationInfo(int userId) {
+        try {
+            return PackageManagerApi.getInstance().getApplicationInfo(Constants.APPLICATION_ID, 0L, userId);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -124,9 +154,19 @@ public class AppOpsServer {
         }
 
         @Override
-        public List<ApplicationInfo> getInstalledApplications() throws RemoteException {
+        public List<PackageInfo> getInstalledPackageInfoList() throws RemoteException {
             try {
-                return PackageManagerApi.getInstalledApplications(0L, 0);
+                return PackageManagerApi.getInstance().getInstalledPackageList(0L, getCurrentUserId());
+            } catch (Throwable e) {
+                e.printStackTrace();
+                throw new RemoteException(e.getMessage());
+            }
+        }
+
+        @Override
+        public List<ApplicationInfo> getInstalledApplicationList() throws RemoteException {
+            try {
+                return PackageManagerApi.getInstance().getInstalledApplicationList(0L, getCurrentUserId());
             } catch (Throwable e) {
                 e.printStackTrace();
                 throw new RemoteException(e.getMessage());
@@ -145,22 +185,23 @@ public class AppOpsServer {
             }
         }
 
-        public int getUserId() {
-            return 0;
+        private int getCurrentUserId() {
+            UserInfo ui = ActivityManagerApi.getCurrentUser();
+            return ui != null ? ui.id : 0;
         }
-
     }
 
     public void sendServerBinderToApplication(AppOpsServerThread serverThread) throws Throwable {
-        ServerProviderUtil.sendServerBinderToApplication(serverThread, getUserId());
+        ServerProviderUtil.sendServerBinderToApplication(serverThread, getCurrentUserId());
     }
 
     public void registerProcessObserver(IProcessObserver iProcessObserver) throws Throwable {
         ActivityManagerApi.registerProcessObserver(iProcessObserver);
     }
 
-    private int getUserId() {
-        return 0;
+    private int getCurrentUserId() {
+        UserInfo ui = ActivityManagerApi.getCurrentUser();
+        return ui != null ? ui.id : 0;
     }
 
     public static void main(String[] args) throws Throwable {

@@ -1,10 +1,10 @@
 package app.jhau.appopsmanager.ui.terminal
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import app.jhau.appopsmanager.App
 import app.jhau.appopsmanager.R
 import com.google.android.material.textfield.TextInputEditText

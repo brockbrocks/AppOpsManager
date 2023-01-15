@@ -7,12 +7,16 @@
 
         <item name="colorAccent">@color/colorAccent</item>
 
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorOnContainer">@color/white</item>
+
         <!--consume-->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="actionBarStyle">@style/Theme.AppOpsManager.actionBarStyle</item>
         <item name="materialCardViewStyle">@style/Theme.AppOpsManager.materialCardViewStyle</item>
+        <item name="materialButtonStyle">@style/Theme.AppOpsManager.materialButtonStyle</item>
     </style>
 
     <style name="Theme.AppOpsManager.actionBarStyle" parent="@style/Widget.Material3.Light.ActionBar.Solid">
@@ -22,6 +26,12 @@
 
     <style name="Theme.AppOpsManager.materialCardViewStyle" parent="@style/Widget.Material3.CardView.Filled">
         <item name="cardBackgroundColor">@color/cardBackgroundColor</item>
+    </style>
+
+    <style name="Theme.AppOpsManager.materialButtonStyle" parent="Widget.Material3.Button">
+<!--        <item name="android:textColor">?android:attr/textColorPrimary</item>-->
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
     </style>
 
     <style name="Theme.AppOpsManager.Starting" parent="Theme.SplashScreen">

@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.databinding.ActivityAppBinding
+import app.jhau.appopsmanager.ui.appinfo.AppInfoActivity
 import app.jhau.appopsmanager.ui.base.BaseBindingActivity
 import app.jhau.appopsmanager.ui.setting.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,7 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AppActivity : BaseBindingActivity<ActivityAppBinding, AppViewModel>() {
+class AppActivity : BaseBindingActivity<ActivityAppBinding, AppViewModel>(), View.OnClickListener {
     private val TAG = "AppActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +40,7 @@ class AppActivity : BaseBindingActivity<ActivityAppBinding, AppViewModel>() {
     }
 
     private fun initView() {
-        binding.rvApp.adapter = AppAdapter()
+        binding.rvApp.adapter = AppAdapter(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -56,5 +58,13 @@ class AppActivity : BaseBindingActivity<ActivityAppBinding, AppViewModel>() {
             else -> {}
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onClick(v: View?) {
+        v?.let {
+            val position = binding.rvApp.getChildAdapterPosition(it)
+            val packageInfo = viewModel.getPackageInfo(position)
+            AppInfoActivity.start(this, packageInfo)
+        }
     }
 }

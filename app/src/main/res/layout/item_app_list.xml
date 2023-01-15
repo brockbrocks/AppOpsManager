@@ -14,7 +14,7 @@
         android:padding="16dp">
 
         <ImageView
-            android:id="@+id/iv_app"
+            android:id="@+id/app_icon"
             android:layout_width="60dp"
             android:layout_height="60dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -27,28 +27,28 @@
             android:layout_width="10dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_app"
+            app:layout_constraintStart_toEndOf="@+id/app_icon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_app_name"
+            android:id="@+id/app_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/tv_application_id"
+            app:layout_constraintBottom_toTopOf="@id/application_id"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/space"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="应用名" />
 
         <TextView
-            android:id="@+id/tv_application_id"
+            android:id="@+id/application_id"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/space"
-            app:layout_constraintTop_toBottomOf="@id/tv_app_name"
+            app:layout_constraintTop_toBottomOf="@id/app_name"
             tools:text="com.example.app" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

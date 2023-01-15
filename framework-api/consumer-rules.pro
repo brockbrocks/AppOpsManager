@@ -8,6 +8,7 @@
 -keep public class android.content.pm.IPackageManager{*;}
 -keep public class android.content.pm.IPackageManager$Stub{*;}
 -keep public class android.content.pm.ParceledListSlice{*;}
+-keep public class android.content.pm.UserInfo{*;}
 -keep public class android.content.IContentProvider{*;}
 
 -keep public class android.os.ServiceManager{

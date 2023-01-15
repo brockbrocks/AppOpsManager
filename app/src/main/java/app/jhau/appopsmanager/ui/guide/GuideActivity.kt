@@ -25,7 +25,7 @@ class GuideActivity : AppCompatActivity() {
         //Register ServerActivatedObserver
         (application as App).iServerActivatedObserver = object : IServerActivatedObserver.Stub(){
             override fun onActivated() {
-                val intent = Intent(this@GuideActivity, AppActivity::class.java)
+                val intent = Intent(applicationContext, AppActivity::class.java)
                 intent.action = Intent.ACTION_VIEW
                 startActivity(intent)
                 finish()

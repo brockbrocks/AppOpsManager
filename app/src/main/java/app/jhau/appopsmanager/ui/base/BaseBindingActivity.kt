@@ -3,16 +3,14 @@ package app.jhau.appopsmanager.ui.base
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.ParameterizedType
 
 /**
- * Subclasses must be annotated with @AndroidEntryPoint
+ * Subclasses must be annotated with @AndroidEntryPoint when ViewModel is injected
  */
 abstract class BaseBindingActivity<VB : ViewBinding, VM : ViewModel> : AppCompatActivity() {
 

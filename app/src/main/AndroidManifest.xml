@@ -14,6 +14,10 @@
         android:theme="@style/Theme.AppOpsManager"
         tools:targetApi="31">
         <activity
+            android:name=".ui.appopsinfo.AppOpsInfoActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+        <activity
             android:name=".ui.terminal.TerminalActivity"
             android:exported="false"
             android:launchMode="singleTop" />
@@ -22,7 +26,7 @@
             android:exported="false"
             android:launchMode="singleTop" />
         <activity
-            android:name=".ui.appdetail.AppDetailActivity"
+            android:name=".ui.appinfo.AppInfoActivity"
             android:exported="false"
             android:launchMode="singleTop" />
         <activity

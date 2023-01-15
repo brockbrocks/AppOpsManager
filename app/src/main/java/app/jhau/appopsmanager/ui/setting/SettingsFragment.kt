@@ -12,7 +12,7 @@ import app.jhau.server.AppOpsServerManager
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.preferences, rootKey)
+        setPreferencesFromResource(R.xml.settings, rootKey)
         findPreference<Preference>("kill_server")?.setOnPreferenceClickListener {
             AppOpsServerManager.killServer(requireActivity().application)
             val intent = Intent(this@SettingsFragment.context, GuideActivity::class.java)

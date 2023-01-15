@@ -22,18 +22,36 @@ public interface IPackageManager extends IInterface {
         }
     }
 
+    @Override
+    default IBinder asBinder() {
+        return null;
+    }
+
     @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
-    ParceledListSlice getInstalledApplications(int flags, int userId) throws RemoteException;
+    ApplicationInfo getApplicationInfo(String packageName, int flags, int userId) throws RemoteException;
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    ApplicationInfo getApplicationInfo(String packageName, long flags, int userId) throws RemoteException;
+
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
+    ParceledListSlice<ApplicationInfo> getInstalledApplications(int flags, int userId) throws RemoteException;
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    ParceledListSlice getInstalledApplications(long flags, int userId) throws RemoteException;
+    ParceledListSlice<ApplicationInfo> getInstalledApplications(long flags, int userId) throws RemoteException;
 
-    boolean isPackageAvailable(String packageName, int userId) throws RemoteException;
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
+    ParceledListSlice<PackageInfo> getInstalledPackages(int flags, int userId) throws RemoteException;
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    ParceledListSlice<PackageInfo> getInstalledPackages(long flags, int userId) throws RemoteException;
+
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
+    PackageInfo getPackageInfo(String packageName, int flags, int userId) throws RemoteException;
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    PackageInfo getPackageInfo(String packageName, long flags, int userId) throws RemoteException;
 
     String getNameForUid(int uid) throws RemoteException;
 
-    @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
-    ApplicationInfo getApplicationInfo(String packageName, int flags ,int userId) throws RemoteException;
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    ApplicationInfo getApplicationInfo(String packageName, long flags ,int userId) throws RemoteException;
+    boolean isPackageAvailable(String packageName, int userId) throws RemoteException;
 }

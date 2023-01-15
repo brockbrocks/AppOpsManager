@@ -5,6 +5,7 @@ import android.app.ActivityManagerNative;
 import android.app.IActivityManager;
 import android.app.IProcessObserver;
 import android.content.Context;
+import android.content.pm.UserInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.ServiceManager;
@@ -17,6 +18,15 @@ import java.lang.reflect.Method;
 public class ActivityManagerApi {
 
     private static final IBinder am = ServiceManager.getService(Context.ACTIVITY_SERVICE);
+
+    @SuppressLint("DeprecatedSinceApi")
+    private static IActivityManager getService() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return ActivityManagerNative.asInterface(am);
+        } else {
+            return IActivityManager.Stub.asInterface(am);
+        }
+    }
 
     @SuppressLint("DeprecatedSinceApi")
     @DeprecatedSinceApi(api = Build.VERSION_CODES.Q)
@@ -41,13 +51,8 @@ public class ActivityManagerApi {
         am.registerProcessObserver(observer);
     }
 
-    @SuppressLint("DeprecatedSinceApi")
-    private static IActivityManager getService() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return ActivityManagerNative.asInterface(am);
-        } else {
-            return IActivityManager.Stub.asInterface(am);
-        }
+    public static UserInfo getCurrentUser(){
+        IActivityManager am = getService();
+        return am.getCurrentUser();
     }
-
 }

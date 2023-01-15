@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="normal">
         <Preference
             android:icon="@drawable/ic_power_off"
@@ -8,7 +9,9 @@
             android:title="kill server" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="others">
+    <PreferenceCategory
+        android:title="others"
+        app:allowDividerAbove="false">
         <Preference
             android:icon="@drawable/ic_terminal"
             android:key="shell_terminal"

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ActionButton" parent="@style/Theme.AppOpsManager.materialButtonStyle">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="shapeAppearance">@null</item>
+        <item name="rippleColor">@color/btn_ripple_color</item>
+        <item name="iconTint">?android:attr/textColorPrimary</item>
+    </style>
+</resources>

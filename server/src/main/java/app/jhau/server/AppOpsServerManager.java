@@ -1,30 +1,28 @@
 package app.jhau.server;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.IBinder;
+import android.content.pm.PackageInfo;
 import android.os.RemoteException;
-import android.util.Log;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
-
-import app.jhau.server.provider.ServerProvider;
 
 public class AppOpsServerManager {
     private static final String TAG = "AppOpsServerManager";
 
+    @NotNull
     public static List<ApplicationInfo> getInstalledApplications(Application application) {
         try {
             IAppOpsServer appOpsServer = getAppOpsServerBinder(application);
-            if (appOpsServer == null) return null;
-            return appOpsServer.getInstalledApplications();
+            if (appOpsServer == null) return new ArrayList<>();
+            return appOpsServer.getInstalledApplicationList();
         } catch (Throwable e) {
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -59,4 +57,15 @@ public class AppOpsServerManager {
         }
     }
 
+    @NotNull
+    public static List<PackageInfo> getInstalledPackageInfoList(@NotNull Application application) {
+        try {
+            IAppOpsServer appOpsServer = getAppOpsServerBinder(application);
+            if (appOpsServer == null) return new ArrayList<>();
+           return appOpsServer.getInstalledPackageInfoList();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 }

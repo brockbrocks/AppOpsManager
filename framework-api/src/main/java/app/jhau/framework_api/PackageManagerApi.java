@@ -3,58 +3,106 @@ package app.jhau.framework_api;
 import android.annotation.SuppressLint;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageManager;
+import android.content.pm.PackageInfo;
+import android.content.pm.ParceledListSlice;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.ServiceManager;
 
 import androidx.annotation.DeprecatedSinceApi;
+import androidx.annotation.RequiresApi;
 
 import java.util.List;
-import java.util.Objects;
 
-public class PackageManagerApi {
-    private static final IBinder binder = ServiceManager.getService("package");
+public class PackageManagerApi implements IPackageManager {
 
-    @SuppressLint("DeprecatedSinceApi")
-    @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
-    public static ApplicationInfo getApplicationInfo(String packageName, int flags, int userId) throws Throwable {
-        IPackageManager pm = IPackageManager.Stub.asInterface(binder);
-        return Objects.requireNonNull(pm).getApplicationInfo(packageName, flags, userId);
+    private static final PackageManagerApi INSTANCE = new PackageManagerApi();
+
+    private final IPackageManager pm = getService();
+
+    public static PackageManagerApi getInstance() {
+        return INSTANCE;
+    }
+
+    private IPackageManager getService() {
+        IBinder binder = ServiceManager.getService("package");
+        return IPackageManager.Stub.asInterface(binder);
     }
 
     @SuppressLint("DeprecatedSinceApi")
-    public static ApplicationInfo getApplicationInfo(String packageName, long flags, int userId) throws Throwable {
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
+    public ApplicationInfo getApplicationInfo(String packageName, int flags, int userId) throws RemoteException {
+        return pm.getApplicationInfo(packageName, flags, userId);
+    }
+
+    @SuppressLint("DeprecatedSinceApi")
+    public ApplicationInfo getApplicationInfo(String packageName, long flags, int userId) throws RemoteException {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return getApplicationInfo(packageName, (int) flags, userId);
         }
-        IPackageManager pm = IPackageManager.Stub.asInterface(binder);
-        return Objects.requireNonNull(pm).getApplicationInfo(packageName, flags, userId);
+        return pm.getApplicationInfo(packageName, flags, userId);
     }
 
     @SuppressLint("DeprecatedSinceApi")
     @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
-    private static List<ApplicationInfo> getInstalledApplications(int flags, int userId) throws Throwable {
-        IPackageManager pm = IPackageManager.Stub.asInterface(binder);
-        return Objects.requireNonNull(pm).getInstalledApplications(flags, userId).getList();
+    public ParceledListSlice<ApplicationInfo> getInstalledApplications(int flags, int userId) throws RemoteException {
+        return pm.getInstalledApplications(flags, userId);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @SuppressLint("DeprecatedSinceApi")
+    public ParceledListSlice<ApplicationInfo> getInstalledApplications(long flags, int userId) throws RemoteException {
+        return pm.getInstalledApplications(flags, userId);
     }
 
     @SuppressLint("DeprecatedSinceApi")
-    public static List<ApplicationInfo> getInstalledApplications(long flags, int userId) throws Throwable {
+    public List<ApplicationInfo> getInstalledApplicationList(long flags, int userId) throws RemoteException {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return getInstalledApplications((int) flags, userId);
+            return getInstalledApplications((int) flags, userId).getList();
         }
-        IPackageManager pm = IPackageManager.Stub.asInterface(binder);
-        return Objects.requireNonNull(pm).getInstalledApplications(flags, userId).getList();
+        return getInstalledApplications(flags, userId).getList();
     }
 
-    public static boolean isPackageAvailable(String packageName, int userId) throws Throwable {
-        IPackageManager pm = IPackageManager.Stub.asInterface(binder);
-        return Objects.requireNonNull(pm).isPackageAvailable(packageName, userId);
+    @SuppressLint("DeprecatedSinceApi")
+    @Override
+    public ParceledListSlice<PackageInfo> getInstalledPackages(int flags, int userId) throws RemoteException {
+        return pm.getInstalledPackages(flags, userId);
     }
 
-    public static String getNameForUid(int uid) throws Throwable {
-        IPackageManager pm = IPackageManager.Stub.asInterface(binder);
-        return Objects.requireNonNull(pm).getNameForUid(uid);
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @Override
+    public ParceledListSlice<PackageInfo> getInstalledPackages(long flags, int userId) throws RemoteException {
+        return pm.getInstalledPackages(flags, userId);
+    }
+
+    @SuppressLint("DeprecatedSinceApi")
+    public List<PackageInfo> getInstalledPackageList(long flags, int userId) throws RemoteException {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return getInstalledPackages((int) flags, userId).getList();
+        }
+        return getInstalledPackages(flags, userId).getList();
+    }
+
+    @SuppressLint("DeprecatedSinceApi")
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
+    @Override
+    public PackageInfo getPackageInfo(String packageName, int flags, int userId) throws RemoteException {
+        return pm.getPackageInfo(packageName, flags, userId);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @Override
+    public PackageInfo getPackageInfo(String packageName, long flags, int userId) throws RemoteException {
+        return pm.getPackageInfo(packageName, flags, userId);
+    }
+
+    public boolean isPackageAvailable(String packageName, int userId) throws RemoteException {
+        return pm.isPackageAvailable(packageName, userId);
+    }
+
+    public String getNameForUid(int uid) throws RemoteException {
+        return pm.getNameForUid(uid);
     }
 
 }

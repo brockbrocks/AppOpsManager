@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ApplicationInfoRepository @Inject constructor(private val applicationDataSource: ApplicationInfoDataSource) {
-    suspend fun fetchInstalledApplications(): List<ApplicationInfo> {
+    suspend fun fetchInstalledApplications(): Array<ApplicationInfo> {
         return withContext(Dispatchers.IO) {
             applicationDataSource.fetchInstalledApplications()
         }
@@ -16,7 +16,7 @@ class ApplicationInfoRepository @Inject constructor(private val applicationDataS
 }
 
 class ApplicationInfoDataSource @Inject constructor(private val application: Application) {
-    fun fetchInstalledApplications(): List<ApplicationInfo> {
-        return AppOpsServerManager.getInstalledApplications(application).toList()
+    fun fetchInstalledApplications(): Array<ApplicationInfo> {
+        return AppOpsServerManager.getInstalledApplications(application).toTypedArray()
     }
 }

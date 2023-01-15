@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        android:key="permission_settings"
+        android:summary="Manage Runtime permissions"
+        android:title="Permissions"
+        app:iconSpaceReserved="false" />
+    <Preference
+        android:key="appops_settings"
+        android:summary="Manage App-ops"
+        android:title="App-ops"
+        app:iconSpaceReserved="false" />
+</PreferenceScreen>

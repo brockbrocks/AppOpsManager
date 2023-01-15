@@ -1,6 +1,7 @@
 package android.app;
 
 import android.content.IContentProvider;
+import android.content.pm.UserInfo;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -39,4 +40,6 @@ public interface IActivityManager extends IInterface {
     class ContentProviderHolder {
         public IContentProvider provider;
     }
+
+    UserInfo getCurrentUser();
 }
