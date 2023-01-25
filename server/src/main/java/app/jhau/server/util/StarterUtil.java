@@ -45,7 +45,7 @@ public class StarterUtil {
 
     public static boolean checkServerExist(Application application) {
         try {
-            Method method = application.getClass().getMethod("getIAppOpsServer");
+            Method method = application.getClass().getMethod("getIServer");
             return method.invoke(application) != null;
         } catch (Throwable e) {
             e.printStackTrace();

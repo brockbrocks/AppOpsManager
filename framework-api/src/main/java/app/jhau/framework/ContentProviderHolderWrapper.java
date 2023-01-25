@@ -1,4 +1,4 @@
-package app.jhau.framework_api;
+package app.jhau.framework;
 
 import android.content.IContentProvider;
 import android.os.Build;

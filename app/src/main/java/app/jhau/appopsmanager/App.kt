@@ -5,7 +5,7 @@ import android.app.Application
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
-import app.jhau.server.IAppOpsServer
+import app.jhau.server.IServer
 import app.jhau.server.IServerActivatedObserver
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.atomic.AtomicInteger
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class App : Application() {
     private val TAG = "App"
 
-    lateinit var iAppOpsServer: IAppOpsServer
+    lateinit var iServer: IServer
 
     lateinit var iServerActivatedObserver: IServerActivatedObserver
 
@@ -37,11 +37,7 @@ class App : Application() {
         }
 
         override fun onActivityStopped(activity: Activity) {
-//            if (activityCount.get() == 1) {
-//                _iAppOpsServer = null
-//                _iServerActivatedObserver = null
-//                Log.i(TAG, "onActivityStopped: $activity")
-//            }
+
         }
 
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
@@ -63,11 +59,11 @@ class App : Application() {
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
     }
 
-    fun onSetIAppOpsServerToApplication(binder: IBinder) {
-        this.iAppOpsServer = IAppOpsServer.Stub.asInterface(binder)
+    fun onSetIServerToApplication(binder: IBinder) {
+        this.iServer = IServer.Stub.asInterface(binder)
         if (::iServerActivatedObserver.isInitialized) {
             Log.i(TAG, "registerServerActivatedObserverOnce")
-            this.iAppOpsServer.registerServerActivatedObserverOnce(iServerActivatedObserver)
+            this.iServer.registerServerActivatedObserverOnce(iServerActivatedObserver)
         }
     }
 

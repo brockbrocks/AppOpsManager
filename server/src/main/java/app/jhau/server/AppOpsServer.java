@@ -15,15 +15,17 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import app.jhau.framework_api.ActivityManagerApi;
-import app.jhau.framework_api.PackageManagerApi;
+import app.jhau.framework.ActivityManagerApi;
+import app.jhau.framework.AppOpsManagerApi;
+import app.jhau.framework.PackageManagerApi;
+import app.jhau.framework.appops.AppOps;
 import app.jhau.server.util.Constants;
 import app.jhau.server.util.ServerProviderUtil;
 
 public class AppOpsServer {
     private static final String TAG = Constants.DEBUG_TAG;
 
-    private final AppOpsServerThread mServerThread = new AppOpsServerThread();
+    private final IServerThread mServerThread = new IServerThread();
     private int userId;
     private int appUid;
     private String apkPath;
@@ -117,9 +119,26 @@ public class AppOpsServer {
         }
     }
 
+    public void sendServerBinderToApplication(IServerThread serverThread) throws Throwable {
+        ServerProviderUtil.sendServerBinderToApplication(serverThread, getCurrentUserId());
+    }
+
+    public void registerProcessObserver(IProcessObserver iProcessObserver) throws Throwable {
+        ActivityManagerApi.registerProcessObserver(iProcessObserver);
+    }
+
+    private int getCurrentUserId() {
+        UserInfo ui = ActivityManagerApi.getCurrentUser();
+        return ui != null ? ui.id : 0;
+    }
+
+    public static void main(String[] args) throws Throwable {
+        Log.i("AppOpsServer", "AppOpsServer start.");
+        new AppOpsServer().run();
+    }
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
-    public static class AppOpsServerThread extends IAppOpsServer.Stub {
+    public static class IServerThread extends IServer.Stub {
         private IServerActivatedObserver serverActivatedObserver;
 
         static {
@@ -153,6 +172,19 @@ public class AppOpsServer {
             }
         }
 
+//        @Override
+//        public List<AppOps.PkgOps> getOpsForPackageTest(int uid, String packageName) throws RemoteException {
+//            try {
+//                int[] ops = new int[AppOps.INSTANCE.getNumOp()];
+//                for (int i = 0; i < ops.length; i++) {
+//                    ops[i] = i;
+//                }
+//                return AppOps.INSTANCE.getOpsForPackage(uid, packageName, ops);
+//            } catch (Throwable e) {
+//                throw new RemoteException(e.getMessage());
+//            }
+//        }
+
         @Override
         public List<PackageInfo> getInstalledPackageInfoList() throws RemoteException {
             try {
@@ -174,6 +206,32 @@ public class AppOpsServer {
         }
 
         @Override
+        public List<AppOps.PkgOps> getOpsForPackage(int uid, String packageName) throws RemoteException {
+//            try {
+//                Log.i("tttt", "getOpsForPackage: AppOpsManagerApi.sOpToSwitch="+AppOpsManagerApi.sOpToSwitch.length);
+//                for (int op : AppOpsManagerApi.sOpToSwitch) {
+//                    Log.i("tttt", "op="+op);
+//                }
+//                List<AppOpsManagerApi.PackageOps> ret = AppOpsManagerApi.getOpsForPackage(uid, packageName, AppOpsManagerApi.sOpToSwitch);
+//                Log.i("tttt", "getOpsForPackage: ret="+ret);
+//                Log.i("tttt", "getOpsForPackage: ret.size=" + ret.size());
+//                return ret;
+//            } catch (Throwable e) {
+//                e.printStackTrace();
+//                throw new RemoteException(e.getMessage());
+//            }
+            try {
+                int[] ops = new int[AppOps.INSTANCE.getNumOp()];
+                for (int i = 0; i < ops.length; i++) {
+                    ops[i] = i;
+                }
+                return AppOps.INSTANCE.getOpsForPackage(uid, packageName, ops);
+            } catch (Throwable e) {
+                throw new RemoteException(e.getMessage());
+            }
+        }
+
+        @Override
         public void registerServerActivatedObserverOnce(IServerActivatedObserver observer) throws RemoteException {
             serverActivatedObserver = observer;
         }
@@ -189,24 +247,6 @@ public class AppOpsServer {
             UserInfo ui = ActivityManagerApi.getCurrentUser();
             return ui != null ? ui.id : 0;
         }
-    }
-
-    public void sendServerBinderToApplication(AppOpsServerThread serverThread) throws Throwable {
-        ServerProviderUtil.sendServerBinderToApplication(serverThread, getCurrentUserId());
-    }
-
-    public void registerProcessObserver(IProcessObserver iProcessObserver) throws Throwable {
-        ActivityManagerApi.registerProcessObserver(iProcessObserver);
-    }
-
-    private int getCurrentUserId() {
-        UserInfo ui = ActivityManagerApi.getCurrentUser();
-        return ui != null ? ui.id : 0;
-    }
-
-    public static void main(String[] args) throws Throwable {
-        Log.i("AppOpsServer", "AppOpsServer start.");
-        new AppOpsServer().run();
     }
 
 }

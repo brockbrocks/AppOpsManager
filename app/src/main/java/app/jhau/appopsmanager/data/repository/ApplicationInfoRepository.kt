@@ -2,7 +2,7 @@ package app.jhau.appopsmanager.data.repository
 
 import android.app.Application
 import android.content.pm.ApplicationInfo
-import app.jhau.server.AppOpsServerManager
+import app.jhau.server.IServerManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -17,6 +17,6 @@ class ApplicationInfoRepository @Inject constructor(private val applicationDataS
 
 class ApplicationInfoDataSource @Inject constructor(private val application: Application) {
     fun fetchInstalledApplications(): Array<ApplicationInfo> {
-        return AppOpsServerManager.getInstalledApplications(application).toTypedArray()
+        return IServerManager.getInstalledApplications(application).toTypedArray()
     }
 }

@@ -9,7 +9,6 @@ import android.view.MenuItem
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.databinding.ActivityAppDetailBinding
 import app.jhau.appopsmanager.ui.base.BaseBindingActivity
-import app.jhau.appopsmanager.ui.setting.SettingsFragment
 
 class AppInfoActivity : BaseBindingActivity<ActivityAppDetailBinding, AppInfoViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {

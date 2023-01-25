@@ -7,14 +7,14 @@ import androidx.preference.PreferenceFragmentCompat
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.ui.guide.GuideActivity
 import app.jhau.appopsmanager.ui.terminal.TerminalActivity
-import app.jhau.server.AppOpsServerManager
+import app.jhau.server.IServerManager
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
         findPreference<Preference>("kill_server")?.setOnPreferenceClickListener {
-            AppOpsServerManager.killServer(requireActivity().application)
+            IServerManager.killServer(requireActivity().application)
             val intent = Intent(this@SettingsFragment.context, GuideActivity::class.java)
             intent.action = Intent.ACTION_VIEW
             startActivity(intent)

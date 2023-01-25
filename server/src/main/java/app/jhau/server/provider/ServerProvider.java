@@ -89,7 +89,7 @@ public class ServerProvider extends ContentProvider {
 
     private void setIAppOpsServerToApplication(IBinder binder) throws Throwable {
         Object application = getContext().getApplicationContext();
-        java.lang.reflect.Method method = application.getClass().getMethod("onSetIAppOpsServerToApplication", IBinder.class);
+        java.lang.reflect.Method method = application.getClass().getMethod("onSetIServerToApplication", IBinder.class);
         method.invoke(application, binder);
     }
 }

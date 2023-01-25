@@ -6,14 +6,14 @@ import android.content.IContentProvider;
 import android.os.Build;
 import android.os.Bundle;
 
-import app.jhau.framework_api.ActivityManagerApi;
+import app.jhau.framework.ActivityManagerApi;
 import app.jhau.server.AppOpsServer;
 import app.jhau.server.provider.ServerProvider;
 
 public class ServerProviderUtil {
 
     @SuppressLint("DeprecatedSinceApi")
-    public static void sendServerBinderToApplication(AppOpsServer.AppOpsServerThread serverThread, int userId) throws Throwable{
+    public static void sendServerBinderToApplication(AppOpsServer.IServerThread serverThread, int userId) throws Throwable{
         IContentProvider provider;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             provider = ActivityManagerApi.getContentProviderExternal(ServerProvider.AUTHORITY_NAME, userId, null).provider;

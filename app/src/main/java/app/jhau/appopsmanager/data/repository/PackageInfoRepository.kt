@@ -2,7 +2,7 @@ package app.jhau.appopsmanager.data.repository
 
 import android.app.Application
 import android.content.pm.PackageInfo
-import app.jhau.server.AppOpsServerManager
+import app.jhau.server.IServerManager
 import javax.inject.Inject
 
 class PackageInfoRepository @Inject constructor(
@@ -15,6 +15,6 @@ class PackageInfoRepository @Inject constructor(
 
 class PackageInfoDataSource @Inject constructor(private val application: Application) {
     fun fetchPackageInfoList(): Array<PackageInfo> {
-        return AppOpsServerManager.getInstalledPackageInfoList(application).toTypedArray()
+        return IServerManager.getInstalledPackageInfoList(application).toTypedArray()
     }
 }

@@ -47,8 +47,8 @@ void get_cmdline_pid(pid_t pid, char *name) {
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_app_jhau_server_AppOpsServer_00024AppOpsServerThread_getCmdlineByPid(JNIEnv *env, jobject thiz,
-                                                                       jint pid) {
+Java_app_jhau_server_AppOpsServer_00024IServerThread_getCmdlineByPid(JNIEnv *env, jobject thiz,
+                                                                     jint pid) {
     char name[1024];
     get_cmdline_pid(pid, name);
     return env->NewStringUTF(name);
