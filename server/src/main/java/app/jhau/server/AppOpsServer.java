@@ -13,12 +13,12 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
-import app.jhau.framework.ActivityManagerApi;
-import app.jhau.framework.AppOpsManagerApi;
-import app.jhau.framework.PackageManagerApi;
-import app.jhau.framework.appops.AppOps;
+import app.jhau.framework.ams.ActivityManagerApi;
+import app.jhau.framework.appops.AppOpsManagerHidden;
+import app.jhau.framework.pms.PackageManagerApi;
 import app.jhau.server.util.Constants;
 import app.jhau.server.util.ServerProviderUtil;
 
@@ -172,18 +172,14 @@ public class AppOpsServer {
             }
         }
 
-//        @Override
-//        public List<AppOps.PkgOps> getOpsForPackageTest(int uid, String packageName) throws RemoteException {
-//            try {
-//                int[] ops = new int[AppOps.INSTANCE.getNumOp()];
-//                for (int i = 0; i < ops.length; i++) {
-//                    ops[i] = i;
-//                }
-//                return AppOps.INSTANCE.getOpsForPackage(uid, packageName, ops);
-//            } catch (Throwable e) {
-//                throw new RemoteException(e.getMessage());
-//            }
-//        }
+        @Override
+        public AppOpsManagerHidden getIAppOpsManagerHidden() throws RemoteException {
+            try {
+                return new AppOpsManagerHidden();
+            } catch (Throwable e) {
+                throw new RemoteException(e.getMessage());
+            }
+        }
 
         @Override
         public List<PackageInfo> getInstalledPackageInfoList() throws RemoteException {
@@ -206,26 +202,14 @@ public class AppOpsServer {
         }
 
         @Override
-        public List<AppOps.PkgOps> getOpsForPackage(int uid, String packageName) throws RemoteException {
-//            try {
-//                Log.i("tttt", "getOpsForPackage: AppOpsManagerApi.sOpToSwitch="+AppOpsManagerApi.sOpToSwitch.length);
-//                for (int op : AppOpsManagerApi.sOpToSwitch) {
-//                    Log.i("tttt", "op="+op);
-//                }
-//                List<AppOpsManagerApi.PackageOps> ret = AppOpsManagerApi.getOpsForPackage(uid, packageName, AppOpsManagerApi.sOpToSwitch);
-//                Log.i("tttt", "getOpsForPackage: ret="+ret);
-//                Log.i("tttt", "getOpsForPackage: ret.size=" + ret.size());
-//                return ret;
-//            } catch (Throwable e) {
-//                e.printStackTrace();
-//                throw new RemoteException(e.getMessage());
-//            }
+        public List<?> getOpsForPackage(int uid, String packageName) throws RemoteException {
             try {
-                int[] ops = new int[AppOps.INSTANCE.getNumOp()];
-                for (int i = 0; i < ops.length; i++) {
-                    ops[i] = i;
-                }
-                return AppOps.INSTANCE.getOpsForPackage(uid, packageName, ops);
+//                int[] ops = new int[AppOps.INSTANCE.getNumOp()];
+//                for (int i = 0; i < ops.length; i++) {
+//                    ops[i] = i;
+//                }
+                AppOpsManagerHidden appOpsManagerHidden = new AppOpsManagerHidden();
+                return new ArrayList<>();
             } catch (Throwable e) {
                 throw new RemoteException(e.getMessage());
             }

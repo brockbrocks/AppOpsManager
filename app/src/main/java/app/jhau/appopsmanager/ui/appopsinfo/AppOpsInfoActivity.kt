@@ -7,10 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.databinding.ActivityAppOpsInfoBinding
-import app.jhau.appopsmanager.ui.appopsinfo.AppOpsInfoFragment.Companion.PACKAGE_OPS
 import app.jhau.appopsmanager.ui.base.BaseBindingActivity
-import app.jhau.framework.appops.AppOps
-import app.jhau.server.IServerManager
 
 class AppOpsInfoActivity : BaseBindingActivity<ActivityAppOpsInfoBinding, AppOpsInfoViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,17 +18,11 @@ class AppOpsInfoActivity : BaseBindingActivity<ActivityAppOpsInfoBinding, AppOps
             intent.extras?.getParcelable(PACKAGE_INFO)
         }
         packageInfo?.let {
-            val packageOps:List<AppOps.PkgOps> = IServerManager.getOpsForPackage(
-                application,
-                packageInfo.applicationInfo.uid,
-                packageInfo.packageName
-            )
-
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.appops_list, AppOpsInfoFragment().apply {
                     val bundle = Bundle()
-                    bundle.putParcelableArray(PACKAGE_OPS, packageOps.toTypedArray())
+                    bundle.putParcelable(PACKAGE_INFO, it)
                     arguments = bundle
                 })
                 .commit()

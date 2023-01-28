@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi;
 
 import java.io.File;
 
-import app.jhau.framework.PackageManagerApi;
+import app.jhau.framework.pms.PackageManagerApi;
 import app.jhau.server.util.Constants;
 
 public class AppObserver {

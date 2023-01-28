@@ -1,4 +1,4 @@
-package app.jhau.framework;
+package app.jhau.framework.pms;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ApplicationInfo;

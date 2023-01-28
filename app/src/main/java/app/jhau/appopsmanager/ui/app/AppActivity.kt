@@ -29,7 +29,7 @@ class AppActivity : BaseBindingActivity<ActivityAppBinding, AppViewModel>(), Vie
 
     private fun collectData() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.appUiState.map {
                     it.apps
                 }.collect {

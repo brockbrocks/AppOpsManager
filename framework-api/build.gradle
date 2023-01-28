@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'app.jhau.framework_api'
+    namespace rootProject.ext.frameworkApiId
     compileSdk rootProject.ext.compileSdk
 
     defaultConfig {

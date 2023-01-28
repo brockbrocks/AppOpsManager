@@ -6,7 +6,7 @@ import android.content.IContentProvider;
 import android.os.Build;
 import android.os.Bundle;
 
-import app.jhau.framework.ActivityManagerApi;
+import app.jhau.framework.ams.ActivityManagerApi;
 import app.jhau.server.AppOpsServer;
 import app.jhau.server.provider.ServerProvider;
 

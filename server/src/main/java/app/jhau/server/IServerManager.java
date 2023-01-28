@@ -11,12 +11,25 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.jhau.framework.appops.AppOps;
+import app.jhau.framework.appops.AppOpsManagerHidden;
+
 
 public class IServerManager {
 
+    public static AppOpsManagerHidden getIAppOpsManagerHidden(Application application) {
+        try {
+            IServer iServer = getIServerBinder(application);
+            if (iServer != null) {
+                return iServer.getIAppOpsManagerHidden();
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @NotNull
-    public static List<AppOps.PkgOps> getOpsForPackage(Application application, int uid, String packageName) {
+    public static List<?> getOpsForPackage(Application application, int uid, String packageName) {
         try {
             IServer iServer = getIServerBinder(application);
             if (iServer != null) {

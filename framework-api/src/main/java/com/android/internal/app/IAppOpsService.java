@@ -6,6 +6,9 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.RemoteException;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.List;
 
 public interface IAppOpsService extends IInterface {
@@ -23,5 +26,14 @@ public interface IAppOpsService extends IInterface {
 
     }
 
-    List<AppOpsManager$PackageOps> getOpsForPackage(int uid, String packageName, int[] ops) throws RemoteException;
+    @Override
+    default IBinder asBinder() {
+        return null;
+    }
+
+    void setUidMode(int code, int uid, int mode) throws RemoteException;
+    void setMode(int code, int uid, String packageName, int mode) throws RemoteException;
+
+    List<AppOpsManager$PackageOps> getOpsForPackage(int uid, String packageName, @Nullable int[] ops) throws RemoteException;
+    List<AppOpsManager$PackageOps> getOpsForPackage(int uid, @NonNull String packageName, @Nullable String[] ops) throws RemoteException;
 }
