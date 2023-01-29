@@ -11,6 +11,7 @@ import android.os.ServiceManager;
 
 import com.android.internal.app.IAppOpsService;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +56,26 @@ public class AppOpsManagerHidden implements Parcelable {
             iAppOpsService = IAppOpsService.Stub.asInterface(ServiceManager.getService(Context.APP_OPS_SERVICE));
         }
 
+        private Object reflectField(String name, Object obj) throws Throwable {
+            Field field = AppOpsManager.class.getDeclaredField(name);
+            field.setAccessible(true);
+            return field.get(obj);
+        }
+
         private Method reflectMethod(String name, Class<?>... args) throws Throwable {
             Method method = AppOpsManager.class.getDeclaredMethod(name, args);
+            method.setAccessible(true);
             return method;
+        }
+
+        @Override
+        public String[] getModeNames() throws RemoteException {
+            try {
+                String[] modeNames = (String[]) reflectField("MODE_NAMES", null);
+                return modeNames;
+            } catch (Throwable e) {
+                throw new RemoteException(e.getMessage());
+            }
         }
 
         @Override
@@ -104,6 +122,10 @@ public class AppOpsManagerHidden implements Parcelable {
         }
     }
 
+    public String[] getModeNames() throws RemoteException {
+        return iAppOpsManager.getModeNames();
+    }
+
     public String modeToName(int mode) throws RemoteException {
         return iAppOpsManager.modeToName(mode);
     }
@@ -113,9 +135,9 @@ public class AppOpsManagerHidden implements Parcelable {
         return iAppOpsManager.opToName(op);
     }
 
-    public void setUidMode(int code, int uid, int mode) throws RemoteException {
-        iAppOpsManager.setUidMode(code, uid, mode);
-    }
+//    public void setUidMode(int code, int uid, int mode) throws RemoteException {
+//        iAppOpsManager.setUidMode(code, uid, mode);
+//    }
 
     public void setMode(int code, int uid, String packageName, int mode) throws RemoteException {
         iAppOpsManager.setMode(code, uid, packageName, mode);

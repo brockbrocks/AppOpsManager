@@ -13,7 +13,6 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 import app.jhau.framework.ams.ActivityManagerApi;
@@ -197,20 +196,6 @@ public class AppOpsServer {
                 return PackageManagerApi.getInstance().getInstalledApplicationList(0L, getCurrentUserId());
             } catch (Throwable e) {
                 e.printStackTrace();
-                throw new RemoteException(e.getMessage());
-            }
-        }
-
-        @Override
-        public List<?> getOpsForPackage(int uid, String packageName) throws RemoteException {
-            try {
-//                int[] ops = new int[AppOps.INSTANCE.getNumOp()];
-//                for (int i = 0; i < ops.length; i++) {
-//                    ops[i] = i;
-//                }
-                AppOpsManagerHidden appOpsManagerHidden = new AppOpsManagerHidden();
-                return new ArrayList<>();
-            } catch (Throwable e) {
                 throw new RemoteException(e.getMessage());
             }
         }

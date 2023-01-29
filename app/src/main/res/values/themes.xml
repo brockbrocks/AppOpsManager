@@ -7,7 +7,7 @@
 
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlNormal">@color/black</item>
         <item name="colorOnContainer">@color/white</item>
 
         <!--consume-->
@@ -17,6 +17,18 @@
         <item name="actionBarStyle">@style/Theme.AppOpsManager.actionBarStyle</item>
         <item name="materialCardViewStyle">@style/Theme.AppOpsManager.materialCardViewStyle</item>
         <item name="materialButtonStyle">@style/Theme.AppOpsManager.materialButtonStyle</item>
+        <item name="materialAlertDialogTheme">@style/Theme.AppOpsManager.materialAlertDialogTheme</item>
+    </style>
+
+    <style name="Theme.AppOpsManager.materialAlertDialogTheme" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/Theme.AppOpsManager.materialAlertDialogTheme.AlertDialog</item>
+    </style>
+
+    <!--consume material dialog margin-->
+    <style name="Theme.AppOpsManager.materialAlertDialogTheme.AlertDialog" parent="@style/MaterialAlertDialog.Material3">
+        <item name="backgroundInsetStart">0dp</item>
+        <item name="backgroundInsetEnd">0dp</item>
+        <item name="backgroundInsetBottom">10dp</item>
     </style>
 
     <style name="Theme.AppOpsManager.actionBarStyle" parent="@style/Widget.Material3.Light.ActionBar.Solid">
@@ -29,7 +41,7 @@
     </style>
 
     <style name="Theme.AppOpsManager.materialButtonStyle" parent="Widget.Material3.Button">
-<!--        <item name="android:textColor">?android:attr/textColorPrimary</item>-->
+        <!--        <item name="android:textColor">?android:attr/textColorPrimary</item>-->
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
     </style>
@@ -37,6 +49,4 @@
     <style name="Theme.AppOpsManager.Starting" parent="Theme.SplashScreen">
         <item name="postSplashScreenTheme">@style/Theme.AppOpsManager</item>
     </style>
-
-
 </resources>

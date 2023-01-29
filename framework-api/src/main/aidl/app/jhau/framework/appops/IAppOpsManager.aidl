@@ -3,6 +3,7 @@ import app.jhau.framework.appops.PackageOps;
 
 interface IAppOpsManager {
     //int getNumOps();
+    String[] getModeNames();
     String modeToName(int mode);
     String opToName(int op);
     void setUidMode(int code, int uid, int mode);

@@ -29,19 +29,6 @@ public class IServerManager {
     }
 
     @NotNull
-    public static List<?> getOpsForPackage(Application application, int uid, String packageName) {
-        try {
-            IServer iServer = getIServerBinder(application);
-            if (iServer != null) {
-                return iServer.getOpsForPackage(uid, packageName);
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    @NotNull
     public static List<ApplicationInfo> getInstalledApplications(Application application) {
         try {
             IServer iServer = getIServerBinder(application);
