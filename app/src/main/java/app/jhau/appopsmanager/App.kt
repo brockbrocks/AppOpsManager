@@ -55,7 +55,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        application = this
+        //application = this
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
         Log.i("tttt","onCreate: App. uid=${android.os.Process.myUid()}, pid=${android.os.Process.myPid()}")
     }
@@ -68,7 +68,7 @@ class App : Application() {
         }
     }
 
-    companion object {
-        lateinit var application: Application
-    }
+//    companion object {
+//        lateinit var application: Application
+//    }
 }

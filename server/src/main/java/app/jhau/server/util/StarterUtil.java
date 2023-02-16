@@ -48,7 +48,6 @@ public class StarterUtil {
             Method method = application.getClass().getMethod("getIServer");
             return method.invoke(application) != null;
         } catch (Throwable e) {
-            e.printStackTrace();
             return false;
         }
     }

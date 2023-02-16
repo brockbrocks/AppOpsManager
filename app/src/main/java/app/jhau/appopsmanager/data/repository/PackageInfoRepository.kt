@@ -1,6 +1,5 @@
 package app.jhau.appopsmanager.data.repository
 
-import android.app.Application
 import android.content.pm.PackageInfo
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -25,7 +24,7 @@ class PackageInfoDataSource @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun fetchPackageInfoList(flags: Long): Array<PackageInfo> {
         val userId = android.os.Process.myUid() / 100000
-        iServerManager.packageManagerHidden.getInstalledPackages(flags, userId)?.let { return it.toTypedArray() }
+        iServerManager.packageManagerHidden.getInstalledPackagesApi33(flags, userId)?.let { return it.toTypedArray() }
         return emptyArray()
     }
 

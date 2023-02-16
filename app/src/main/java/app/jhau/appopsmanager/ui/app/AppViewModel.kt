@@ -2,11 +2,9 @@ package app.jhau.appopsmanager.ui.app
 
 import android.app.Application
 import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.jhau.appopsmanager.data.repository.PackageInfoRepository
-import app.jhau.server.IServerManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
-    private val application: Application,
+    private val app: Application,
     private val packageInfoRepository: PackageInfoRepository
 ) : ViewModel() {
 
@@ -34,9 +32,9 @@ class AppViewModel @Inject constructor(
     private suspend fun updateAppItemUiStateList(packageInfoList: Array<PackageInfo>) {
         val appItemUiStateList = packageInfoList.map {
             AppItemUiState(
-                application.packageManager.getApplicationLabel(it.applicationInfo).toString(),
+                app.packageManager.getApplicationLabel(it.applicationInfo).toString(),
                 it.packageName,
-                application.packageManager.getApplicationIcon(it.applicationInfo)
+                app.packageManager.getApplicationIcon(it.applicationInfo)
             )
         }
         val oldValue = _appUiState.value

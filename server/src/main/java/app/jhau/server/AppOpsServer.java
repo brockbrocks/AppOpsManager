@@ -24,14 +24,12 @@ import app.jhau.server.util.ServerProviderUtil;
 
 public class AppOpsServer {
     private static final String TAG = Constants.DEBUG_TAG;
-
     private final IServerThread mServerThread = new IServerThread();
     private int userId;
     private int appUid;
     private String apkPath;
-
-    private AppObserver appObserver = new AppObserver();
-    private IProcessObserver iProcessObserver = new IProcessObserver.Stub() {
+    private final AppObserver appObserver = new AppObserver();
+    private final IProcessObserver iProcessObserver = new IProcessObserver.Stub() {
 
         @Override
         public void onForegroundActivitiesChanged(int pid, int uid, boolean foregroundActivities) throws RemoteException {
@@ -109,7 +107,6 @@ public class AppOpsServer {
         appObserver.stopObserve();
     }
 
-
     private ApplicationInfo getApplicationInfo(int userId) {
         try {
             return PackageManagerApi.getInstance().getApplicationInfo(Constants.APPLICATION_ID, 0L, userId);
@@ -135,19 +132,20 @@ public class AppOpsServer {
     public static void main(String[] args) throws Throwable {
         Log.i("AppOpsServer", "AppOpsServer start.");
         new AppOpsServer().run();
+        Log.i("AppOpsServer", "!!!AppOpsServer error!!!");
     }
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     public static class IServerThread extends IServer.Stub {
         private IServerActivatedObserver serverActivatedObserver;
+        private PackageManagerHidden packageManagerHidden;
+        private AppOpsManagerHidden appOpsManagerHidden;
 
         static {
             String classPath = System.getProperty("java.class.path");
             String libPath = classPath + "!/lib/" + Build.SUPPORTED_ABIS[0] + "/libserver.so";
             System.load(libPath);
         }
-
-        public native String getCmdlineByPid(int pid);
 
         @Override
         public String execCommand(String cmd) throws RemoteException {
@@ -175,7 +173,8 @@ public class AppOpsServer {
         @Override
         public AppOpsManagerHidden getAppOpsManagerHidden() throws RemoteException {
             try {
-                return new AppOpsManagerHidden();
+                if (appOpsManagerHidden == null) appOpsManagerHidden = new AppOpsManagerHidden();
+                return appOpsManagerHidden;
             } catch (Throwable e) {
                 throw new RemoteException(e.getMessage());
             }
@@ -184,31 +183,12 @@ public class AppOpsServer {
         @Override
         public PackageManagerHidden getPackageManagerHidden() throws RemoteException {
             try {
-                return new PackageManagerHidden();
+                if (packageManagerHidden == null) packageManagerHidden = new PackageManagerHidden();
+                return packageManagerHidden;
             } catch (Throwable e) {
                 throw new RemoteException(e.getMessage());
             }
         }
-
-//        @Override
-//        public List<PackageInfo> getInstalledPackageInfoList(long flags) throws RemoteException {
-//            try {
-//                return PackageManagerApi.getInstance().getInstalledPackageList(flags, getCurrentUserId());
-//            } catch (Throwable e) {
-//                e.printStackTrace();
-//                throw new RemoteException(e.getMessage());
-//            }
-//        }
-
-//        @Override
-//        public List<ApplicationInfo> getInstalledApplicationList() throws RemoteException {
-//            try {
-//                return PackageManagerApi.getInstance().getInstalledApplicationList(0L, getCurrentUserId());
-//            } catch (Throwable e) {
-//                e.printStackTrace();
-//                throw new RemoteException(e.getMessage());
-//            }
-//        }
 
         @Override
         public void registerServerActivatedObserverOnce(IServerActivatedObserver observer) throws RemoteException {
@@ -220,11 +200,6 @@ public class AppOpsServer {
                 serverActivatedObserver.onActivated();
                 serverActivatedObserver = null;
             }
-        }
-
-        private int getCurrentUserId() {
-            UserInfo ui = ActivityManagerApi.getCurrentUser();
-            return ui != null ? ui.id : 0;
         }
     }
 

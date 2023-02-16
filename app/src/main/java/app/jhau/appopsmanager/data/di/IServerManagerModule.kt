@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class IServerManagerModule {
-
+    @Singleton
     @Provides
     fun getServerManager(application: Application): IServerManager {
         return IServerManager(application)
