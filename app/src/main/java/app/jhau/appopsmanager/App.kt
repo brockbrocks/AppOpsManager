@@ -57,6 +57,7 @@ class App : Application() {
         super.onCreate()
         application = this
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
+        Log.i("tttt","onCreate: App. uid=${android.os.Process.myUid()}, pid=${android.os.Process.myPid()}")
     }
 
     fun onSetIServerToApplication(binder: IBinder) {
@@ -67,7 +68,7 @@ class App : Application() {
         }
     }
 
-    companion object{
+    companion object {
         lateinit var application: Application
     }
 }

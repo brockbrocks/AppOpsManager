@@ -105,4 +105,9 @@ public class PackageManagerApi implements IPackageManager {
         return pm.getNameForUid(uid);
     }
 
+    @Override
+    public void grantRuntimePermission(String packageName, String permissionName, int userId) throws RemoteException {
+        pm.grantRuntimePermission(packageName, permissionName, userId);
+    }
+
 }

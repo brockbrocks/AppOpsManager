@@ -8,9 +8,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.databinding.ActivityAppDetailBinding
-import app.jhau.appopsmanager.ui.base.BaseBindingActivity
+import app.jhau.appopsmanager.ui.base.DataBindingActivity
 
-class AppInfoActivity : BaseBindingActivity<ActivityAppDetailBinding, AppInfoViewModel>() {
+class AppInfoActivity : DataBindingActivity<ActivityAppDetailBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
@@ -23,27 +23,25 @@ class AppInfoActivity : BaseBindingActivity<ActivityAppDetailBinding, AppInfoVie
             setHomeAsUpIndicator(R.drawable.ic_arrow_back)
         }
 
-        val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(AppInfoSettingsFragment.PACKAGEINFO, PackageInfo::class.java)
+        val pkgInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(AppInfoSettingsFragment.PACKAGE_INFO, PackageInfo::class.java)
         } else {
-            intent.getParcelableExtra(AppInfoSettingsFragment.PACKAGEINFO)
+            intent.getParcelableExtra(AppInfoSettingsFragment.PACKAGE_INFO)
         }
-
-        packageInfo?.let {
-            binding.appIcon.setImageDrawable(packageManager.getApplicationIcon(it.applicationInfo))
-            binding.appName.text = packageManager.getApplicationLabel(it.applicationInfo)
-            binding.applicationId.text = it.packageName
-            binding.appVersion.text = it.versionName
-            //
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.app_info_settings, AppInfoSettingsFragment().apply {
-                    val bundle = Bundle()
-                    bundle.putParcelable(AppInfoSettingsFragment.PACKAGEINFO, it)
-                    arguments = bundle
-                })
-                .commit()
-        }
+        if (pkgInfo == null) return
+        binding.appIcon.setImageDrawable(packageManager.getApplicationIcon(pkgInfo.applicationInfo))
+        binding.appName.text = packageManager.getApplicationLabel(pkgInfo.applicationInfo)
+        binding.applicationId.text = pkgInfo.packageName
+        binding.appVersion.text = pkgInfo.versionName
+        //
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.app_info_settings, AppInfoSettingsFragment().apply {
+                val bundle = Bundle()
+                bundle.putParcelable(AppInfoSettingsFragment.PACKAGE_INFO, pkgInfo)
+                arguments = bundle
+            })
+            .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -58,11 +56,10 @@ class AppInfoActivity : BaseBindingActivity<ActivityAppDetailBinding, AppInfoVie
     }
 
     companion object {
-
         fun start(context: Context, packageInfo: PackageInfo) {
             val intent = Intent(context, AppInfoActivity::class.java)
             intent.action = Intent.ACTION_VIEW
-            intent.putExtra(AppInfoSettingsFragment.PACKAGEINFO, packageInfo)
+            intent.putExtra(AppInfoSettingsFragment.PACKAGE_INFO, packageInfo)
             context.startActivity(intent)
         }
     }

@@ -11,14 +11,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.databinding.ActivityAppBinding
 import app.jhau.appopsmanager.ui.appinfo.AppInfoActivity
-import app.jhau.appopsmanager.ui.base.BaseBindingActivity
+import app.jhau.appopsmanager.ui.base.BaseActivity
 import app.jhau.appopsmanager.ui.setting.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AppActivity : BaseBindingActivity<ActivityAppBinding, AppViewModel>(), View.OnClickListener {
+class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>(), View.OnClickListener {
     private val TAG = "AppActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,9 +30,7 @@ class AppActivity : BaseBindingActivity<ActivityAppBinding, AppViewModel>(), Vie
     private fun collectData() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.appUiState.map {
-                    it.apps
-                }.collect {
+                viewModel.appUiState.map { it.apps }.collect {
                     (binding.rvApp.adapter as AppAdapter).submitList(it)
                 }
             }

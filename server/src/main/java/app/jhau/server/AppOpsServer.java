@@ -18,6 +18,7 @@ import java.util.List;
 import app.jhau.framework.ams.ActivityManagerApi;
 import app.jhau.framework.appops.AppOpsManagerHidden;
 import app.jhau.framework.pms.PackageManagerApi;
+import app.jhau.framework.pms.PackageManagerHidden;
 import app.jhau.server.util.Constants;
 import app.jhau.server.util.ServerProviderUtil;
 
@@ -172,7 +173,7 @@ public class AppOpsServer {
         }
 
         @Override
-        public AppOpsManagerHidden getIAppOpsManagerHidden() throws RemoteException {
+        public AppOpsManagerHidden getAppOpsManagerHidden() throws RemoteException {
             try {
                 return new AppOpsManagerHidden();
             } catch (Throwable e) {
@@ -181,24 +182,33 @@ public class AppOpsServer {
         }
 
         @Override
-        public List<PackageInfo> getInstalledPackageInfoList() throws RemoteException {
+        public PackageManagerHidden getPackageManagerHidden() throws RemoteException {
             try {
-                return PackageManagerApi.getInstance().getInstalledPackageList(0L, getCurrentUserId());
+                return new PackageManagerHidden();
             } catch (Throwable e) {
-                e.printStackTrace();
                 throw new RemoteException(e.getMessage());
             }
         }
 
-        @Override
-        public List<ApplicationInfo> getInstalledApplicationList() throws RemoteException {
-            try {
-                return PackageManagerApi.getInstance().getInstalledApplicationList(0L, getCurrentUserId());
-            } catch (Throwable e) {
-                e.printStackTrace();
-                throw new RemoteException(e.getMessage());
-            }
-        }
+//        @Override
+//        public List<PackageInfo> getInstalledPackageInfoList(long flags) throws RemoteException {
+//            try {
+//                return PackageManagerApi.getInstance().getInstalledPackageList(flags, getCurrentUserId());
+//            } catch (Throwable e) {
+//                e.printStackTrace();
+//                throw new RemoteException(e.getMessage());
+//            }
+//        }
+
+//        @Override
+//        public List<ApplicationInfo> getInstalledApplicationList() throws RemoteException {
+//            try {
+//                return PackageManagerApi.getInstance().getInstalledApplicationList(0L, getCurrentUserId());
+//            } catch (Throwable e) {
+//                e.printStackTrace();
+//                throw new RemoteException(e.getMessage());
+//            }
+//        }
 
         @Override
         public void registerServerActivatedObserverOnce(IServerActivatedObserver observer) throws RemoteException {

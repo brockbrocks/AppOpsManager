@@ -1,26 +1,26 @@
 package app.jhau.framework.appops;
 
-import android.annotation.SuppressLint;
-import android.app.AppOpsManager;
-import android.app.AppOpsManager$PackageOps;
-import android.content.Context;
+import android.os.Build;
+import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
-import android.os.ServiceManager;
 
-import com.android.internal.app.IAppOpsService;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppOpsManagerHidden implements Parcelable {
+public class AppOpsManagerHidden implements IAppOpsManager, Parcelable {
     private final IAppOpsManager iAppOpsManager;
 
     public AppOpsManagerHidden() {
-        iAppOpsManager = new AppOpsManagerImpl();
+//        iAppOpsManager = new AppOpsManagerImpl();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            iAppOpsManager = new AppOpsManagerImpl();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+            iAppOpsManager = new AppOpsManagerApi28();
+        } else {
+            iAppOpsManager = new AppOpsManagerApi23();
+        }
     }
 
     protected AppOpsManagerHidden(Parcel in) {
@@ -49,102 +49,45 @@ public class AppOpsManagerHidden implements Parcelable {
         }
     };
 
-    private static final class AppOpsManagerImpl extends IAppOpsManager.Stub {
-        private final IAppOpsService iAppOpsService;
-
-        AppOpsManagerImpl() {
-            iAppOpsService = IAppOpsService.Stub.asInterface(ServiceManager.getService(Context.APP_OPS_SERVICE));
-        }
-
-        private Object reflectField(String name, Object obj) throws Throwable {
-            Field field = AppOpsManager.class.getDeclaredField(name);
-            field.setAccessible(true);
-            return field.get(obj);
-        }
-
-        private Method reflectMethod(String name, Class<?>... args) throws Throwable {
-            Method method = AppOpsManager.class.getDeclaredMethod(name, args);
-            method.setAccessible(true);
-            return method;
-        }
-
-        @Override
-        public String[] getModeNames() throws RemoteException {
-            try {
-                String[] modeNames = (String[]) reflectField("MODE_NAMES", null);
-                return modeNames;
-            } catch (Throwable e) {
-                throw new RemoteException(e.getMessage());
-            }
-        }
-
-        @Override
-        public String modeToName(int mode) throws RemoteException {
-            try {
-                Method method = reflectMethod("modeToName", int.class);
-                return (String) method.invoke(null, mode);
-            } catch (Throwable e) {
-                throw new RemoteException(e.getMessage());
-            }
-        }
-
-        @SuppressLint("SoonBlockedPrivateApi")
-        @Override
-        public String opToName(int op) throws RemoteException {
-            try {
-                Method method = AppOpsManager.class.getDeclaredMethod("opToName", int.class);
-                return (String) method.invoke(null, op);
-            } catch (Throwable e) {
-                throw new RemoteException(e.getMessage());
-            }
-        }
-
-        @Override
-        public void setUidMode(int code, int uid, int mode) throws RemoteException {
-            iAppOpsService.setUidMode(code, uid, mode);
-        }
-
-        @Override
-        public void setMode(int code, int uid, String packageName, int mode) throws RemoteException {
-            iAppOpsService.setMode(code, uid, packageName, mode);
-        }
-
-        @Override
-        public List<PackageOps> getOpsForPackage(int uid, String packageName, int[] ops) throws RemoteException {
-            List<AppOpsManager$PackageOps> pkgOps = iAppOpsService.getOpsForPackage(uid, packageName, ops);
-            List<PackageOps> ret = new ArrayList<>();
-            if (pkgOps != null) {
-                for (AppOpsManager$PackageOps pkgOp : pkgOps) {
-                    ret.add(new PackageOps(pkgOp));
-                }
-            }
-            return ret;
-        }
+    @Override
+    public IBinder asBinder() {
+        return null;
     }
 
+    @Override
     public String[] getModeNames() throws RemoteException {
         return iAppOpsManager.getModeNames();
     }
 
+    @Override
     public String modeToName(int mode) throws RemoteException {
         return iAppOpsManager.modeToName(mode);
     }
 
     //@UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R)
+    @Override
     public String opToName(int op) throws RemoteException {
         return iAppOpsManager.opToName(op);
     }
 
-//    public void setUidMode(int code, int uid, int mode) throws RemoteException {
+    @Override
+    public void setUidMode(int code, int uid, int mode) throws RemoteException {
+        iAppOpsManager.setUidMode(code, uid, mode);
+    }
+
+    //    public void setUidMode(int code, int uid, int mode) throws RemoteException {
 //        iAppOpsManager.setUidMode(code, uid, mode);
 //    }
-
+    @Override
     public void setMode(int code, int uid, String packageName, int mode) throws RemoteException {
         iAppOpsManager.setMode(code, uid, packageName, mode);
     }
 
+    @Override
     public List<PackageOps> getOpsForPackage(int uid, String packageName, int[] ops) throws RemoteException {
-        return iAppOpsManager.getOpsForPackage(uid, packageName, ops);
+        List<PackageOps> ret = iAppOpsManager.getOpsForPackage(uid, packageName, ops);
+        if (ret == null) return new ArrayList<>();
+        return ret;
     }
 
 }

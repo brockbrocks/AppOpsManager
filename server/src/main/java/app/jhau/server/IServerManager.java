@@ -1,26 +1,49 @@
 package app.jhau.server;
 
 import android.app.Application;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
+import android.os.IBinder;
 import android.os.RemoteException;
-
-import org.jetbrains.annotations.NotNull;
+import android.util.Log;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import app.jhau.framework.appops.AppOpsManagerHidden;
-
+import app.jhau.framework.pms.PackageManagerHidden;
 
 public class IServerManager {
+    private Application application;
+    private IServer iServer;
+    private final IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() {
+        @Override
+        public void binderDied() {
+            Log.i("tttt", "binderDied: 尝试重新绑定IServer");
+            if (iServer == null) return;
+            iServer.asBinder().unlinkToDeath(mDeathRecipient, 0);
+            try {
+                Method method = application.getClass().getMethod("getIServer");
+                iServer = (IServer) method.invoke(application);
+                iServer.asBinder().linkToDeath(mDeathRecipient, 0);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
-    public static AppOpsManagerHidden getIAppOpsManagerHidden(Application application) {
+    public IServerManager(Application application) {
+        this.application = application;
         try {
-            IServer iServer = getIServerBinder(application);
+            Method method = application.getClass().getMethod("getIServer");
+            iServer = (IServer) method.invoke(application);
+            iServer.asBinder().linkToDeath(mDeathRecipient, 0);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public PackageManagerHidden getPackageManagerHidden() {
+        try {
             if (iServer != null) {
-                return iServer.getIAppOpsManagerHidden();
+                return iServer.getPackageManagerHidden();
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -28,57 +51,23 @@ public class IServerManager {
         return null;
     }
 
-    @NotNull
-    public static List<ApplicationInfo> getInstalledApplications(Application application) {
+    public AppOpsManagerHidden getAppOpsManagerHidden() {
         try {
-            IServer iServer = getIServerBinder(application);
-            if (iServer != null) return iServer.getInstalledApplicationList();
+            if (iServer != null) {
+                return iServer.getAppOpsManagerHidden();
+            }
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        return new ArrayList<>();
+        return null;
     }
 
-    public static void killServer(Application application) {
+    public void killServer() {
         try {
-            IServer iServer = getIServerBinder(application);
             if (iServer == null) return;
             iServer.killServer();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-    }
-
-    private static IServer getIServerBinder(Application application) {
-        try {
-            Method method = application.getClass().getMethod("getIServer");
-            return (IServer) method.invoke(application);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static String execCommand(Application application, String cmd) {
-        try {
-            IServer appOpsServer = getIServerBinder(application);
-            if (appOpsServer == null) return null;
-            return appOpsServer.execCommand(cmd);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @NotNull
-    public static List<PackageInfo> getInstalledPackageInfoList(@NotNull Application application) {
-        try {
-            IServer iServer = getIServerBinder(application);
-            if (iServer == null) return new ArrayList<>();
-            return iServer.getInstalledPackageInfoList();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
     }
 }

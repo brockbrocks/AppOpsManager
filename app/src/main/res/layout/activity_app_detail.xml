@@ -73,6 +73,7 @@
             tools:text="version" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:visibility="gone"
             android:id="@+id/action_btn_group"
             android:layout_width="0dp"
             android:layout_height="80dp"

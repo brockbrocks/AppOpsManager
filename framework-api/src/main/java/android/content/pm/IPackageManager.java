@@ -53,5 +53,7 @@ public interface IPackageManager extends IInterface {
 
     String getNameForUid(int uid) throws RemoteException;
 
+    void grantRuntimePermission(String packageName, String permissionName, int userId) throws RemoteException;
+
     boolean isPackageAvailable(String packageName, int userId) throws RemoteException;
 }

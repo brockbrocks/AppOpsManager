@@ -2,9 +2,11 @@ package app.jhau.appopsmanager.ui.app
 
 import android.app.Application
 import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.jhau.appopsmanager.data.repository.PackageInfoRepository
+import app.jhau.server.IServerManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,13 +26,9 @@ class AppViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            packageInfoList = packageInfoRepository.fetchPackageInfoList()
+            packageInfoList = packageInfoRepository.fetchPackageInfoList(0L)
             updateAppItemUiStateList(packageInfoList)
         }
-    }
-
-    suspend fun fetchInstalledPackageInfoList() = viewModelScope.launch {
-        packageInfoList = packageInfoRepository.fetchPackageInfoList()
     }
 
     private suspend fun updateAppItemUiStateList(packageInfoList: Array<PackageInfo>) {
