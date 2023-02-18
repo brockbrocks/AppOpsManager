@@ -3,7 +3,6 @@ package app.jhau.server;
 import android.annotation.SuppressLint;
 import android.app.IProcessObserver;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.UserInfo;
 import android.os.Build;
 import android.os.Looper;
@@ -13,11 +12,9 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.util.List;
 
 import app.jhau.framework.ams.ActivityManagerApi;
 import app.jhau.framework.appops.AppOpsManagerHidden;
-import app.jhau.framework.pms.PackageManagerApi;
 import app.jhau.framework.pms.PackageManagerHidden;
 import app.jhau.server.util.Constants;
 import app.jhau.server.util.ServerProviderUtil;
@@ -109,7 +106,12 @@ public class AppOpsServer {
 
     private ApplicationInfo getApplicationInfo(int userId) {
         try {
-            return PackageManagerApi.getInstance().getApplicationInfo(Constants.APPLICATION_ID, 0L, userId);
+            PackageManagerHidden packageManagerHidden = new PackageManagerHidden();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                return packageManagerHidden.getApplicationInfoApi33(Constants.APPLICATION_ID, 0L, userId);
+            }
+            return packageManagerHidden.getApplicationInfo(Constants.APPLICATION_ID, 0, userId);
+//            return PackageManagerApi.getInstance().getApplicationInfo(Constants.APPLICATION_ID, 0L, userId);
         } catch (Throwable e) {
             e.printStackTrace();
             return null;

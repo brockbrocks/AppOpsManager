@@ -12,6 +12,7 @@
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="actionBarStyle">@style/Theme.AppOpsManager.actionBarStyle</item>
         <item name="materialCardViewStyle">@style/Theme.AppOpsManager.materialCardViewStyle</item>
+        <item name="materialAlertDialogTheme">@style/Theme.AppOpsManager.materialAlertDialogTheme</item>
     </style>
 
     <style name="Theme.AppOpsManager.materialCardViewStyle" parent="@style/Widget.Material3.CardView.Filled">

@@ -1,11 +1,12 @@
 package app.jhau.server;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 
 import java.io.InputStreamReader;
 
 import app.jhau.server.util.Constants;
-
+@SuppressLint("UnsafeDynamicallyLoadedCode")
 public class ServerStarter {
     private static final String TAG = Constants.DEBUG_TAG;
 

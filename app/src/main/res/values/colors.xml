@@ -13,4 +13,5 @@
     <color name="actionBarColor">@color/white_F0F0F3</color>
 
     <color name="cardBackgroundColor">#FFFFFF</color>
+    <color name="blue_0085F8">#0085F8</color>
 </resources>

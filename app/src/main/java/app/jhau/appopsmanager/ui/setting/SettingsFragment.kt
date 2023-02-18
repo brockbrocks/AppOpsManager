@@ -8,10 +8,8 @@ import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.ui.guide.GuideActivity
 import app.jhau.appopsmanager.ui.terminal.TerminalActivity
 import app.jhau.server.IServerManager
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-@AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
 
     @Inject

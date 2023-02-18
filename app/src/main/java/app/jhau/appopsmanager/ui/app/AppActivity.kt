@@ -29,7 +29,7 @@ class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>(), View.OnCli
 
     private fun collectData() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.appUiState.map { it.apps }.collect {
                     (binding.rvApp.adapter as AppAdapter).submitList(it)
                 }
@@ -38,7 +38,9 @@ class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>(), View.OnCli
     }
 
     private fun initView() {
-        binding.rvApp.adapter = AppAdapter(this)
+        binding.rvApp.adapter = AppAdapter(this) { appItemUiState ->
+            viewModel.getAppIcon(appItemUiState)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -64,5 +66,10 @@ class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>(), View.OnCli
             val packageInfo = viewModel.getPackageInfo(position)
             AppInfoActivity.start(this, packageInfo)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchPackageInfoList()
     }
 }

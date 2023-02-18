@@ -1,8 +1,7 @@
 package app.jhau.framework.appops;
 import app.jhau.framework.appops.PackageOps;
 
-interface IAppOpsManager {
-    //int getNumOps();
+interface IAppOpsManagerHidden {
     String[] getModeNames();
     String modeToName(int mode);
     String opToName(int op);

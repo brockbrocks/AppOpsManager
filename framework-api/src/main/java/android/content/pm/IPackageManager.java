@@ -56,4 +56,6 @@ public interface IPackageManager extends IInterface {
     void grantRuntimePermission(String packageName, String permissionName, int userId) throws RemoteException;
 
     boolean isPackageAvailable(String packageName, int userId) throws RemoteException;
+
+    void setApplicationEnabledSetting(String packageName, int newState, int flags, int userId, String callingPackage) throws RemoteException;
 }

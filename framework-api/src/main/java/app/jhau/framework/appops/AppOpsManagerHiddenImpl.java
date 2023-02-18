@@ -14,10 +14,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-class AppOpsManagerImpl extends IAppOpsManager.Stub {
+class AppOpsManagerHiddenImpl extends IAppOpsManagerHidden.Stub {
     private final IAppOpsService iAppOpsService;
 
-    AppOpsManagerImpl() {
+    AppOpsManagerHiddenImpl() {
         iAppOpsService = IAppOpsService.Stub.asInterface(ServiceManager.getService(Context.APP_OPS_SERVICE));
     }
 

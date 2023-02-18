@@ -1,5 +1,7 @@
 package app.jhau.framework.pms;
 
+import android.annotation.SuppressLint;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageInfo;
 import android.os.Build;
@@ -19,20 +21,59 @@ public class PackageManagerHidden extends IPackageManagerHidden.Stub implements 
     private IPackageManager pm;
     private boolean isProxy = false;
 
+    @SuppressLint("DeprecatedSinceApi")
+    @Override
+    public ApplicationInfo getApplicationInfo(String packageName, int flags, int userId) throws RemoteException {
+        if (isProxy) return mRemote.getApplicationInfo(packageName, flags, userId);
+        return pm.getApplicationInfo(packageName, flags, userId);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @Override
+    public ApplicationInfo getApplicationInfoApi33(String packageName, long flags, int userId) throws RemoteException {
+        if (isProxy) return mRemote.getApplicationInfoApi33(packageName, flags, userId);
+        return pm.getApplicationInfo(packageName, flags, userId);
+    }
+
     public List<PackageInfo> getInstalledPackages(int flags, int userId) throws RemoteException {
-        if (isProxy) {
-            return mRemote.getInstalledPackages(flags, userId);
-        }
+        if (isProxy) return mRemote.getInstalledPackages(flags, userId);
         return pm.getInstalledPackages(flags, userId).getList();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     public List<PackageInfo> getInstalledPackagesApi33(long flags, int userId) throws RemoteException {
-        if (isProxy) {
-            return mRemote.getInstalledPackagesApi33(flags, userId);
-        }
+        if (isProxy) return mRemote.getInstalledPackagesApi33(flags, userId);
         return pm.getInstalledPackages(flags, userId).getList();
+    }
+
+    @SuppressLint("DeprecatedSinceApi")
+    @Override
+    public PackageInfo getPackageInfo(String packageName, int flags, int userId) throws RemoteException {
+        if (isProxy) return mRemote.getPackageInfo(packageName, flags, userId);
+        return pm.getPackageInfo(packageName, flags, userId);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @Override
+    public PackageInfo getPackageInfoApi33(String packageName, long flags, int userId) throws RemoteException {
+       if (isProxy) return mRemote.getPackageInfoApi33(packageName, flags, userId);
+       return pm.getPackageInfo(packageName, flags, userId);
+    }
+
+    @Override
+    public boolean isPackageAvailable(String packageName, int userId) throws RemoteException {
+        if (isProxy) return mRemote.isPackageAvailable(packageName, userId);
+        return pm.isPackageAvailable(packageName, userId);
+    }
+
+    @Override
+    public void setApplicationEnabledSetting(String packageName, int newState, int flags, int userId, String callingPackage) throws RemoteException {
+        if (isProxy) {
+            mRemote.setApplicationEnabledSetting(packageName, newState, flags, userId, callingPackage);
+            return;
+        }
+        pm.setApplicationEnabledSetting(packageName, newState, flags, userId, callingPackage);
     }
 
     public PackageManagerHidden() {

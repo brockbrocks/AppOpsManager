@@ -5,12 +5,30 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.os.Build
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.databinding.ActivityAppDetailBinding
-import app.jhau.appopsmanager.ui.base.DataBindingActivity
+import app.jhau.appopsmanager.ui.base.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AppInfoActivity : DataBindingActivity<ActivityAppDetailBinding>() {
+@AndroidEntryPoint
+class AppInfoActivity : BaseActivity<ActivityAppDetailBinding, AppInfoViewModel>() {
+    @Inject
+    lateinit var factory: AppInfoViewModel.AssistedFactory
+
+    override lateinit var viewModel: AppInfoViewModel
+    private lateinit var setEnableItem: MenuItem
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
@@ -29,10 +47,10 @@ class AppInfoActivity : DataBindingActivity<ActivityAppDetailBinding>() {
             intent.getParcelableExtra(AppInfoSettingsFragment.PACKAGE_INFO)
         }
         if (pkgInfo == null) return
-        binding.appIcon.setImageDrawable(packageManager.getApplicationIcon(pkgInfo.applicationInfo))
-        binding.appName.text = packageManager.getApplicationLabel(pkgInfo.applicationInfo)
-        binding.applicationId.text = pkgInfo.packageName
-        binding.appVersion.text = pkgInfo.versionName
+        viewModel = ViewModelProvider(
+            this,
+            AppInfoViewModel.provideViewModelFactory(factory, pkgInfo)
+        )[AppInfoViewModel::class.java]
         //
         supportFragmentManager
             .beginTransaction()
@@ -42,17 +60,67 @@ class AppInfoActivity : DataBindingActivity<ActivityAppDetailBinding>() {
                 arguments = bundle
             })
             .commit()
+        //
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.pkgInfo.map {
+                        //set app name
+                        val appName = packageManager.getApplicationLabel(it.applicationInfo)
+                        val enable = it.applicationInfo.enabled
+                        if (!enable) {
+                            val disableStr = "(${getString(R.string.disabled)})"
+                            val appNameStr = SpannableString("${appName}${disableStr}")
+                            appNameStr.setSpan(
+                                ForegroundColorSpan(getColor(R.color.blue_0085F8)),
+                                appName.length,
+                                appName.length + disableStr.length,
+                                SpannableString.SPAN_EXCLUSIVE_INCLUSIVE
+                            )
+                            binding.appName.text = appNameStr
+                        } else binding.appName.text = appName
+                        it
+                    }.collect {
+                        binding.appIcon.setImageDrawable(packageManager.getApplicationIcon(it.applicationInfo))
+                        binding.applicationId.text = it.packageName
+                        binding.appVersion.text = it.versionName
+                    }
+                }
+                launch {
+                    viewModel.onSetAppEnableSetting.collect {
+                        if (it) {
+                            setEnableItem.title = getString(R.string.disable_app)
+                        } else {
+                            setEnableItem.title = getString(R.string.enable_app)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
-                return true
+            }
+            R.id.setEnabled -> {
+                viewModel.switchAppEnableState()
             }
             else -> {}
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_app_settings, menu)
+        setEnableItem = menu!!.findItem(R.id.setEnabled)
+        if (viewModel.pkgInfo.value.applicationInfo.enabled) {
+            setEnableItem.title = getString(R.string.disable_app)
+        } else {
+            setEnableItem.title = getString(R.string.enable_app)
+        }
+        return super.onCreateOptionsMenu(menu)
     }
 
     companion object {

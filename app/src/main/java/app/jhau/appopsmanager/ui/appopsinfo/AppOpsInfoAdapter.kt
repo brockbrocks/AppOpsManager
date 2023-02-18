@@ -20,9 +20,12 @@ class AppOpsInfoAdapter(
     override fun onBindViewHolder(holder: ViewHolder<ItemAppopsInfoListBinding>, position: Int) {
         holder.binding.apply {
             val opUiState = items[position]
-            title.text = "${opUiState.opStr}"
-            summary.text = "${opUiState.modeStr}"
-            root.setOnClickListener { onItemClickListener.invoke(opUiState, position) }
+            op.text = "${opUiState.opStr}"
+            opMode.text = "${opUiState.modeStr}"
+            opMode.setOnClickListener { onItemClickListener.invoke(opUiState, position) }
+        }
+        holder.binding.op.setOnClickListener {
+
         }
     }
 

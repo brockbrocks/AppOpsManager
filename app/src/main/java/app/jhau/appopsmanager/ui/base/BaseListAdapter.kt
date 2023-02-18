@@ -1,11 +1,14 @@
 package app.jhau.appopsmanager.ui.base
 
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.viewbinding.ViewBinding
+import kotlinx.coroutines.*
 import java.lang.reflect.ParameterizedType
+import java.util.concurrent.Executors
 
 abstract class BaseListAdapter<T, VB : ViewBinding> :
     Adapter<BaseListAdapter.ViewHolder<VB>>() {
@@ -13,19 +16,29 @@ abstract class BaseListAdapter<T, VB : ViewBinding> :
     protected var items: List<T> = listOf()
     override fun getItemCount(): Int = items.size
 
+    private val mH = android.os.Handler(Looper.getMainLooper())
+    private val mDiffExecutor = Executors.newFixedThreadPool(2)
     fun submitList(newItems: List<T>) {
-        val oldItems = items
-        items = newItems
-        val areItemsTheSame: (T, T) -> Boolean = { oldItem, newItem ->
-            areItemsTheSame(oldItem, newItem)
+        val diffCallback = object : DiffUtil.Callback() {
+            override fun getOldListSize() = items.size
+
+            override fun getNewListSize() = newItems.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return areItemsTheSame(items[oldItemPosition], newItems[newItemPosition])
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return areContentsTheSame(items[oldItemPosition], newItems[newItemPosition])
+            }
         }
-        val artContentsTheSame: (T, T) -> Boolean = { oldItem, newItem ->
-            areContentsTheSame(oldItem, newItem)
+        mDiffExecutor.execute {
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
+            mH.post {
+                items = newItems
+                diffResult.dispatchUpdatesTo(this)
+            }
         }
-        val diffUtilCallback =
-            DiffUtilCallback(oldItems, newItems, areItemsTheSame, artContentsTheSame)
-        val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
-        diffResult.dispatchUpdatesTo(this)
     }
 
     abstract fun areItemsTheSame(oldItem: T, newItem: T): Boolean
@@ -56,24 +69,4 @@ abstract class BaseListAdapter<T, VB : ViewBinding> :
     //ViewBinding ViewHolder
     class ViewHolder<VB : ViewBinding>(val binding: VB) :
         androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
-
-    //Implementation of DiffUtil.Callback
-    class DiffUtilCallback<T>(
-        private val oldItems: List<T>,
-        private val newItems: List<T>,
-        private val areItemsTheSame: (T, T) -> Boolean,
-        private val areContentsTheSame: (T, T) -> Boolean
-    ) : DiffUtil.Callback() {
-        override fun getOldListSize(): Int = oldItems.size
-
-        override fun getNewListSize(): Int = newItems.size
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return areItemsTheSame.invoke(oldItems[oldItemPosition], newItems[newItemPosition])
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return areContentsTheSame.invoke(oldItems[oldItemPosition], newItems[newItemPosition])
-        }
-    }
 }

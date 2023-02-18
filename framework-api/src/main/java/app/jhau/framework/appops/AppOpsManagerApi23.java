@@ -2,7 +2,7 @@ package app.jhau.framework.appops;
 
 import android.os.RemoteException;
 
-public class AppOpsManagerApi23 extends AppOpsManagerImpl {
+public class AppOpsManagerApi23 extends AppOpsManagerHiddenImpl {
     public final int MODE_ALLOWED = 0;
     public final int MODE_IGNORED = 1;
     public final int MODE_ERRORED = 2;

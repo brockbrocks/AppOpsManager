@@ -9,13 +9,12 @@ import android.os.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppOpsManagerHidden implements IAppOpsManager, Parcelable {
-    private final IAppOpsManager iAppOpsManager;
+public class AppOpsManagerHidden implements IAppOpsManagerHidden, Parcelable {
+    private final IAppOpsManagerHidden iAppOpsManager;
 
     public AppOpsManagerHidden() {
-//        iAppOpsManager = new AppOpsManagerImpl();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            iAppOpsManager = new AppOpsManagerImpl();
+            iAppOpsManager = new AppOpsManagerHiddenImpl();
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
             iAppOpsManager = new AppOpsManagerApi28();
         } else {
@@ -24,7 +23,7 @@ public class AppOpsManagerHidden implements IAppOpsManager, Parcelable {
     }
 
     protected AppOpsManagerHidden(Parcel in) {
-        iAppOpsManager = IAppOpsManager.Stub.asInterface(in.readStrongBinder());
+        iAppOpsManager = IAppOpsManagerHidden.Stub.asInterface(in.readStrongBinder());
     }
 
     @Override
@@ -75,9 +74,6 @@ public class AppOpsManagerHidden implements IAppOpsManager, Parcelable {
         iAppOpsManager.setUidMode(code, uid, mode);
     }
 
-    //    public void setUidMode(int code, int uid, int mode) throws RemoteException {
-//        iAppOpsManager.setUidMode(code, uid, mode);
-//    }
     @Override
     public void setMode(int code, int uid, String packageName, int mode) throws RemoteException {
         iAppOpsManager.setMode(code, uid, packageName, mode);

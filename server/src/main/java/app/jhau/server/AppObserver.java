@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi;
 
 import java.io.File;
 
-import app.jhau.framework.pms.PackageManagerApi;
+import app.jhau.framework.pms.PackageManagerHidden;
 import app.jhau.server.util.Constants;
 
 public class AppObserver {
@@ -60,7 +60,7 @@ public class AppObserver {
                 case DELETE:
                     boolean isPackageAvailable;
                     try {
-                        isPackageAvailable = PackageManagerApi.getInstance().isPackageAvailable(Constants.APPLICATION_ID, userId);
+                        isPackageAvailable = new PackageManagerHidden().isPackageAvailable(Constants.APPLICATION_ID, userId);
                     } catch (Throwable e) {
                         e.printStackTrace();
                         isPackageAvailable = false;
