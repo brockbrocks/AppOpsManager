@@ -7,12 +7,11 @@ class AppOpsInfoAdapter(
     private val onItemClickListener: (OpUiState, Int) -> Unit
 ) : BaseListAdapter<OpUiState, ItemAppopsInfoListBinding>() {
     override fun areItemsTheSame(oldItem: OpUiState, newItem: OpUiState): Boolean {
-        return oldItem == newItem
+        return oldItem.op == newItem.op
     }
 
     override fun areContentsTheSame(oldItem: OpUiState, newItem: OpUiState): Boolean {
-        return oldItem.op == newItem.op &&
-                oldItem.opStr == newItem.opStr &&
+        return oldItem.opStr == newItem.opStr &&
                 oldItem.mode == newItem.mode &&
                 oldItem.modeStr == newItem.modeStr
     }
@@ -20,11 +19,11 @@ class AppOpsInfoAdapter(
     override fun onBindViewHolder(holder: ViewHolder<ItemAppopsInfoListBinding>, position: Int) {
         holder.binding.apply {
             val opUiState = items[position]
-            op.text = "${opUiState.opStr}"
+            op.text = "${opUiState.opStr}(${opUiState.op})"
             opMode.text = "${opUiState.modeStr}"
             opMode.setOnClickListener { onItemClickListener.invoke(opUiState, position) }
         }
-        holder.binding.op.setOnClickListener {
+        holder.binding.opContainer.setOnClickListener {
 
         }
     }

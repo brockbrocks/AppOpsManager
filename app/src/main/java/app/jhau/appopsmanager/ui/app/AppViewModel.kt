@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.jhau.appopsmanager.data.repository.PackageInfoRepository
-import app.jhau.server.IServerManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,8 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val app: Application,
-    private val packageInfoRepository: PackageInfoRepository,
-    private val iServerManager: IServerManager
+    private val packageInfoRepository: PackageInfoRepository
 ) : ViewModel() {
 
     private val _appUiState = MutableStateFlow(AppUiState())

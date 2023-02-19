@@ -62,7 +62,7 @@ class AppInfoActivity : BaseActivity<ActivityAppDetailBinding, AppInfoViewModel>
             .commit()
         //
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 launch {
                     viewModel.pkgInfo.map {
                         //set app name
