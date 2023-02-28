@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import app.jhau.appopsmanager.data.repository.PackageInfoRepository
+import app.jhau.server.IServerManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,12 +16,26 @@ import kotlinx.coroutines.launch
 
 class AppInfoViewModel @AssistedInject constructor(
     @Assisted pkgInfo: PackageInfo,
-    private val packageInfoRepository: PackageInfoRepository
+    private val packageInfoRepository: PackageInfoRepository,
+    private val iServerManager: IServerManager
 ) : ViewModel() {
 
     private val _pkgInfo = MutableStateFlow(pkgInfo)
     val pkgInfo = _pkgInfo.asStateFlow()
     val onSetAppEnableSetting: MutableSharedFlow<Boolean> = MutableSharedFlow()
+
+    fun startPermissionControllerByADB(pkgInfo: PackageInfo) = viewModelScope.launch {
+        val resolveInfos = packageInfoRepository.findPermissionControllerInfo()
+        if (resolveInfos.isNotEmpty() && resolveInfos.size == 1) {
+            val info = resolveInfos[0]
+            val pkgName = info.activityInfo.packageName
+            val activityName = info.activityInfo.name
+            val targetPkgName = pkgInfo.packageName
+            val cmd =
+                "am start -a android.intent.action.MANAGE_APP_PERMISSIONS --es android.intent.extra.PACKAGE_NAME ${targetPkgName} ${pkgName}/${activityName}"
+            iServerManager.execCommand(cmd)
+        }
+    }
 
     fun switchAppEnableState() = viewModelScope.launch {
         val pkgName = _pkgInfo.value.packageName

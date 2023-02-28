@@ -80,7 +80,6 @@ class AppOpsInfoActivity : BaseActivity<ActivityAppOpsInfoBinding, AppOpsInfoVie
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
-                return true
             }
             else -> {}
         }

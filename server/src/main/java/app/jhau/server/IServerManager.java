@@ -70,4 +70,13 @@ public class IServerManager {
             e.printStackTrace();
         }
     }
+
+    public String execCommand(String cmd){
+        try {
+            if (iServer != null) return iServer.execCommand(cmd);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

@@ -1,9 +1,11 @@
 package app.jhau.framework.pms;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageInfo;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Parcel;
@@ -35,6 +37,7 @@ public class PackageManagerHidden extends IPackageManagerHidden.Stub implements 
         return pm.getApplicationInfo(packageName, flags, userId);
     }
 
+    @SuppressLint("DeprecatedSinceApi")
     public List<PackageInfo> getInstalledPackages(int flags, int userId) throws RemoteException {
         if (isProxy) return mRemote.getInstalledPackages(flags, userId);
         return pm.getInstalledPackages(flags, userId).getList();
@@ -62,9 +65,31 @@ public class PackageManagerHidden extends IPackageManagerHidden.Stub implements 
     }
 
     @Override
+    public void grantRuntimePermission(String packageName, String permissionName, int userId) throws RemoteException {
+        if (isProxy) {
+            mRemote.grantRuntimePermission(packageName, permissionName, userId);
+            return;
+        }
+        pm.grantRuntimePermission(packageName, permissionName, userId);
+    }
+
+    @Override
     public boolean isPackageAvailable(String packageName, int userId) throws RemoteException {
         if (isProxy) return mRemote.isPackageAvailable(packageName, userId);
         return pm.isPackageAvailable(packageName, userId);
+    }
+
+    @Override
+    public List<ResolveInfo> queryIntentActivities(Intent intent, String resolvedType, int flags, int userId) throws RemoteException {
+        if (isProxy) return mRemote.queryIntentActivities(intent, resolvedType, flags, userId);
+        return pm.queryIntentActivities(intent, resolvedType, flags, userId).getList();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @Override
+    public List<ResolveInfo> queryIntentActivitiesApi33(Intent intent, String resolvedType, long flags, int userId) throws RemoteException {
+        if (isProxy) return mRemote.queryIntentActivitiesApi33(intent, resolvedType, flags, userId);
+        return pm.queryIntentActivities(intent, resolvedType, flags, userId).getList();
     }
 
     @Override

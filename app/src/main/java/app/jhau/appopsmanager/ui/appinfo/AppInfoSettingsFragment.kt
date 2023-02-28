@@ -3,14 +3,15 @@ package app.jhau.appopsmanager.ui.appinfo
 import android.content.pm.PackageInfo
 import android.os.Build
 import android.os.Bundle
+import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.ui.appopsinfo.AppOpsInfoActivity
-import app.jhau.appopsmanager.ui.apppermsinfo.AppPermsInfoActivity
 
 class AppInfoSettingsFragment : PreferenceFragmentCompat() {
     private lateinit var pkgInfo: PackageInfo
+    private val viewModel: AppInfoViewModel by viewModels({ requireActivity() })
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -27,7 +28,15 @@ class AppInfoSettingsFragment : PreferenceFragmentCompat() {
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
             "permission_settings" -> {
-                AppPermsInfoActivity.start(requireContext(), pkgInfo)
+                try {
+//                    val permIntent = Intent("android.intent.action.MANAGE_APP_PERMISSIONS")
+//                    permIntent.putExtra(Intent.EXTRA_PACKAGE_NAME, "android")
+//                    requireActivity().startActivity(permIntent)
+                    viewModel.startPermissionControllerByADB(pkgInfo)
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+                //AppPermsInfoActivity.start(requireContext(), pkgInfo)
             }
             "appops_settings" -> {
                 AppOpsInfoActivity.start(requireContext(), pkgInfo)

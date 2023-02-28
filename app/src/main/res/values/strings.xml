@@ -3,4 +3,13 @@
     <string name="disabled">disabled</string>
     <string name="disable_app">disable app</string>
     <string name="enable_app">enable app</string>
+    <string name="package_permission_notice">There is no permission to get app info.</string>
+    <string name="sort">sort</string>
+    <string name="settings">settings</string>
+    <string name="sort_by_name">name</string>
+    <string name="sort_by_uid">uid</string>
+    <string name="filter">filter</string>
+    <string name="filter_system_app">system app</string>
+    <string name="filter_disabled">disabled</string>
+    <string name="search">search</string>
 </resources>

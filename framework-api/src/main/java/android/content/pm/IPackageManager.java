@@ -1,5 +1,6 @@
 package android.content.pm;
 
+import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -56,6 +57,12 @@ public interface IPackageManager extends IInterface {
     void grantRuntimePermission(String packageName, String permissionName, int userId) throws RemoteException;
 
     boolean isPackageAvailable(String packageName, int userId) throws RemoteException;
+
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.TIRAMISU)
+    ParceledListSlice<ResolveInfo> queryIntentActivities(Intent intent, String resolvedType, int flags, int userId) throws RemoteException;
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    ParceledListSlice<ResolveInfo> queryIntentActivities(Intent intent, String resolvedType, long flags, int userId) throws RemoteException;
 
     void setApplicationEnabledSetting(String packageName, int newState, int flags, int userId, String callingPackage) throws RemoteException;
 }

@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/sort"
+        android:title="@string/sort">
+        <menu>
+            <group
+                android:id="@+id/group_sort"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/sort_name"
+                    android:checked="true"
+                    android:title="@string/sort_by_name" />
+                <item
+                    android:id="@+id/sort_uid"
+                    android:title="@string/sort_by_uid" />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/filter"
+        android:title="@string/filter">
+        <menu>
+            <group
+                android:id="@+id/group_filter"
+                android:checkableBehavior="all">
+                <item
+                    android:id="@+id/filter_is_system_app"
+                    android:title="@string/filter_system_app" />
+                <item
+                    android:id="@+id/filter_disabled"
+                    android:title="@string/filter_disabled" />
+            </group>
+        </menu>
+    </item>
     <item
         android:id="@+id/settings"
-        android:title="settings" />
+        android:title="@string/settings" />
 </menu>
