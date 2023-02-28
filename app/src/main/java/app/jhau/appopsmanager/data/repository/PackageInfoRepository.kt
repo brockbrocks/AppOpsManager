@@ -10,6 +10,8 @@ import android.content.pm.ResolveInfo
 import android.os.Build
 import androidx.annotation.RequiresApi
 import app.jhau.server.IServerManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PackageInfoRepository @Inject constructor(
@@ -49,22 +51,22 @@ class PackageInfoRepository @Inject constructor(
         return filterOut
     }
 
-    fun findPermissionControllerInfo(): List<ResolveInfo> {
-        return packageInfoDataSource.findPermissionController(0)
+    suspend fun findPermissionControllerInfo(): List<ResolveInfo> = withContext(Dispatchers.IO) {
+        return@withContext packageInfoDataSource.findPermissionController(0)
     }
 
-    fun fetchPackageInfoList(
+    suspend fun fetchPackageInfoList(
         flags: Int,
         sortType: SortType,
         filterTypes: Set<FilterType>
-    ): List<PackageInfo> {
+    ): List<PackageInfo> = withContext(Dispatchers.IO) {
         var ret = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             packageInfoDataSource.fetchPackageInfoListApi33(flags.toLong())
         } else {
             packageInfoDataSource.fetchPackageInfoList(flags)
         }
         ret = ret.filter { filterLogic(it, filterTypes) }.sortedWith { o1, o2 -> sortLogic(o1, o2, sortType) }
-        return ret
+        return@withContext ret
     }
 
     fun fetchPackageInfo(pkgName: String, flags: Long): PackageInfo {

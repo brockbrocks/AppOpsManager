@@ -7,10 +7,12 @@ import androidx.lifecycle.viewModelScope
 import app.jhau.server.IServerManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AppOpsInfoViewModel @AssistedInject constructor(
     @Assisted pkgInfo: PackageInfo,
@@ -37,7 +39,7 @@ class AppOpsInfoViewModel @AssistedInject constructor(
         fetchPkgOps()
     }
 
-    suspend fun fetchPkgOps() {
+    suspend fun fetchPkgOps() = withContext(Dispatchers.IO) {
         val iAppOpsManager = iServerManager.appOpsManagerHidden
         val pkgOps = iAppOpsManager.getOpsForPackage(uid, pkgName, null)
         val ops = if (!pkgOps.isNullOrEmpty()) {

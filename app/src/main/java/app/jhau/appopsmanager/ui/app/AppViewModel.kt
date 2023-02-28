@@ -9,9 +9,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.jhau.appopsmanager.data.repository.PackageInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,18 +27,18 @@ class AppViewModel @Inject constructor(
 
     private lateinit var packageInfoList: List<PackageInfo>
 
-    fun setSortType(sortType: PackageInfoRepository.SortType) = viewModelScope.launch {
+    fun setSortType(sortType: PackageInfoRepository.SortType) {
         val curFilterTypes = _appUiState.value.filterTypes
         fetchPackageInfoList(sortType = sortType, filterTypes = curFilterTypes)
     }
 
-    fun addFilter(filterType: PackageInfoRepository.FilterType) = viewModelScope.launch {
+    fun addFilter(filterType: PackageInfoRepository.FilterType) {
         val newFilterTypes = _appUiState.value.filterTypes.toMutableSet()
         newFilterTypes.add(filterType)
         fetchPackageInfoList(_appUiState.value.sortType, newFilterTypes)
     }
 
-    fun removeFilter(filterType: PackageInfoRepository.FilterType) = viewModelScope.launch {
+    fun removeFilter(filterType: PackageInfoRepository.FilterType) {
         val newFilterTypes = _appUiState.value.filterTypes.toMutableSet()
         newFilterTypes.remove(filterType)
         fetchPackageInfoList(_appUiState.value.sortType, newFilterTypes)

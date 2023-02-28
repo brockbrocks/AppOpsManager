@@ -9,10 +9,12 @@ import app.jhau.appopsmanager.data.repository.PackageInfoRepository
 import app.jhau.server.IServerManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AppInfoViewModel @AssistedInject constructor(
     @Assisted pkgInfo: PackageInfo,
@@ -25,9 +27,9 @@ class AppInfoViewModel @AssistedInject constructor(
     val onSetAppEnableSetting: MutableSharedFlow<Boolean> = MutableSharedFlow()
 
     fun startPermissionControllerByADB(pkgInfo: PackageInfo) = viewModelScope.launch {
-        val resolveInfos = packageInfoRepository.findPermissionControllerInfo()
-        if (resolveInfos.isNotEmpty() && resolveInfos.size == 1) {
-            val info = resolveInfos[0]
+        val resolveInfoList = packageInfoRepository.findPermissionControllerInfo()
+        if (resolveInfoList.isNotEmpty() && resolveInfoList.size == 1) {
+            val info = resolveInfoList[0]
             val pkgName = info.activityInfo.packageName
             val activityName = info.activityInfo.name
             val targetPkgName = pkgInfo.packageName
