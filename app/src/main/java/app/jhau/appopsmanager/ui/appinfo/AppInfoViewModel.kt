@@ -9,12 +9,10 @@ import app.jhau.appopsmanager.data.repository.PackageInfoRepository
 import app.jhau.server.IServerManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class AppInfoViewModel @AssistedInject constructor(
     @Assisted pkgInfo: PackageInfo,

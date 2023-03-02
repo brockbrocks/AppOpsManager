@@ -9,11 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.jhau.appopsmanager.data.repository.PackageInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -80,7 +78,7 @@ class AppViewModel @Inject constructor(
         } else {
             packageInfoRepository.fetchPackageInfo(pkgName, 0)
         }
-        return app.packageManager.getApplicationIcon(pkgInfo.applicationInfo)
+        return pkgInfo.applicationInfo.loadIcon(app.packageManager)
     }
 
     fun searchApp(content: String) = viewModelScope.launch {

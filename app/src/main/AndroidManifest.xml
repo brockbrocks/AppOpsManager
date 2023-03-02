@@ -14,7 +14,7 @@
         android:theme="@style/Theme.AppOpsManager"
         tools:targetApi="31">
         <activity
-            android:name=".ui.apppermsinfo.AppPermsInfoActivity"
+            android:name=".ui.appperms.AppPermsActivity"
             android:exported="false"
             android:launchMode="singleTop" />
         <activity

@@ -8,6 +8,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.ui.appopsinfo.AppOpsInfoActivity
+import app.jhau.appopsmanager.ui.appperms.AppPermsActivity
 
 class AppInfoSettingsFragment : PreferenceFragmentCompat() {
     private lateinit var pkgInfo: PackageInfo
@@ -32,7 +33,8 @@ class AppInfoSettingsFragment : PreferenceFragmentCompat() {
 //                    val permIntent = Intent("android.intent.action.MANAGE_APP_PERMISSIONS")
 //                    permIntent.putExtra(Intent.EXTRA_PACKAGE_NAME, "android")
 //                    requireActivity().startActivity(permIntent)
-                    viewModel.startPermissionControllerByADB(pkgInfo)
+                    AppPermsActivity.start(requireContext(), pkgInfo)
+                    //viewModel.startPermissionControllerByADB(pkgInfo)
                 } catch (e: Throwable) {
                     e.printStackTrace()
                 }

@@ -66,7 +66,7 @@ class AppInfoActivity : BaseActivity<ActivityAppDetailBinding, AppInfoViewModel>
                 launch {
                     viewModel.pkgInfo.map {
                         //set app name
-                        val appName = packageManager.getApplicationLabel(it.applicationInfo)
+                        val appName = it.applicationInfo.loadLabel(packageManager)
                         val enable = it.applicationInfo.enabled
                         if (!enable) {
                             val disableStr = "(${getString(R.string.disabled)})"

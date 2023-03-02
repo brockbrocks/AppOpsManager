@@ -8,7 +8,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import app.jhau.appopsmanager.ui.app.AppActivity
 import app.jhau.appopsmanager.ui.guide.GuideActivity
 import app.jhau.server.util.StarterUtil
-
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 

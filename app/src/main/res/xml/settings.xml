@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="normal">
         <Preference
-            android:icon="@drawable/ic_power_off"
+            android:icon="@drawable/ic_kill_server"
             android:key="kill_server"
             android:singleLine="true"
             android:title="kill server" />
