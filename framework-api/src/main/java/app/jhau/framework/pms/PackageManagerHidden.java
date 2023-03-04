@@ -74,6 +74,15 @@ public class PackageManagerHidden extends IPackageManagerHidden.Stub implements 
     }
 
     @Override
+    public void revokeRuntimePermission(String packageName, String permissionName, int userId) throws RemoteException {
+        if (isProxy) {
+            mRemote.revokeRuntimePermission(packageName, permissionName, userId);
+            return;
+        }
+        pm.revokeRuntimePermission(packageName, permissionName, userId);
+    }
+
+    @Override
     public boolean isPackageAvailable(String packageName, int userId) throws RemoteException {
         if (isProxy) return mRemote.isPackageAvailable(packageName, userId);
         return pm.isPackageAvailable(packageName, userId);
