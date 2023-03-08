@@ -17,5 +17,8 @@
 -keep public class android.os.ServiceManager{
     public static android.os.IBinder getService(java.lang.String);
 }
+-keep public class android.permission.IPermissionManager{*;}
+-keep public class android.permission.IPermissionManager$Stub{*;}
+
 -keep public class com.android.internal.app.IAppOpsService{*;}
 -keep public class com.android.internal.app.IAppOpsService$Stub{*;}

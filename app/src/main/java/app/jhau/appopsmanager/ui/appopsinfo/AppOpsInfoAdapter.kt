@@ -24,7 +24,7 @@ class AppOpsInfoAdapter(
             opMode.setOnClickListener { onItemClickListener.invoke(opUiState, position) }
         }
         holder.binding.opContainer.setOnClickListener {
-
+            //TODO
         }
     }
 

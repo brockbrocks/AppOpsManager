@@ -2,14 +2,13 @@ package app.jhau.appopsmanager.ui.app
 
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.view.View.OnClickListener
 import app.jhau.appopsmanager.BuildConfig
 import app.jhau.appopsmanager.databinding.ItemAppListBinding
 import app.jhau.appopsmanager.ui.base.BaseListAdapter
 
 class AppAdapter(
-    private val onClickListener: OnClickListener,
-    private val onGetAppIcon: (String) -> Drawable
+    private val onAppClick: (String) -> Unit,
+    private val onLoadIcon: (String) -> Drawable?
 ) : BaseListAdapter<AppItemUiState, ItemAppListBinding>() {
 
     override fun areItemsTheSame(oldItem: AppItemUiState, newItem: AppItemUiState): Boolean {
@@ -22,10 +21,10 @@ class AppAdapter(
                 && oldItem.disabled == newItem.disabled
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<ItemAppListBinding>, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder<ItemAppListBinding>, pos: Int) {
         holder.binding.apply {
-            val appItemUiState = items[position]
-            val icon = onGetAppIcon(appItemUiState.packageName)
+            val appItemUiState = items[pos]
+            val icon = onLoadIcon(appItemUiState.packageName)
             appIcon.setImageDrawable(icon)
             appName.text = if (BuildConfig.DEBUG) {
                 appItemUiState.appName + " (UID:${appItemUiState.uid})"
@@ -35,7 +34,7 @@ class AppAdapter(
             applicationId.text = appItemUiState.packageName
             disabled.visibility = if (appItemUiState.disabled) View.GONE else View.VISIBLE
             root.setOnClickListener {
-                onClickListener.onClick(this.root)
+                onAppClick(appItemUiState.packageName)
             }
         }
     }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.IBinder;
@@ -12,11 +13,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import java.lang.reflect.Field;
 import java.util.List;
+
+import app.jhau.framework.util.ReflectUtil;
 
 public class PackageManagerHidden extends IPackageManagerHidden.Stub implements Parcelable {
     private IPackageManagerHidden mRemote;
@@ -60,8 +65,8 @@ public class PackageManagerHidden extends IPackageManagerHidden.Stub implements 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     public PackageInfo getPackageInfoApi33(String packageName, long flags, int userId) throws RemoteException {
-       if (isProxy) return mRemote.getPackageInfoApi33(packageName, flags, userId);
-       return pm.getPackageInfo(packageName, flags, userId);
+        if (isProxy) return mRemote.getPackageInfoApi33(packageName, flags, userId);
+        return pm.getPackageInfo(packageName, flags, userId);
     }
 
     @Override
@@ -140,5 +145,22 @@ public class PackageManagerHidden extends IPackageManagerHidden.Stub implements 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeStrongBinder(this.asBinder());
+    }
+
+    private static final String TAG = "tttt";
+    public static int FLAG_PERMISSION_SYSTEM_FIXED;
+    public static int FLAG_PERMISSION_POLICY_FIXED;
+
+    static {
+        for (Field field : PackageManager.class.getFields()) {
+            if (field.getName().equals("FLAG_PERMISSION_SYSTEM_FIXED")) {
+                FLAG_PERMISSION_SYSTEM_FIXED = ReflectUtil.getStaticField(field);
+                Log.i(TAG, field.getName() + "=" + FLAG_PERMISSION_SYSTEM_FIXED);
+            }
+            if (field.getName().equals("FLAG_PERMISSION_POLICY_FIXED")) {
+                FLAG_PERMISSION_POLICY_FIXED = ReflectUtil.getStaticField(field);
+                Log.i(TAG, field.getName() + "=" + FLAG_PERMISSION_POLICY_FIXED);
+            }
+        }
     }
 }

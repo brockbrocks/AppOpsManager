@@ -1,35 +1,40 @@
 package app.jhau.appopsmanager.ui.appperms
 
-import android.content.pm.PermissionInfo
+import android.view.View
+import app.jhau.appopsmanager.data.Permission
 import app.jhau.appopsmanager.databinding.ItemAppPermsBinding
 import app.jhau.appopsmanager.ui.base.BaseListAdapter
 
 class AppPermsAdapter(
-    private val onPermsChecked: (String, Boolean) -> Unit,
-    private val checkGranted: (String) -> Boolean
-) : BaseListAdapter<Pair<String, PermissionInfo?>, ItemAppPermsBinding>() {
+    private val onPermsChecked: (String, Boolean) -> Unit
+) : BaseListAdapter<Permission, ItemAppPermsBinding>() {
     override fun areItemsTheSame(
-        oldItem: Pair<String, PermissionInfo?>,
-        newItem: Pair<String, PermissionInfo?>
+        oldItem: Permission,
+        newItem: Permission
     ): Boolean {
-        return oldItem.first == newItem.first
+        return true
     }
 
     override fun areContentsTheSame(
-        oldItem: Pair<String, PermissionInfo?>,
-        newItem: Pair<String, PermissionInfo?>
+        oldItem: Permission,
+        newItem: Permission
     ): Boolean {
-        return oldItem.second == newItem.second
+        return oldItem == newItem
     }
 
     override fun onBindViewHolder(holder: ViewHolder<ItemAppPermsBinding>, position: Int) {
-        val (permName, permInfo) = items[position]
-        holder.binding.apply {
-            this.permName.text = permName
-            isGranted.isChecked = checkGranted.invoke(permName)
-        }
-        holder.binding.isGranted.setOnCheckedChangeListener { buttonView, isChecked ->
-            onPermsChecked(permName, isChecked)
+        val perm = items[position]
+        holder.binding.permName.text = perm.name
+        holder.binding.protection.text = perm.protectionStr()
+        holder.binding.systemFixed.text = if (perm.isSystemFixed()) " (systemfixed)" else ""
+        holder.binding.isGranted.apply {
+            isChecked = perm.granted
+            visibility = if (perm.isRuntime()) View.VISIBLE else View.GONE
+            val changeable = perm.isChangeable
+            isEnabled = changeable
+            if (changeable) {
+                setOnCheckedChangeListener { _, isChecked -> onPermsChecked(perm.name, isChecked) }
+            }
         }
     }
 

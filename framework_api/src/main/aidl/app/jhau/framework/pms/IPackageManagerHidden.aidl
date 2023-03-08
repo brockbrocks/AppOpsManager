@@ -10,6 +10,9 @@ interface IPackageManagerHidden {
     List<PackageInfo> getInstalledPackagesApi33(long flags, int userId);
     PackageInfo getPackageInfo(String packageName, int flags, int userId);
     PackageInfo getPackageInfoApi33(String packageName, long flags, int userId);
+
+//    int getPermissionFlags(String permissionName, String packageName, int userId);
+
     void grantRuntimePermission(String packageName, String permissionName, int userId);
     void revokeRuntimePermission(String packageName, String permissionName, int userId);
     boolean isPackageAvailable(String packageName, int userId);

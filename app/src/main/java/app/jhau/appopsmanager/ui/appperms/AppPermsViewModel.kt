@@ -1,51 +1,44 @@
 package app.jhau.appopsmanager.ui.appperms
 
 import android.content.pm.PackageInfo
-import android.content.pm.PermissionInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import app.jhau.appopsmanager.data.repository.PermissionInfoRepository
+import app.jhau.appopsmanager.data.Permission
+import app.jhau.appopsmanager.data.repository.PermissionRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AppPermsViewModel @AssistedInject constructor(
-    @Assisted val pkgInfo: PackageInfo,
-    private val permsRepository: PermissionInfoRepository
+    @Assisted pkgInfo: PackageInfo,
+    private val permsRepo: PermissionRepository
 ) : ViewModel() {
     private val pkgName = pkgInfo.packageName
-    fun setPermission(permName: String, isGranted: Boolean) = viewModelScope.launch {
-        permsRepository.setPermissionGranted(pkgName, permName, isGranted)
-        updateAppPermList()
-    }
 
-    private val _appPermInfoList: MutableStateFlow<List<Pair<String, PermissionInfo?>>>
+    private val _appPermInfoList: MutableStateFlow<List<Permission>> = MutableStateFlow(emptyList())
+    val appPermInfoList: StateFlow<List<Permission>> = _appPermInfoList.asStateFlow()
 
     init {
-        val perms = permsRepository.fetchPermissionInfoList(
-            pkgInfo.requestedPermissions,
-            pkgInfo.requestedPermissionsFlags,
-            true
-        )
-        _appPermInfoList = MutableStateFlow(perms)
+        viewModelScope.launch {
+            val perms = permsRepo.getPackagePermissions(pkgName, refresh = true)
+            _appPermInfoList.emit(perms)
+        }
     }
 
-    val appPermInfoList = _appPermInfoList.asStateFlow()
-
-    private suspend fun updateAppPermList() {
-        val perms = permsRepository.fetchPermissionInfoList(
-            pkgInfo.requestedPermissions,
-            pkgInfo.requestedPermissionsFlags,
-            true
-        )
+    fun grantPermission(permName: String) = viewModelScope.launch {
+        permsRepo.grantPermission(pkgName, permName)
+        val perms = permsRepo.getPackagePermissions(pkgName)
         _appPermInfoList.emit(perms)
     }
 
-    fun checkGranted(permName: String): Boolean {
-        return permsRepository.isGranted(permName)
+    fun revokePermission(permName: String) = viewModelScope.launch {
+        permsRepo.revokePermission(pkgName, permName)
+        val perms = permsRepo.getPackagePermissions(pkgName)
+        _appPermInfoList.emit(perms)
     }
 
     @dagger.assisted.AssistedFactory

@@ -8,6 +8,7 @@ import android.util.Log;
 import java.lang.reflect.Method;
 
 import app.jhau.framework.appops.AppOpsManagerHidden;
+import app.jhau.framework.permission.PermissionManagerHidden;
 import app.jhau.framework.pms.PackageManagerHidden;
 
 public class IServerManager {
@@ -62,6 +63,17 @@ public class IServerManager {
         return null;
     }
 
+    public PermissionManagerHidden getPermissionManagerHidden() {
+        try {
+            if (iServer != null) {
+                return iServer.getPermissionManagerHidden();
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void killServer() {
         try {
             if (iServer == null) return;
@@ -71,7 +83,7 @@ public class IServerManager {
         }
     }
 
-    public String execCommand(String cmd){
+    public String execCommand(String cmd) {
         try {
             if (iServer != null) return iServer.execCommand(cmd);
         } catch (RemoteException e) {

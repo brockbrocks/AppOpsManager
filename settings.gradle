@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "AppOpsManager"
 include ':app'
-include ':framework-api'
+include ':framework_api'
 include ':server'

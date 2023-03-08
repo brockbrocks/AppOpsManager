@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
@@ -16,7 +15,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import app.jhau.appopsmanager.R
-import app.jhau.appopsmanager.data.repository.PackageInfoRepository
 import app.jhau.appopsmanager.databinding.ActivityAppBinding
 import app.jhau.appopsmanager.ui.appinfo.AppInfoActivity
 import app.jhau.appopsmanager.ui.base.BaseActivity
@@ -26,7 +24,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>(), View.OnClickListener {
+class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>() {
     private val TAG = "AppActivity"
     private lateinit var menu: Menu
 
@@ -71,44 +69,42 @@ class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>(), View.OnCli
         }
     }
 
-    private fun collectData() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                launch {
-                    viewModel.appUiState.map { it.apps }.collect {
-                        (binding.rvApp.adapter as AppAdapter).submitList(it)
-                    }
+    private fun collectData() = lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.CREATED) {
+            launch {
+                viewModel.appUiState.map { it.apps }.collect {
+                    (binding.rvApp.adapter as AppAdapter).submitList(it)
                 }
+            }
 
-                launch {
-                    viewModel.appUiState.map { it.sortType }.collect {
-                        if (!this@AppActivity::menu.isInitialized) return@collect
-                        updateSortTypeView(it)
-                    }
+            launch {
+                viewModel.appUiState.map { it.sortType }.collect {
+                    if (!this@AppActivity::menu.isInitialized) return@collect
+                    updateSortTypeView(it)
                 }
+            }
 
-                launch {
-                    viewModel.appUiState.map { it.filterTypes }.collect {
-                        if (!this@AppActivity::menu.isInitialized) return@collect
-                        updateFilterTypesView(it)
-                    }
+            launch {
+                viewModel.appUiState.map { it.filterTypes }.collect {
+                    if (!this@AppActivity::menu.isInitialized) return@collect
+                    updateFilterTypesView(it)
                 }
             }
         }
     }
 
-    private fun updateFilterTypesView(filterTypes: Set<PackageInfoRepository.FilterType>) {
+    private fun updateFilterTypesView(filterTypes: Set<AppViewModel.FilterType>) {
         menu.findItem(R.id.filter_is_system_app).isChecked =
-            filterTypes.contains(PackageInfoRepository.FilterType.SYSTEM_APP)
+            filterTypes.contains(AppViewModel.FilterType.SYSTEM_APP)
         menu.findItem(R.id.filter_disabled).isChecked =
-            filterTypes.contains(PackageInfoRepository.FilterType.DISABLED)
+            filterTypes.contains(AppViewModel.FilterType.DISABLED)
     }
 
     private fun initView() {
-        binding.rvApp.adapter = AppAdapter(this) { appItemUiState ->
-            viewModel.getAppIcon(appItemUiState)
-        }
+        binding.rvApp.adapter = AppAdapter(this::onAppClick, this::onLoadIcon)
     }
+
+    private fun onLoadIcon(pkgName: String) = viewModel.loadIcon(pkgName)
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
@@ -135,7 +131,7 @@ class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>(), View.OnCli
             viewModel.clearSearch()
             false
         }
-        searchView.setOnQueryTextListener(object : OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let { viewModel.searchApp(it) }
                 return true
@@ -150,28 +146,28 @@ class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>(), View.OnCli
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.sort_name -> {
-                viewModel.setSortType(PackageInfoRepository.SortType.NAME)
+                viewModel.setSortType(AppViewModel.SortType.NAME)
                 return true
             }
             R.id.sort_uid -> {
-                viewModel.setSortType(PackageInfoRepository.SortType.UID)
+                viewModel.setSortType(AppViewModel.SortType.UID)
                 return true
             }
             R.id.filter_is_system_app -> {
                 val checked = menu.findItem(R.id.filter_is_system_app).isChecked
                 if (checked) {
-                    viewModel.removeFilter(PackageInfoRepository.FilterType.SYSTEM_APP)
+                    viewModel.removeFilter(AppViewModel.FilterType.SYSTEM_APP)
                 } else {
-                    viewModel.addFilter(PackageInfoRepository.FilterType.SYSTEM_APP)
+                    viewModel.addFilter(AppViewModel.FilterType.SYSTEM_APP)
                 }
                 return true
             }
             R.id.filter_disabled -> {
                 val checked = menu.findItem(R.id.filter_disabled).isChecked
                 if (checked) {
-                    viewModel.removeFilter(PackageInfoRepository.FilterType.DISABLED)
+                    viewModel.removeFilter(AppViewModel.FilterType.DISABLED)
                 } else {
-                    viewModel.addFilter(PackageInfoRepository.FilterType.DISABLED)
+                    viewModel.addFilter(AppViewModel.FilterType.DISABLED)
                 }
                 return true
             }
@@ -185,27 +181,24 @@ class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>(), View.OnCli
         }
     }
 
-    override fun onClick(v: View?) {
-        v?.let {
-            val position = binding.rvApp.getChildAdapterPosition(it)
-            val packageInfo = viewModel.getPackageInfo(position)
-            AppInfoActivity.start(this, packageInfo)
-        }
+    private fun onAppClick(pkgName: String) {
+        val pkg = viewModel.getPackageInfo(pkgName) ?: return
+        AppInfoActivity.start(this, pkg)
     }
 
     override fun onResume() {
         super.onResume()
-        val sortType = viewModel.appUiState.value.sortType
-        val filterTypes = viewModel.appUiState.value.filterTypes
-        viewModel.fetchPackageInfoList(sortType = sortType, filterTypes = filterTypes)
+        if (!viewModel.appUiState.value.searching) {
+            viewModel.fetchPackageInfoList(true)
+        }
     }
 
-    private fun updateSortTypeView(type: PackageInfoRepository.SortType) {
+    private fun updateSortTypeView(type: AppViewModel.SortType) {
         when (type) {
-            PackageInfoRepository.SortType.NAME -> {
+            AppViewModel.SortType.NAME -> {
                 menu.findItem(R.id.sort_name).isChecked = true
             }
-            PackageInfoRepository.SortType.UID -> {
+            AppViewModel.SortType.UID -> {
                 menu.findItem(R.id.sort_uid).isChecked = true
             }
         }

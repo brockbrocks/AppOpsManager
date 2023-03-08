@@ -42,9 +42,9 @@ class AppInfoActivity : BaseActivity<ActivityAppDetailBinding, AppInfoViewModel>
         }
 
         val pkgInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(AppInfoSettingsFragment.PACKAGE_INFO, PackageInfo::class.java)
+            intent.getParcelableExtra(PACKAGE_INFO, PackageInfo::class.java)
         } else {
-            intent.getParcelableExtra(AppInfoSettingsFragment.PACKAGE_INFO)
+            intent.getParcelableExtra(PACKAGE_INFO)
         }
         if (pkgInfo == null) return
         viewModel = ViewModelProvider(
@@ -56,7 +56,7 @@ class AppInfoActivity : BaseActivity<ActivityAppDetailBinding, AppInfoViewModel>
             .beginTransaction()
             .replace(R.id.app_info_settings, AppInfoSettingsFragment().apply {
                 val bundle = Bundle()
-                bundle.putParcelable(AppInfoSettingsFragment.PACKAGE_INFO, pkgInfo)
+                bundle.putParcelable(PACKAGE_INFO, pkgInfo)
                 arguments = bundle
             })
             .commit()
@@ -124,10 +124,12 @@ class AppInfoActivity : BaseActivity<ActivityAppDetailBinding, AppInfoViewModel>
     }
 
     companion object {
-        fun start(context: Context, packageInfo: PackageInfo) {
+
+        const val PACKAGE_INFO = "packageInfo"
+        fun start(context: Context, pkgInfo: PackageInfo) {
             val intent = Intent(context, AppInfoActivity::class.java)
             intent.action = Intent.ACTION_VIEW
-            intent.putExtra(AppInfoSettingsFragment.PACKAGE_INFO, packageInfo)
+            intent.putExtra(PACKAGE_INFO, pkgInfo)
             context.startActivity(intent)
         }
     }

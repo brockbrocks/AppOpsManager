@@ -15,7 +15,6 @@ import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.databinding.ActivityAppPermsBinding
 import app.jhau.appopsmanager.ui.appopsinfo.AppOpsInfoActivity
 import app.jhau.appopsmanager.ui.base.BaseActivity
-import app.jhau.server.IServerManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,9 +24,6 @@ class AppPermsActivity : BaseActivity<ActivityAppPermsBinding, AppPermsViewModel
     @Inject
     lateinit var factory: AppPermsViewModel.AssistedFactory
     override lateinit var viewModel: AppPermsViewModel
-
-    @Inject
-    lateinit var iServerManager: IServerManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,18 +46,17 @@ class AppPermsActivity : BaseActivity<ActivityAppPermsBinding, AppPermsViewModel
         collectData()
     }
 
-    private fun collectData() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.appPermInfoList.collect {
-                    (binding.permsList.adapter as AppPermsAdapter).submitList(it)
-                }
+    private fun collectData() = lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.CREATED) {
+            viewModel.appPermInfoList.collect {
+                (binding.permsList.adapter as AppPermsAdapter).submitList(it)
             }
         }
     }
 
+
     private fun setupAdapter() {
-        binding.permsList.adapter = AppPermsAdapter(this::setPermission, this::checkGranted)
+        binding.permsList.adapter = AppPermsAdapter(this::setPermission)
         binding.permsList.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     }
@@ -77,13 +72,12 @@ class AppPermsActivity : BaseActivity<ActivityAppPermsBinding, AppPermsViewModel
     }
 
     private fun setPermission(permName: String, permChecked: Boolean) {
-//        val pkgName = viewModel.pkgInfo.packageName
-        viewModel.setPermission(permName, permChecked)
-//        Toast.makeText(this, "${pkgName} \n${permChecked}", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun checkGranted(permName: String): Boolean {
-        return viewModel.checkGranted(permName)
+//        viewModel.setPermission(permName, permChecked)
+        if (permChecked) {
+            viewModel.grantPermission(permName)
+        } else {
+            viewModel.revokePermission(permName)
+        }
     }
 
     companion object {

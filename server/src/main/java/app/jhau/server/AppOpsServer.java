@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 
 import app.jhau.framework.ams.ActivityManagerApi;
 import app.jhau.framework.appops.AppOpsManagerHidden;
+import app.jhau.framework.permission.PermissionManagerHidden;
 import app.jhau.framework.pms.PackageManagerHidden;
 import app.jhau.server.util.Constants;
 import app.jhau.server.util.ServerProviderUtil;
@@ -142,6 +143,7 @@ public class AppOpsServer {
         private IServerActivatedObserver serverActivatedObserver;
         private PackageManagerHidden packageManagerHidden;
         private AppOpsManagerHidden appOpsManagerHidden;
+        private PermissionManagerHidden permissionManagerHidden;
 
         static {
             String classPath = System.getProperty("java.class.path");
@@ -187,6 +189,16 @@ public class AppOpsServer {
             try {
                 if (packageManagerHidden == null) packageManagerHidden = new PackageManagerHidden();
                 return packageManagerHidden;
+            } catch (Throwable e) {
+                throw new RemoteException(e.getMessage());
+            }
+        }
+
+        @Override
+        public PermissionManagerHidden getPermissionManagerHidden() throws RemoteException {
+            try {
+                if (permissionManagerHidden == null) permissionManagerHidden = new PermissionManagerHidden();
+                return permissionManagerHidden;
             } catch (Throwable e) {
                 throw new RemoteException(e.getMessage());
             }

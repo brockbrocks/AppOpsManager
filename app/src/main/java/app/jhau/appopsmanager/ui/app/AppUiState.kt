@@ -1,12 +1,10 @@
 package app.jhau.appopsmanager.ui.app
-import app.jhau.appopsmanager.data.repository.PackageInfoRepository
 
 data class AppUiState(
     val apps: List<AppItemUiState> = emptyList(),
-    val sortType: PackageInfoRepository.SortType = PackageInfoRepository.SortType.UID,
-    val filterTypes: Set<PackageInfoRepository.FilterType> = setOf(
-        PackageInfoRepository.FilterType.USER_APP
-    )
+    val sortType: AppViewModel.SortType = AppViewModel.SortType.UID,
+    val filterTypes: Set<AppViewModel.FilterType> = setOf(AppViewModel.FilterType.USER_APP),
+    val searching: Boolean = false
 )
 
 data class AppItemUiState(

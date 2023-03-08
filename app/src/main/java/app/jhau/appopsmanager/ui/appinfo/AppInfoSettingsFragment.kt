@@ -3,16 +3,17 @@ package app.jhau.appopsmanager.ui.appinfo
 import android.content.pm.PackageInfo
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import app.jhau.appopsmanager.R
+import app.jhau.appopsmanager.ui.appinfo.AppInfoActivity.Companion.PACKAGE_INFO
 import app.jhau.appopsmanager.ui.appopsinfo.AppOpsInfoActivity
 import app.jhau.appopsmanager.ui.appperms.AppPermsActivity
 
 class AppInfoSettingsFragment : PreferenceFragmentCompat() {
     private lateinit var pkgInfo: PackageInfo
-    private val viewModel: AppInfoViewModel by viewModels({ requireActivity() })
+
+    //private val viewModel: AppInfoViewModel by viewModels({ requireActivity() })
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -30,15 +31,10 @@ class AppInfoSettingsFragment : PreferenceFragmentCompat() {
         when (preference.key) {
             "permission_settings" -> {
                 try {
-//                    val permIntent = Intent("android.intent.action.MANAGE_APP_PERMISSIONS")
-//                    permIntent.putExtra(Intent.EXTRA_PACKAGE_NAME, "android")
-//                    requireActivity().startActivity(permIntent)
                     AppPermsActivity.start(requireContext(), pkgInfo)
-                    //viewModel.startPermissionControllerByADB(pkgInfo)
                 } catch (e: Throwable) {
                     e.printStackTrace()
                 }
-                //AppPermsInfoActivity.start(requireContext(), pkgInfo)
             }
             "appops_settings" -> {
                 AppOpsInfoActivity.start(requireContext(), pkgInfo)
@@ -46,9 +42,5 @@ class AppInfoSettingsFragment : PreferenceFragmentCompat() {
             else -> {}
         }
         return super.onPreferenceTreeClick(preference)
-    }
-
-    companion object {
-        const val PACKAGE_INFO = "packageInfo"
     }
 }

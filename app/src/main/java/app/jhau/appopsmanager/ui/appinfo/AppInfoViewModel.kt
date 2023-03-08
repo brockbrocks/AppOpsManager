@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import app.jhau.appopsmanager.data.repository.PackageInfoRepository
-import app.jhau.server.IServerManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,26 +15,12 @@ import kotlinx.coroutines.launch
 
 class AppInfoViewModel @AssistedInject constructor(
     @Assisted pkgInfo: PackageInfo,
-    private val packageInfoRepository: PackageInfoRepository,
-    private val iServerManager: IServerManager
+    private val pkgInfoRepo: PackageInfoRepository
 ) : ViewModel() {
 
     private val _pkgInfo = MutableStateFlow(pkgInfo)
     val pkgInfo = _pkgInfo.asStateFlow()
     val onSetAppEnableSetting: MutableSharedFlow<Boolean> = MutableSharedFlow()
-
-    fun startPermissionControllerByADB(pkgInfo: PackageInfo) = viewModelScope.launch {
-        val resolveInfoList = packageInfoRepository.findPermissionControllerInfo()
-        if (resolveInfoList.isNotEmpty() && resolveInfoList.size == 1) {
-            val info = resolveInfoList[0]
-            val pkgName = info.activityInfo.packageName
-            val activityName = info.activityInfo.name
-            val targetPkgName = pkgInfo.packageName
-            val cmd =
-                "am start -a android.intent.action.MANAGE_APP_PERMISSIONS --es android.intent.extra.PACKAGE_NAME ${targetPkgName} ${pkgName}/${activityName}"
-            iServerManager.execCommand(cmd)
-        }
-    }
 
     fun switchAppEnableState() = viewModelScope.launch {
         val pkgName = _pkgInfo.value.packageName
@@ -47,7 +32,7 @@ class AppInfoViewModel @AssistedInject constructor(
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED
             }
         try {
-            val newPkgInfo = packageInfoRepository.setPackageEnable(pkgName, newState)
+            val newPkgInfo = pkgInfoRepo.setPackageEnable(pkgName, newState)
             _pkgInfo.emit(newPkgInfo)
             onSetAppEnableSetting.emit(newPkgInfo.applicationInfo.enabled)
         } catch (e: Throwable) {
