@@ -4,6 +4,7 @@ import android.view.View
 import app.jhau.appopsmanager.data.Permission
 import app.jhau.appopsmanager.databinding.ItemAppPermsBinding
 import app.jhau.appopsmanager.ui.base.BaseListAdapter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class AppPermsAdapter(
     private val onPermsChecked: (String, Boolean) -> Unit
@@ -35,6 +36,11 @@ class AppPermsAdapter(
             if (changeable) {
                 setOnCheckedChangeListener { _, isChecked -> onPermsChecked(perm.name, isChecked) }
             }
+        }
+        holder.binding.permItem.setOnClickListener {
+            val ctx = holder.itemView.context
+            val dialog = MaterialAlertDialogBuilder(ctx).setAdapter(PermDetailAdapter(ctx, perm.toStringArray()), null).create()
+            dialog.show()
         }
     }
 

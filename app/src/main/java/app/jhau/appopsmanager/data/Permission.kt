@@ -4,7 +4,6 @@ import android.content.pm.PermissionInfo
 import app.jhau.framework.permission.PermissionInfoHidden
 import app.jhau.framework.pms.PackageManagerHidden
 
-
 data class Permission(
     val permInfo: PermissionInfo,
     val name: String,
@@ -104,5 +103,19 @@ data class Permission(
         }
 
         return protStr + protLevel
+    }
+
+    fun toStringArray(): Array<String> {
+        return arrayOf(
+            "permName: $name",
+            "granted: $granted",
+            "flags: $flags",
+            "isChangeable: $isChangeable",
+            "isRuntime: ${isRuntime()}",
+            "isAppOp: ${isAppOp()}",
+            "isSystemFixed: ${isSystemFixed()}",
+            "isPolicyFixed: ${isPolicyFixed()}",
+            "protectionStr: ${protectionStr()}",
+        )
     }
 }
