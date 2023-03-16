@@ -3,30 +3,30 @@ package app.jhau.framework.appops;
 import android.app.AppOpsManager$OpEntry;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.RemoteException;
 
-/**
- * OpEntry
- */
-public final class OpEntry implements Parcelable {
-    private final IOpEntry iOpEntry;
+import androidx.annotation.NonNull;
+
+public class OpEntry implements Parcelable {
+    private final int mOp;
+    private final int mMode;
+    private final long mTime;
+    private final long mRejectTime;
+//    private final int mDuration;
+//    private final int mProxyUid;
+//    private final String mProxyPackageName;
 
     public OpEntry(AppOpsManager$OpEntry opEntry) {
-        iOpEntry = new OpEntryImpl(opEntry);
+        mOp = opEntry.getOp();
+        mMode = opEntry.getMode();
+        mTime = opEntry.getTime();
+        mRejectTime = opEntry.getRejectTime();
     }
 
     protected OpEntry(Parcel in) {
-        iOpEntry = IOpEntry.Stub.asInterface(in.readStrongBinder());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStrongBinder(iOpEntry.asBinder());
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        mOp = in.readInt();
+        mMode = in.readInt();
+        mTime = in.readLong();
+        mRejectTime = in.readLong();
     }
 
     public static final Creator<OpEntry> CREATOR = new Creator<OpEntry>() {
@@ -41,29 +41,32 @@ public final class OpEntry implements Parcelable {
         }
     };
 
-    private static final class OpEntryImpl extends IOpEntry.Stub {
-        private AppOpsManager$OpEntry opEntry;
-
-        public OpEntryImpl(AppOpsManager$OpEntry opEntry) {
-            this.opEntry = opEntry;
-        }
-
-        @Override
-        public int getOp() throws RemoteException {
-            return opEntry.getOp();
-        }
-
-        @Override
-        public int getMode() throws RemoteException {
-            return opEntry.getMode();
-        }
+    public int getOp() {
+        return mOp;
     }
 
-    public int getOp() throws RemoteException {
-        return iOpEntry.getOp();
+    public int getMode() {
+        return mMode;
     }
 
-    public int getMode() throws RemoteException {
-        return iOpEntry.getMode();
+    public long getTime() {
+        return mTime;
+    }
+
+    public long getRejectTime() {
+        return mRejectTime;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(mOp);
+        dest.writeInt(mMode);
+        dest.writeLong(mTime);
+        dest.writeLong(mRejectTime);
     }
 }

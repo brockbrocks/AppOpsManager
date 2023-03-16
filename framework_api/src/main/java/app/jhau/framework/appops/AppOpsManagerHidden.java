@@ -1,39 +1,35 @@
 package app.jhau.framework.appops;
 
+import android.app.AppOpsManager;
+import android.app.AppOpsManager$PackageOps;
+import android.content.Context;
 import android.os.Build;
-import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.os.ServiceManager;
+
+import androidx.annotation.NonNull;
+
+import com.android.internal.app.IAppOpsService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class AppOpsManagerHidden implements IAppOpsManagerHidden, Parcelable {
-    private final IAppOpsManagerHidden iAppOpsManager;
+import app.jhau.framework.util.ReflectUtil;
+
+public class AppOpsManagerHidden extends IAppOpsManagerHidden.Stub implements Parcelable {
+    private IAppOpsService appOpsSvc;
+    private IAppOpsManagerHidden mRemote;
 
     public AppOpsManagerHidden() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            iAppOpsManager = new AppOpsManagerHiddenImpl();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-            iAppOpsManager = new AppOpsManagerApi28();
-        } else {
-            iAppOpsManager = new AppOpsManagerApi23();
-        }
+        appOpsSvc = IAppOpsService.Stub.asInterface(ServiceManager.getService(Context.APP_OPS_SERVICE));
+        initFields();
     }
 
-    protected AppOpsManagerHidden(Parcel in) {
-        iAppOpsManager = IAppOpsManagerHidden.Stub.asInterface(in.readStrongBinder());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStrongBinder(iAppOpsManager.asBinder());
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+    AppOpsManagerHidden(Parcel in) {
+        mRemote = IAppOpsManagerHidden.Stub.asInterface(in.readStrongBinder());
     }
 
     public static final Creator<AppOpsManagerHidden> CREATOR = new Creator<AppOpsManagerHidden>() {
@@ -49,41 +45,87 @@ public class AppOpsManagerHidden implements IAppOpsManagerHidden, Parcelable {
     };
 
     @Override
-    public IBinder asBinder() {
-        return null;
-    }
+    public List<PackageOps> getOpsForPackage(int uid, String packageName, int[] ops) throws RemoteException {
+        if (mRemote != null) return mRemote.getOpsForPackage(uid, packageName, ops);
 
-    @Override
-    public String[] getModeNames() throws RemoteException {
-        return iAppOpsManager.getModeNames();
-    }
+        List<AppOpsManager$PackageOps> pkgOpsList = appOpsSvc.getOpsForPackage(uid, packageName, ops);
+        if (pkgOpsList == null || pkgOpsList.isEmpty()) return Collections.emptyList();
 
-    @Override
-    public String modeToName(int mode) throws RemoteException {
-        return iAppOpsManager.modeToName(mode);
-    }
-
-    //@UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R)
-    @Override
-    public String opToName(int op) throws RemoteException {
-        return iAppOpsManager.opToName(op);
-    }
-
-    @Override
-    public void setUidMode(int code, int uid, int mode) throws RemoteException {
-        iAppOpsManager.setUidMode(code, uid, mode);
+        List<PackageOps> ret = new ArrayList<>();
+        for (AppOpsManager$PackageOps pkgOps : pkgOpsList) {
+            ret.add(new PackageOps(pkgOps));
+        }
+        return ret;
     }
 
     @Override
     public void setMode(int code, int uid, String packageName, int mode) throws RemoteException {
-        iAppOpsManager.setMode(code, uid, packageName, mode);
+        if (mRemote != null) {
+            mRemote.setMode(code, uid, packageName, mode);
+        } else {
+            appOpsSvc.setMode(code, uid, packageName, mode);
+        }
     }
 
     @Override
-    public List<PackageOps> getOpsForPackage(int uid, String packageName, int[] ops) throws RemoteException {
-        List<PackageOps> ret = iAppOpsManager.getOpsForPackage(uid, packageName, ops);
-        if (ret == null) return new ArrayList<>();
-        return ret;
+    public void setUidMode(int code, int uid, int mode) throws RemoteException {
+        if (mRemote != null) {
+            mRemote.setUidMode(code, uid, mode);
+        } else {
+            appOpsSvc.setUidMode(code, uid, mode);
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeStrongBinder(this.asBinder());
+    }
+
+    @Override
+    public String modeToName(int mode) throws RemoteException {
+        if (mRemote != null) return mRemote.modeToName(mode);
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return MODE_NAMES[mode];
+            return (String) ReflectUtil.invokeStaticMethod(AppOpsManager.class, "modeToName", int.class);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String[] getOpNames() throws RemoteException {
+        if (mRemote != null) return mRemote.getOpNames();
+        return sOpNames;
+    }
+
+    @Override
+    public String[] getModeNames() throws RemoteException {
+        if (mRemote != null) return mRemote.getModeNames();
+        return MODE_NAMES;
+    }
+
+    public String[] sOpNames;
+
+    public String[] MODE_NAMES;
+
+    private void initFields() {
+        sOpNames = ReflectUtil.getStaticField(AppOpsManager.class, "sOpNames");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            MODE_NAMES = new String[]{
+                    "allow",        // MODE_ALLOWED
+                    "ignore",       // MODE_IGNORED
+                    "deny",         // MODE_ERRORED
+                    "default"      // MODE_DEFAULT
+            };
+        } else {
+            MODE_NAMES = ReflectUtil.getStaticField(AppOpsManager.class, "MODE_NAMES");
+        }
     }
 
 }
