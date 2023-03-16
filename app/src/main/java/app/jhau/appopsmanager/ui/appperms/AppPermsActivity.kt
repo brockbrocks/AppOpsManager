@@ -13,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.databinding.ActivityAppPermsBinding
-import app.jhau.appopsmanager.ui.appopsinfo.AppOpsInfoActivity
+import app.jhau.appopsmanager.ui.appops.AppOpsActivity
 import app.jhau.appopsmanager.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -28,9 +28,9 @@ class AppPermsActivity : BaseActivity<ActivityAppPermsBinding, AppPermsViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val pkgInfo: PackageInfo? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.extras?.getParcelable(AppOpsInfoActivity.PACKAGE_INFO, PackageInfo::class.java)
+            intent.extras?.getParcelable(AppOpsActivity.PACKAGE_INFO, PackageInfo::class.java)
         } else {
-            intent.extras?.getParcelable(AppOpsInfoActivity.PACKAGE_INFO)
+            intent.extras?.getParcelable(AppOpsActivity.PACKAGE_INFO)
         }
         if (pkgInfo == null) return
         supportActionBar?.apply {

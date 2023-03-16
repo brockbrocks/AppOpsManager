@@ -54,41 +54,49 @@ class AppViewModel @Inject constructor(
         return filterOut
     }
 
-    fun setSortType(sortType: SortType) = viewModelScope.launch {
-        val curFilterTypes = _appUiState.value.filterTypes
-        val displayPkgs = pkgs.values.filter { filterLogic(it, curFilterTypes) }
-            .sortedWith { o1, o2 -> sortLogic(o1, o2, sortType) }
-        updateAppItemUiState(displayPkgs, sortType, curFilterTypes)
-    }
-
-    fun addFilter(filterType: FilterType) = viewModelScope.launch {
-        val curSortType = _appUiState.value.sortType
-        val newFilterTypes = _appUiState.value.filterTypes.toMutableSet()
-        newFilterTypes.add(filterType)
-        val displayPkgs = pkgs.values.filter { filterLogic(it, newFilterTypes) }
-            .sortedWith { o1, o2 -> sortLogic(o1, o2, curSortType) }
-        updateAppItemUiState(displayPkgs, curSortType, newFilterTypes)
-    }
-
-    fun removeFilter(filterType: FilterType) = viewModelScope.launch {
-        val curSortType = _appUiState.value.sortType
-        val newFilterTypes = _appUiState.value.filterTypes.toMutableSet()
-        newFilterTypes.remove(filterType)
-        val displayPkgs = pkgs.values.filter { filterLogic(it, newFilterTypes) }
-            .sortedWith { o1, o2 -> sortLogic(o1, o2, curSortType) }
-        updateAppItemUiState(displayPkgs, curSortType, newFilterTypes)
-    }
-
-    fun fetchPackageInfoList(update: Boolean = false) = viewModelScope.launch {
-        val fetchPkgs = pkgInfoRepo.getPackageInfoList(refresh = update)
-        pkgs = linkedMapOf<String, PackageInfo>().apply {
-            fetchPkgs.forEach { this[it.packageName] = it }
+    fun setSortType(sortType: SortType) {
+        viewModelScope.launch {
+            val curFilterTypes = _appUiState.value.filterTypes
+            val displayPkgs = pkgs.values.filter { filterLogic(it, curFilterTypes) }
+                .sortedWith { o1, o2 -> sortLogic(o1, o2, sortType) }
+            updateAppItemUiState(displayPkgs, sortType, curFilterTypes)
         }
-        val sortType = _appUiState.value.sortType
-        val filterTypes = _appUiState.value.filterTypes
-        val displayPkgs = pkgs.values.filter { filterLogic(it, filterTypes) }
-            .sortedWith { o1, o2 -> sortLogic(o1, o2, sortType) }
-        updateAppItemUiState(displayPkgs, sortType, filterTypes)
+    }
+
+    fun addFilter(filterType: FilterType) {
+        viewModelScope.launch {
+            val curSortType = _appUiState.value.sortType
+            val newFilterTypes = _appUiState.value.filterTypes.toMutableSet()
+            newFilterTypes.add(filterType)
+            val displayPkgs = pkgs.values.filter { filterLogic(it, newFilterTypes) }
+                .sortedWith { o1, o2 -> sortLogic(o1, o2, curSortType) }
+            updateAppItemUiState(displayPkgs, curSortType, newFilterTypes)
+        }
+    }
+
+    fun removeFilter(filterType: FilterType) {
+        viewModelScope.launch {
+            val curSortType = _appUiState.value.sortType
+            val newFilterTypes = _appUiState.value.filterTypes.toMutableSet()
+            newFilterTypes.remove(filterType)
+            val displayPkgs = pkgs.values.filter { filterLogic(it, newFilterTypes) }
+                .sortedWith { o1, o2 -> sortLogic(o1, o2, curSortType) }
+            updateAppItemUiState(displayPkgs, curSortType, newFilterTypes)
+        }
+    }
+
+    fun fetchPackageInfoList(update: Boolean = false) {
+        viewModelScope.launch {
+            val fetchPkgs = pkgInfoRepo.getPackageInfoList(refresh = update)
+            pkgs = linkedMapOf<String, PackageInfo>().apply {
+                fetchPkgs.forEach { this[it.packageName] = it }
+            }
+            val sortType = _appUiState.value.sortType
+            val filterTypes = _appUiState.value.filterTypes
+            val displayPkgs = pkgs.values.filter { filterLogic(it, filterTypes) }
+                .sortedWith { o1, o2 -> sortLogic(o1, o2, sortType) }
+            updateAppItemUiState(displayPkgs, sortType, filterTypes)
+        }
     }
 
     private suspend fun updateAppItemUiState(
@@ -122,35 +130,39 @@ class AppViewModel @Inject constructor(
         return pkg.applicationInfo.loadIcon(app.packageManager)
     }
 
-    fun searchApp(content: String) = viewModelScope.launch {
-        val retPkgs = pkgs.values.filter {
-            it.packageName.contains(content)
-                    || it.applicationInfo.uid.toString().contains(content)
-                    || it.versionName.contains(content)
-                    || it.applicationInfo.loadLabel(app.packageManager).contains(content)
+    fun searchApp(content: String) {
+        viewModelScope.launch {
+            val retPkgs = pkgs.values.filter {
+                it.packageName.contains(content)
+                        || it.applicationInfo.uid.toString().contains(content)
+                        || it.versionName.contains(content)
+                        || it.applicationInfo.loadLabel(app.packageManager).contains(content)
+            }
+            val newAppItemUiStates = retPkgs.map {
+                AppItemUiState(
+                    it.applicationInfo.uid,
+                    it.applicationInfo.loadLabel(app.packageManager).toString(),
+                    it.packageName,
+                    it.applicationInfo.enabled
+                )
+            }
+            _appUiState.emit(_appUiState.value.copy(apps = newAppItemUiStates, searching = true))
         }
-        val newAppItemUiStates = retPkgs.map {
-            AppItemUiState(
-                it.applicationInfo.uid,
-                it.applicationInfo.loadLabel(app.packageManager).toString(),
-                it.packageName,
-                it.applicationInfo.enabled
-            )
-        }
-        _appUiState.emit(_appUiState.value.copy(apps = newAppItemUiStates, searching = true))
     }
 
-    fun clearSearch() = viewModelScope.launch {
-        val sortType = _appUiState.value.sortType
-        val filterTypes = _appUiState.value.filterTypes
-        val displayPkgs = pkgs.values.filter { filterLogic(it, filterTypes) }
-            .sortedWith { o1, o2 -> sortLogic(o1, o2, sortType) }
-        updateAppItemUiState(
-            displayPkgs,
-            sortType,
-            filterTypes,
-            false
-        )
+    fun clearSearch() {
+        viewModelScope.launch {
+            val sortType = _appUiState.value.sortType
+            val filterTypes = _appUiState.value.filterTypes
+            val displayPkgs = pkgs.values.filter { filterLogic(it, filterTypes) }
+                .sortedWith { o1, o2 -> sortLogic(o1, o2, sortType) }
+            updateAppItemUiState(
+                displayPkgs,
+                sortType,
+                filterTypes,
+                false
+            )
+        }
     }
 
     enum class SortType {

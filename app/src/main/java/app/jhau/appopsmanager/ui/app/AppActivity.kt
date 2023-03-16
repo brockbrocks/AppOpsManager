@@ -16,7 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.databinding.ActivityAppBinding
-import app.jhau.appopsmanager.ui.appinfo.AppInfoActivity
+import app.jhau.appopsmanager.ui.appsetting.AppSettingActivity
 import app.jhau.appopsmanager.ui.base.BaseActivity
 import app.jhau.appopsmanager.ui.setting.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -183,7 +183,7 @@ class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>() {
 
     private fun onAppClick(pkgName: String) {
         val pkg = viewModel.getPackageInfo(pkgName) ?: return
-        AppInfoActivity.start(this, pkg)
+        AppSettingActivity.start(this, pkg)
     }
 
     override fun onResume() {

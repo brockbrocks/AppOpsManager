@@ -6,7 +6,7 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.content.pm.PermissionInfo
 import android.os.Build
 import app.jhau.appopsmanager.data.Permission
-import app.jhau.appopsmanager.util.userId
+import app.jhau.appopsmanager.util.USER_ID
 import app.jhau.server.IServerManager
 import javax.inject.Inject
 
@@ -21,6 +21,16 @@ class PermissionRepository @Inject constructor(
 ) {
     private var permsStore: MutableMap<String, PackagePermissions> = linkedMapOf()
 
+    private fun getPermissionFlags(pkgName: String, requestedPermName: String): Int {
+        val flags = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R){
+            iSvrMgr.packageManagerHidden.getPermissionFlags(requestedPermName, pkgName, USER_ID)
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            iSvrMgr.permissionManagerHidden.getPermissionFlags(requestedPermName, pkgName, USER_ID)
+        } else {
+            iSvrMgr.permissionManagerHidden.getPermissionFlagsApi33(pkgName, requestedPermName, USER_ID)
+        }
+        return flags
+    }
     suspend fun getPackagePermissions(pkgName: String, refresh: Boolean = false): List<Permission> {
         if (refresh) {
             val newPkgPermsMap = linkedMapOf<String, Permission>()
@@ -32,19 +42,7 @@ class PermissionRepository @Inject constructor(
                     val permInfo =
                         permInfoDataSource.getPermissionInfo(requestedPermName) ?: continue
                     val requestedPermFlag = pkgInfo.requestedPermissionsFlags[i]
-                    val flags = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                        iSvrMgr.permissionManagerHidden.getPermissionFlags(
-                            requestedPermName,
-                            pkgName,
-                            userId
-                        )
-                    } else {
-                        iSvrMgr.permissionManagerHidden.getPermissionFlagsApi33(
-                            pkgName,
-                            requestedPermName,
-                            userId
-                        )
-                    }
+                    val flags = getPermissionFlags(pkgName, requestedPermName)
                     newPkgPermsMap[requestedPermName] = permDataSource.createPermission(
                         permInfo,
                         requestedPermName,
@@ -63,7 +61,7 @@ class PermissionRepository @Inject constructor(
         try {
             val pkgPerms = permsStore[pkgName] ?: mutableMapOf()
             val perm = pkgPerms[permName] ?: return
-            iSvrMgr.packageManagerHidden.grantRuntimePermission(pkgName, permName, userId)
+            iSvrMgr.packageManagerHidden.grantRuntimePermission(pkgName, permName, USER_ID)
             pkgPerms[permName] = perm.copy(granted = true)
         } catch (e: Throwable) {
             e.printStackTrace()
@@ -76,12 +74,12 @@ class PermissionRepository @Inject constructor(
             val perm = pkgPerms[permName] ?: return
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                iSvrMgr.packageManagerHidden.revokeRuntimePermission(pkgName, permName, userId)
+                iSvrMgr.packageManagerHidden.revokeRuntimePermission(pkgName, permName, USER_ID)
             } else {
                 iSvrMgr.permissionManagerHidden.revokeRuntimePermission(
                     pkgName,
                     permName,
-                    userId,
+                    USER_ID,
                     ""
                 )
             }

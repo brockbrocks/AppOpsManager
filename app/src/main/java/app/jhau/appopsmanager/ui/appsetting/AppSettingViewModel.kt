@@ -1,4 +1,4 @@
-package app.jhau.appopsmanager.ui.appinfo
+package app.jhau.appopsmanager.ui.appsetting
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class AppInfoViewModel @AssistedInject constructor(
+class AppSettingViewModel @AssistedInject constructor(
     @Assisted pkgInfo: PackageInfo,
     private val pkgInfoRepo: PackageInfoRepository
 ) : ViewModel() {
@@ -43,7 +43,7 @@ class AppInfoViewModel @AssistedInject constructor(
 
     @dagger.assisted.AssistedFactory
     interface AssistedFactory {
-        fun create(pkgInfo: PackageInfo): AppInfoViewModel
+        fun create(pkgInfo: PackageInfo): AppSettingViewModel
     }
 
     companion object {

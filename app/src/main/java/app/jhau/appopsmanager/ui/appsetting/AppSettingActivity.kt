@@ -1,4 +1,4 @@
-package app.jhau.appopsmanager.ui.appinfo
+package app.jhau.appopsmanager.ui.appsetting
 
 import android.content.Context
 import android.content.Intent
@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import app.jhau.appopsmanager.R
-import app.jhau.appopsmanager.databinding.ActivityAppDetailBinding
+import app.jhau.appopsmanager.databinding.ActivityAppSettingBinding
 import app.jhau.appopsmanager.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
@@ -22,11 +22,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AppInfoActivity : BaseActivity<ActivityAppDetailBinding, AppInfoViewModel>() {
+class AppSettingActivity : BaseActivity<ActivityAppSettingBinding, AppSettingViewModel>() {
     @Inject
-    lateinit var factory: AppInfoViewModel.AssistedFactory
+    lateinit var factory: AppSettingViewModel.AssistedFactory
 
-    override lateinit var viewModel: AppInfoViewModel
+    override lateinit var viewModel: AppSettingViewModel
     private lateinit var setEnableItem: MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,12 +49,12 @@ class AppInfoActivity : BaseActivity<ActivityAppDetailBinding, AppInfoViewModel>
         if (pkgInfo == null) return
         viewModel = ViewModelProvider(
             this,
-            AppInfoViewModel.provideViewModelFactory(factory, pkgInfo)
-        )[AppInfoViewModel::class.java]
+            AppSettingViewModel.provideViewModelFactory(factory, pkgInfo)
+        )[AppSettingViewModel::class.java]
         //
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.app_info_settings, AppInfoSettingsFragment().apply {
+            .replace(R.id.app_info_settings, AppSettingsFragment().apply {
                 val bundle = Bundle()
                 bundle.putParcelable(PACKAGE_INFO, pkgInfo)
                 arguments = bundle
@@ -127,7 +127,7 @@ class AppInfoActivity : BaseActivity<ActivityAppDetailBinding, AppInfoViewModel>
 
         const val PACKAGE_INFO = "packageInfo"
         fun start(context: Context, pkgInfo: PackageInfo) {
-            val intent = Intent(context, AppInfoActivity::class.java)
+            val intent = Intent(context, AppSettingActivity::class.java)
             intent.action = Intent.ACTION_VIEW
             intent.putExtra(PACKAGE_INFO, pkgInfo)
             context.startActivity(intent)

@@ -4,28 +4,36 @@ import android.app.AppOpsManager$OpEntry;
 import android.app.AppOpsManager$PackageOps;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.RemoteException;
+
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * PackageOps
- */
-public final class PackageOps implements Parcelable {
-    private final IPackageOps iPackageOps;
+public class PackageOps implements Parcelable {
+    private String mPackageName;
+    private int mUid;
+    private List<OpEntry> mEntries = new ArrayList<>();
 
-    public PackageOps(AppOpsManager$PackageOps pkgOp) {
-        iPackageOps = new PackageOpsImpl(pkgOp);
+    public PackageOps(AppOpsManager$PackageOps pkgOps) {
+        mPackageName = pkgOps.getPackageName();
+        mUid = pkgOps.getUid();
+        for (AppOpsManager$OpEntry opEntry : pkgOps.getOps()) {
+            mEntries.add(new OpEntry(opEntry));
+        }
     }
 
     protected PackageOps(Parcel in) {
-        iPackageOps = IPackageOps.Stub.asInterface(in.readStrongBinder());
+        mPackageName = in.readString();
+        mUid = in.readInt();
+        mEntries = in.createTypedArrayList(OpEntry.CREATOR);
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStrongBinder(iPackageOps.asBinder());
+        dest.writeString(mPackageName);
+        dest.writeInt(mUid);
+        dest.writeTypedList(mEntries);
     }
 
     @Override
@@ -45,43 +53,15 @@ public final class PackageOps implements Parcelable {
         }
     };
 
-    private static final class PackageOpsImpl extends IPackageOps.Stub {
-        private AppOpsManager$PackageOps pkgOp;
-
-        public PackageOpsImpl(AppOpsManager$PackageOps pkgOp) {
-            this.pkgOp = pkgOp;
-        }
-
-        @Override
-        public String getPackageName() throws RemoteException {
-            return pkgOp.getPackageName();
-        }
-
-        @Override
-        public int getUid() throws RemoteException {
-            return pkgOp.getUid();
-        }
-
-        @Override
-        public List<OpEntry> getOps() throws RemoteException {
-            List<AppOpsManager$OpEntry> opEntries = pkgOp.getOps();
-            List<OpEntry> ret = new ArrayList<>();
-            for (AppOpsManager$OpEntry opEntry : opEntries) {
-                ret.add(new OpEntry(opEntry));
-            }
-            return ret;
-        }
+    public @NonNull String getPackageName() {
+        return mPackageName;
     }
 
-    public String getPackageName() throws RemoteException {
-        return iPackageOps.getPackageName();
+    public int getUid() {
+        return mUid;
     }
 
-    public int getUid() throws RemoteException {
-        return iPackageOps.getUid();
-    }
-
-    public List<OpEntry> getOps() throws RemoteException {
-        return iPackageOps.getOps();
+    public @NonNull List<OpEntry> getOps() {
+        return mEntries;
     }
 }

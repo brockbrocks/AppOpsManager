@@ -1,6 +1,6 @@
-package app.jhau.appopsmanager.ui.appopsinfo
+package app.jhau.appopsmanager.ui.appops
 
-data class AppOpsInfoUiState(
+data class AppOpsUiState(
     val ops: List<OpUiState> = emptyList()
 )
 

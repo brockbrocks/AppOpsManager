@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
-import app.jhau.appopsmanager.util.userId
+import app.jhau.appopsmanager.util.USER_ID
 import app.jhau.server.IServerManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -46,7 +46,7 @@ class PackageInfoRepository @Inject constructor(
     }
 
     fun setPackageEnable(pkgName: String, newState: Int): PackageInfo {
-        iSvrMgr.packageManagerHidden.setApplicationEnabledSetting(pkgName, newState, 0, userId, "")
+        iSvrMgr.packageManagerHidden.setApplicationEnabledSetting(pkgName, newState, 0, USER_ID, "")
         val pkg = pkgInfoDataSource.getPackageInfo(pkgName)
         pkgInfoStore[pkgName] = pkg
         return pkg

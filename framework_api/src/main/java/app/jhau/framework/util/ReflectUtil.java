@@ -1,10 +1,27 @@
 package app.jhau.framework.util;
 
+import androidx.annotation.Nullable;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class ReflectUtil {
 
-    public static <T> T getField(Class<?> cls, Object obj, String fieldName) {
+    public static Object invokeStaticMethod(Class<?> cls, String methodName, Object... args) throws Throwable {
+        return invokeMethod(cls, methodName, null, args);
+    }
+
+    public static Object invokeMethod(Class<?> cls, String methodName, @Nullable Object obj, Object... args) throws Throwable {
+        Class<?>[] argTypes = new Class<?>[args.length];
+        for (int i = 0; i < args.length; i++) {
+            argTypes[i] = args[i].getClass();
+        }
+        Method method = cls.getDeclaredMethod(methodName, argTypes);
+        method.setAccessible(true);
+        return method.invoke(obj, args);
+    }
+
+    public static <T> T getField(Class<?> cls, @Nullable Object obj, String fieldName) {
         try {
             Field field = cls.getDeclaredField(fieldName);
             return getField(field, obj);
@@ -15,7 +32,7 @@ public class ReflectUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T getField(Field field, Object obj) {
+    public static <T> T getField(Field field, @Nullable Object obj) {
         try {
             field.setAccessible(true);
             return (T) field.get(obj);

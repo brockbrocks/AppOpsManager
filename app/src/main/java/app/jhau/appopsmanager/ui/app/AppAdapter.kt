@@ -3,13 +3,13 @@ package app.jhau.appopsmanager.ui.app
 import android.graphics.drawable.Drawable
 import android.view.View
 import app.jhau.appopsmanager.BuildConfig
-import app.jhau.appopsmanager.databinding.ItemAppListBinding
+import app.jhau.appopsmanager.databinding.ItemAppBinding
 import app.jhau.appopsmanager.ui.base.BaseListAdapter
 
 class AppAdapter(
     private val onAppClick: (String) -> Unit,
     private val onLoadIcon: (String) -> Drawable?
-) : BaseListAdapter<AppItemUiState, ItemAppListBinding>() {
+) : BaseListAdapter<AppItemUiState, ItemAppBinding>() {
 
     override fun areItemsTheSame(oldItem: AppItemUiState, newItem: AppItemUiState): Boolean {
         return oldItem.uid == newItem.uid
@@ -21,7 +21,7 @@ class AppAdapter(
                 && oldItem.disabled == newItem.disabled
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<ItemAppListBinding>, pos: Int) {
+    override fun onBindViewHolder(holder: ViewHolder<ItemAppBinding>, pos: Int) {
         holder.binding.apply {
             val appItemUiState = items[pos]
             val icon = onLoadIcon(appItemUiState.packageName)
@@ -39,7 +39,7 @@ class AppAdapter(
         }
     }
 
-    override fun onViewRecycled(holder: ViewHolder<ItemAppListBinding>) {
+    override fun onViewRecycled(holder: ViewHolder<ItemAppBinding>) {
         super.onViewRecycled(holder)
         holder.binding.appIcon.setImageDrawable(null)
     }

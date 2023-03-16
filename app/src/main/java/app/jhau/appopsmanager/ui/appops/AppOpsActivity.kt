@@ -1,4 +1,4 @@
-package app.jhau.appopsmanager.ui.appopsinfo
+package app.jhau.appopsmanager.ui.appops
 
 import android.content.Context
 import android.content.Intent
@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.jhau.appopsmanager.R
-import app.jhau.appopsmanager.databinding.ActivityAppOpsInfoBinding
+import app.jhau.appopsmanager.databinding.ActivityAppOpsBinding
 import app.jhau.appopsmanager.ui.base.BaseActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,11 +21,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AppOpsInfoActivity : BaseActivity<ActivityAppOpsInfoBinding, AppOpsInfoViewModel>() {
+class AppOpsActivity : BaseActivity<ActivityAppOpsBinding, AppOpsViewModel>() {
     @Inject
-    lateinit var factory: AppOpsInfoViewModel.AssistedFactory
+    lateinit var factory: AppOpsViewModel.AssistedFactory
 
-    override lateinit var viewModel: AppOpsInfoViewModel
+    override lateinit var viewModel: AppOpsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,22 +42,22 @@ class AppOpsInfoActivity : BaseActivity<ActivityAppOpsInfoBinding, AppOpsInfoVie
         }
         viewModel = ViewModelProvider(
             this,
-            AppOpsInfoViewModel.provideViewModelFactory(factory, pkgInfo)
-        )[AppOpsInfoViewModel::class.java]
+            AppOpsViewModel.provideViewModelFactory(factory, pkgInfo)
+        )[AppOpsViewModel::class.java]
 
         binding.appopsList.apply {
-            adapter = AppOpsInfoAdapter { opUiState, pos ->
+            adapter = AppOpsAdapter { opUiState ->
                 showChoiceModeDialog(opUiState)
             }
             val linearManager =
-                LinearLayoutManager(this@AppOpsInfoActivity, LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager(this@AppOpsActivity, LinearLayoutManager.VERTICAL, false)
             layoutManager = linearManager
         }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.appOpsInfoUiState.collect {
-                    (binding.appopsList.adapter as AppOpsInfoAdapter).submitList(it.ops)
+                    (binding.appopsList.adapter as AppOpsAdapter).submitList(it.ops)
                 }
             }
         }
@@ -90,7 +90,7 @@ class AppOpsInfoActivity : BaseActivity<ActivityAppOpsInfoBinding, AppOpsInfoVie
         const val PACKAGE_INFO = "packageInfo"
 
         fun start(context: Context, pkgInfo: PackageInfo) {
-            val intent = Intent(context, AppOpsInfoActivity::class.java)
+            val intent = Intent(context, AppOpsActivity::class.java)
             intent.action = Intent.ACTION_VIEW
             intent.putExtra(PACKAGE_INFO, pkgInfo)
             context.startActivity(intent)

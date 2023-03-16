@@ -18,7 +18,7 @@
             android:exported="false"
             android:launchMode="singleTop" />
         <activity
-            android:name=".ui.appopsinfo.AppOpsInfoActivity"
+            android:name=".ui.appops.AppOpsActivity"
             android:exported="false"
             android:launchMode="singleTop" />
         <activity
@@ -30,7 +30,7 @@
             android:exported="false"
             android:launchMode="singleTop" />
         <activity
-            android:name=".ui.appinfo.AppInfoActivity"
+            android:name=".ui.appsetting.AppSettingActivity"
             android:exported="false"
             android:launchMode="singleTop" />
         <activity

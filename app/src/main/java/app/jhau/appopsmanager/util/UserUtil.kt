@@ -1,3 +1,3 @@
 package app.jhau.appopsmanager.util
 
-val userId: Int = android.os.Process.myUid() / 100000
+val USER_ID: Int = android.os.Process.myUid() / 100000

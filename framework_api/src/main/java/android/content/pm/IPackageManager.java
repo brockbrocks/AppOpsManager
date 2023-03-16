@@ -52,6 +52,8 @@ public interface IPackageManager extends IInterface {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     PackageInfo getPackageInfo(String packageName, long flags, int userId) throws RemoteException;
 
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.R)
+    int getPermissionFlags(String permissionName, String packageName, int userId) throws RemoteException;
     String getNameForUid(int uid) throws RemoteException;
 
     void grantRuntimePermission(String packageName, String permissionName, int userId) throws RemoteException;

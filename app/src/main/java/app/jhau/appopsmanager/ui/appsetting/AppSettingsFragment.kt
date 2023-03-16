@@ -1,4 +1,4 @@
-package app.jhau.appopsmanager.ui.appinfo
+package app.jhau.appopsmanager.ui.appsetting
 
 import android.content.pm.PackageInfo
 import android.os.Build
@@ -6,11 +6,11 @@ import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import app.jhau.appopsmanager.R
-import app.jhau.appopsmanager.ui.appinfo.AppInfoActivity.Companion.PACKAGE_INFO
-import app.jhau.appopsmanager.ui.appopsinfo.AppOpsInfoActivity
+import app.jhau.appopsmanager.ui.appops.AppOpsActivity
 import app.jhau.appopsmanager.ui.appperms.AppPermsActivity
+import app.jhau.appopsmanager.ui.appsetting.AppSettingActivity.Companion.PACKAGE_INFO
 
-class AppInfoSettingsFragment : PreferenceFragmentCompat() {
+class AppSettingsFragment : PreferenceFragmentCompat() {
     private lateinit var pkgInfo: PackageInfo
 
     //private val viewModel: AppInfoViewModel by viewModels({ requireActivity() })
@@ -37,7 +37,7 @@ class AppInfoSettingsFragment : PreferenceFragmentCompat() {
                 }
             }
             "appops_settings" -> {
-                AppOpsInfoActivity.start(requireContext(), pkgInfo)
+                AppOpsActivity.start(requireContext(), pkgInfo)
             }
             else -> {}
         }
