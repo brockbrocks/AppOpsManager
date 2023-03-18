@@ -11,7 +11,7 @@ public class ReflectUtil {
         return invokeMethod(cls, methodName, null, args);
     }
 
-    public static Object invokeMethod(Class<?> cls, String methodName, @Nullable Object obj, Object... args) throws Throwable {
+    public static Object invokeMethod(Class<?> cls, String methodName, @Nullable Object obj, @Nullable Object... args) throws Throwable {
         Class<?>[] argTypes = new Class<?>[args.length];
         for (int i = 0; i < args.length; i++) {
             argTypes[i] = args[i].getClass();

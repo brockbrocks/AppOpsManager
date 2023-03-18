@@ -9,5 +9,6 @@ interface IAppOpsManagerHidden {
 
     String modeToName(int mode); //special
     String[] getOpNames(); //special
+    String[] getOpStrs(); //special
     String[] getModeNames(); //special
 }

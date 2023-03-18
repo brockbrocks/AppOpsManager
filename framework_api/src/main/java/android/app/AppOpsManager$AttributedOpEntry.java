@@ -1,13 +1,18 @@
 package android.app;
 
-import androidx.annotation.NonNull;
-
 import android.os.Build;
 import android.util.LongSparseArray;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+/**
+ * Last {@link #noteOp} and {@link #startOp} events performed for a single op and a specific
+ * {@link Context#createAttributionContext(String) attribution} for all uidModes and opFlags.
+ *
+ * @hide
+ */
 @RequiresApi(Build.VERSION_CODES.R)
 public class AppOpsManager$AttributedOpEntry {
 

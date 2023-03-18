@@ -83,13 +83,28 @@ public class AppOpsManager$OpEntry {
         return 0;
     }
 
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.Q)
+    public long getLastRejectTime() {
+        return 0;
+    }
+
     @RequiresApi(Build.VERSION_CODES.Q)
     public long getLastRejectTime(int flags) {
         return 0;
     }
 
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.Q)
+    public long getLastRejectForegroundTime() {
+        return 0;
+    }
+
     @RequiresApi(Build.VERSION_CODES.Q)
     public long getLastRejectForegroundTime(int flags) {
+        return 0;
+    }
+
+    @DeprecatedSinceApi(api = Build.VERSION_CODES.Q)
+    public long getLastRejectBackgroundTime() {
         return 0;
     }
 

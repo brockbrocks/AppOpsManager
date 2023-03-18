@@ -37,9 +37,7 @@ class AppOpsViewModel @AssistedInject constructor(
     fun getAppOpList(refresh: Boolean = false) {
         viewModelScope.launch {
             val appOpList = appOpRepo.getAppOpList(uid, pkgName, refresh)
-            val opUiStates = appOpList.map {
-                OpUiState(it.op, opNames[it.op], it.mode, modeNames[it.mode])
-            }
+            val opUiStates = appOpList.map { OpUiState.create(it) }
             _appOpsUiState.emit(_appOpsUiState.value.copy(ops = opUiStates))
         }
     }

@@ -16,27 +16,52 @@
         android:minHeight="60dp"
         android:padding="16dp">
 
+
         <TextView
-            android:id="@+id/op"
+            android:id="@+id/op_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/last_access_time"
+            app:layout_constraintBottom_toTopOf="@id/op_str"
             app:layout_constraintEnd_toStartOf="@+id/op_mode"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="RUN_IN_BACKGROUND" />
 
         <TextView
+            android:visibility="gone"
+            android:id="@+id/op_str"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/last_access_time"
+            app:layout_constraintEnd_toStartOf="@+id/op_mode"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/op_name"
+            tools:text="op_str" />
+
+        <TextView
             android:id="@+id/last_access_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/last_reject_time"
+            app:layout_constraintEnd_toEndOf="@+id/op"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/op_str"
+            tools:text="last access: 2022/11/11 12:00:00"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/last_reject_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/op"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/op"
-            tools:text="last access: 2022/11/11"
+            app:layout_constraintTop_toBottomOf="@id/last_access_time"
+            tools:text="last reject: 2022/11/11 12:00:00"
             tools:visibility="visible" />
 
         <TextView

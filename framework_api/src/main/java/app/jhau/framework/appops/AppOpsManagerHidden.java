@@ -105,6 +105,20 @@ public class AppOpsManagerHidden extends IAppOpsManagerHidden.Stub implements Pa
     }
 
     @Override
+    public String[] getOpStrs() throws RemoteException {
+        if (mRemote != null) return mRemote.getOpStrs();
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                return (String[]) ReflectUtil.invokeStaticMethod(AppOpsManager.class, "getOpStrs");
+            } else {
+                return ReflectUtil.getStaticField(AppOpsManager.class, "sOpToString");
+            }
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public String[] getModeNames() throws RemoteException {
         if (mRemote != null) return mRemote.getModeNames();
         return MODE_NAMES;
@@ -127,5 +141,51 @@ public class AppOpsManagerHidden extends IAppOpsManagerHidden.Stub implements Pa
             MODE_NAMES = ReflectUtil.getStaticField(AppOpsManager.class, "MODE_NAMES");
         }
     }
+
+    /**
+     * Flag: non proxy operations. These are operations
+     * performed on behalf of the app itself and not on behalf of
+     * another one.
+     */
+    public static final int OP_FLAG_SELF = 0x1;
+    /**
+     * Flag: trusted proxy operations. These are operations
+     * performed on behalf of another app by a trusted app.
+     * Which is work a trusted app blames on another app.
+     */
+    public static final int OP_FLAG_TRUSTED_PROXY = 0x2;
+    /**
+     * Flag: untrusted proxy operations. These are operations
+     * performed on behalf of another app by an untrusted app.
+     * Which is work an untrusted app blames on another app.
+     */
+    public static final int OP_FLAG_UNTRUSTED_PROXY = 0x4;
+    /**
+     * Flag: trusted proxied operations. These are operations
+     * performed by a trusted other app on behalf of an app.
+     * Which is work an app was blamed for by a trusted app.
+     */
+    public static final int OP_FLAG_TRUSTED_PROXIED = 0x8;
+    /**
+     * Flag: untrusted proxied operations. These are operations
+     * performed by an untrusted other app on behalf of an app.
+     * Which is work an app was blamed for by an untrusted app.
+     */
+    public static final int OP_FLAG_UNTRUSTED_PROXIED = 0x10;
+    /**
+     * Flags: all operations. These include operations matched
+     * by {@link #OP_FLAG_SELF}, {@link #OP_FLAG_TRUSTED_PROXIED},
+     * {@link #OP_FLAG_UNTRUSTED_PROXIED}, {@link #OP_FLAG_TRUSTED_PROXIED},
+     * {@link #OP_FLAG_UNTRUSTED_PROXIED}.
+     */
+    public static final int OP_FLAGS_ALL = OP_FLAG_SELF | OP_FLAG_TRUSTED_PROXY
+            | OP_FLAG_UNTRUSTED_PROXY | OP_FLAG_TRUSTED_PROXIED | OP_FLAG_UNTRUSTED_PROXIED;
+
+    /**
+     * Flags: all trusted operations which is ones either the app did {@link #OP_FLAG_SELF},
+     * or it was blamed for by a trusted app {@link #OP_FLAG_TRUSTED_PROXIED}, or ones the
+     * app if untrusted blamed on other apps {@link #OP_FLAG_UNTRUSTED_PROXY}.
+     */
+    public static final int OP_FLAGS_ALL_TRUSTED = OP_FLAG_SELF | OP_FLAG_UNTRUSTED_PROXY | OP_FLAG_TRUSTED_PROXIED;
 
 }
