@@ -4,6 +4,7 @@ import app.jhau.framework.appops.PackageOps;
 
 interface IAppOpsManagerHidden {
     List<PackageOps> getOpsForPackage(int uid, String packageName, in int[] ops);
+    List<PackageOps> getUidOps(int uid, in int[] ops);
     void setMode(int code, int uid, String packageName, int mode);
     void setUidMode(int code, int uid, int mode);
 

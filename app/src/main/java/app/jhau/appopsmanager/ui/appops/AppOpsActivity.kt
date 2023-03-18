@@ -142,10 +142,15 @@ class AppOpsActivity : BaseActivity<ActivityAppOpsBinding, AppOpsViewModel>() {
     private fun showChoiceModeDialog(opUiState: OpUiState) {
         val modeNames = viewModel.modeNames
         val op = opUiState.op
+        val uidMode = opUiState.uidMode
         val curMode = opUiState.mode
         val dialog = MaterialAlertDialogBuilder(this)
             .setSingleChoiceItems(modeNames, curMode) { dialog, mode ->
-                viewModel.setMode(op, viewModel.uid, viewModel.pkgName, mode)
+                if (uidMode){
+                    viewModel.setUidMode(op, viewModel.uid, mode)
+                } else{
+                    viewModel.setMode(op, viewModel.uid, viewModel.pkgName, mode)
+                }
                 dialog.dismiss()
             }.create()
         dialog.window!!.setGravity(Gravity.BOTTOM)

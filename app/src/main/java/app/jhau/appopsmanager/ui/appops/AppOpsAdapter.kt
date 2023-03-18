@@ -23,6 +23,7 @@ class AppOpsAdapter(
     override fun onBindViewHolder(holder: ViewHolder<ItemAppOpBinding>, position: Int) {
         holder.binding.apply {
             val opUiState = items[position]
+            uidMode.visibility = if (opUiState.uidMode) View.VISIBLE else View.GONE
             opName.text = opUiState.opName
             opMode.text = opUiState.modeStr
             if (opUiState.lastAccessTime > 0) {

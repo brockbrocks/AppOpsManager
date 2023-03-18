@@ -16,29 +16,44 @@
         android:minHeight="60dp"
         android:padding="16dp">
 
+        <TextView
+            android:gravity="center"
+            android:id="@+id/uid_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_uid_mode_flag"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:text="UID"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/op_mode"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/op_mode" />
 
         <TextView
             android:id="@+id/op_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/op_str"
             app:layout_constraintEnd_toStartOf="@+id/op_mode"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/uid_mode"
+            app:layout_constraintTop_toTopOf="@+id/op_mode"
+            app:layout_goneMarginStart="0dp"
             tools:text="RUN_IN_BACKGROUND" />
-
-        <TextView
-            android:visibility="gone"
-            android:id="@+id/op_str"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/last_access_time"
-            app:layout_constraintEnd_toStartOf="@+id/op_mode"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/op_name"
-            tools:text="op_str" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/op_str"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:textStyle="bold"-->
+        <!--            android:visibility="gone"-->
+        <!--            app:layout_constraintBottom_toTopOf="@id/last_access_time"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/op_mode"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/op_name"-->
+        <!--            tools:text="op_str" />-->
 
         <TextView
             android:id="@+id/last_access_time"
@@ -46,9 +61,10 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@id/last_reject_time"
-            app:layout_constraintEnd_toEndOf="@+id/op"
+            app:layout_constraintEnd_toEndOf="@+id/op_name"
+            app:layout_constraintEnd_toStartOf="@+id/op_mode"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/op_str"
+            app:layout_constraintTop_toBottomOf="@id/op_name"
             tools:text="last access: 2022/11/11 12:00:00"
             tools:visibility="visible" />
 
@@ -58,7 +74,7 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/op"
+            app:layout_constraintEnd_toStartOf="@+id/op_mode"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/last_access_time"
             tools:text="last reject: 2022/11/11 12:00:00"
@@ -70,9 +86,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:minWidth="80dp"
-            app:layout_constraintBottom_toBottomOf="@+id/op"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/op"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="allow" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

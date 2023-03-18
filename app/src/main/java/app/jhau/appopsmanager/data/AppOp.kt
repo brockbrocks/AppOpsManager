@@ -6,6 +6,7 @@ import kotlin.math.max
 
 data class AppOp(
     val uid: Int,
+    val uidMode: Boolean = false,
     val pkgName: String,
     val op: Int,
     val opName: String = "",
@@ -27,6 +28,7 @@ data class AppOp(
     companion object {
         fun create(
             uid: Int,
+            uidMode: Boolean = false,
             pkgName: String,
             opNames: Array<String>,
             modeNames: Array<String>,
@@ -56,6 +58,7 @@ data class AppOp(
             }
             return AppOp(
                 uid = uid,
+                uidMode = uidMode,
                 pkgName = pkgName,
                 op = opEntry.op,
                 opName = opName,

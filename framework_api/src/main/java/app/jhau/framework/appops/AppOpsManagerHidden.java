@@ -10,6 +10,8 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.android.internal.app.IAppOpsService;
 
@@ -50,6 +52,20 @@ public class AppOpsManagerHidden extends IAppOpsManagerHidden.Stub implements Pa
 
         List<AppOpsManager$PackageOps> pkgOpsList = appOpsSvc.getOpsForPackage(uid, packageName, ops);
         if (pkgOpsList == null || pkgOpsList.isEmpty()) return Collections.emptyList();
+
+        List<PackageOps> ret = new ArrayList<>();
+        for (AppOpsManager$PackageOps pkgOps : pkgOpsList) {
+            ret.add(new PackageOps(pkgOps));
+        }
+        return ret;
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @Override
+    public List<PackageOps> getUidOps(int uid, @Nullable int[] ops) throws RemoteException {
+        if (mRemote != null) return mRemote.getUidOps(uid, ops);
+        List<AppOpsManager$PackageOps> pkgOpsList = appOpsSvc.getUidOps(uid, ops);
+        if (pkgOpsList == null) return Collections.emptyList();
 
         List<PackageOps> ret = new ArrayList<>();
         for (AppOpsManager$PackageOps pkgOps : pkgOpsList) {

@@ -7,6 +7,7 @@ data class AppOpsUiState(
 )
 
 data class OpUiState(
+    val uidMode: Boolean,
     val op: Int,
     val opName: String = "",
     val opStr: String = "",
@@ -26,6 +27,7 @@ data class OpUiState(
 ) {
     companion object {
         fun create(appOp: AppOp) = OpUiState(
+            uidMode = appOp.uidMode,
             op = appOp.op,
             opName = appOp.opName,
             opStr = appOp.opStr,

@@ -13,7 +13,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -152,8 +151,6 @@ public class PackageManagerHidden extends IPackageManagerHidden.Stub implements 
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeStrongBinder(this.asBinder());
     }
-
-    private static final String TAG = "tttt";
     public static int FLAG_PERMISSION_SYSTEM_FIXED;
     public static int FLAG_PERMISSION_POLICY_FIXED;
 
@@ -161,11 +158,9 @@ public class PackageManagerHidden extends IPackageManagerHidden.Stub implements 
         for (Field field : PackageManager.class.getFields()) {
             if (field.getName().equals("FLAG_PERMISSION_SYSTEM_FIXED")) {
                 FLAG_PERMISSION_SYSTEM_FIXED = ReflectUtil.getStaticField(field);
-                Log.i(TAG, field.getName() + "=" + FLAG_PERMISSION_SYSTEM_FIXED);
             }
             if (field.getName().equals("FLAG_PERMISSION_POLICY_FIXED")) {
                 FLAG_PERMISSION_POLICY_FIXED = ReflectUtil.getStaticField(field);
-                Log.i(TAG, field.getName() + "=" + FLAG_PERMISSION_POLICY_FIXED);
             }
         }
     }
