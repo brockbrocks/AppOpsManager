@@ -5,11 +5,17 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import app.jhau.appopsmanager.App
 import app.jhau.appopsmanager.R
+import app.jhau.server.IServerManager
 import com.google.android.material.textfield.TextInputEditText
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class TerminalActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var iSvcMgr: IServerManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_termainal)
@@ -22,7 +28,7 @@ class TerminalActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_exec)?.let {
             it.setOnClickListener {
                 val cmd = findViewById<TextInputEditText>(R.id.et_cmd_content)
-                val ret = (application as App).iServer.execCommand(cmd.text.toString().trim())
+                val ret = iSvcMgr.execCommand(cmd.text.toString().trim())
                 findViewById<TextView>(R.id.tv_cmd_ret).text = ret
             }
         }

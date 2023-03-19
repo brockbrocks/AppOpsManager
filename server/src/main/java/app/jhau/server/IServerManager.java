@@ -10,11 +10,11 @@ import app.jhau.framework.permission.PermissionManagerHidden;
 import app.jhau.framework.pms.PackageManagerHidden;
 
 public class IServerManager {
-    private Application application;
+//    private Application application;
     private IServer iServer;
 
     public IServerManager(Application application) {
-        this.application = application;
+//        this.application = application;
         try {
             Method method = application.getClass().getMethod("getIServer");
             iServer = (IServer) method.invoke(application);

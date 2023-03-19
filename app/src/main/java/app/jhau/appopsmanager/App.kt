@@ -14,9 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger
 class App : Application() {
     private val TAG = "App"
 
-    lateinit var iServer: IServer
+    var iServer: IServer? = null
 
-    lateinit var iServerActivatedObserver: IServerActivatedObserver
+    var iServerActivatedObserver: IServerActivatedObserver? = null
 
     private val activityCount = AtomicInteger(0)
     private val activityLifecycleCallbacks = object : ActivityLifecycleCallbacks {
@@ -60,11 +60,16 @@ class App : Application() {
     }
 
     fun onSetIServerToApplication(binder: IBinder) {
-        this.iServer = IServer.Stub.asInterface(binder)
-        if (::iServerActivatedObserver.isInitialized) {
+        iServer = IServer.Stub.asInterface(binder)
+        if (iServerActivatedObserver != null) {
             Log.i(TAG, "registerServerActivatedObserverOnce")
-            this.iServer.registerServerActivatedObserverOnce(iServerActivatedObserver)
+            iServer?.registerServerActivatedObserverOnce(iServerActivatedObserver)
         }
+    }
+
+    fun onServerKill() {
+        iServer = null
+        iServerActivatedObserver = null
     }
 
 //    companion object {
