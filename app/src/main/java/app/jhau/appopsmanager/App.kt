@@ -19,43 +19,41 @@ class App : Application() {
     var iServerActivatedObserver: IServerActivatedObserver? = null
 
     private val activityCount = AtomicInteger(0)
-    private val activityLifecycleCallbacks = object : ActivityLifecycleCallbacks {
-        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-            activityCount.addAndGet(1)
-        }
-
-        override fun onActivityStarted(activity: Activity) {
-
-        }
-
-        override fun onActivityResumed(activity: Activity) {
-
-        }
-
-        override fun onActivityPaused(activity: Activity) {
-
-        }
-
-        override fun onActivityStopped(activity: Activity) {
-
-        }
-
-        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-
-        }
-
-        override fun onActivityDestroyed(activity: Activity) {
-            if (activityCount.decrementAndGet() == 0) {
-                Log.i(TAG, "onActivityDestroyed: $activity")
-                //todo: fixes bug
-//                android.os.Process.killProcess(android.os.Process.myPid())
-            }
-        }
-    }
+//    private val activityLifecycleCallbacks = object : ActivityLifecycleCallbacks {
+//        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+//            activityCount.addAndGet(1)
+//        }
+//
+//        override fun onActivityStarted(activity: Activity) {
+//
+//        }
+//
+//        override fun onActivityResumed(activity: Activity) {
+//
+//        }
+//
+//        override fun onActivityPaused(activity: Activity) {
+//
+//        }
+//
+//        override fun onActivityStopped(activity: Activity) {
+//
+//        }
+//
+//        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+//
+//        }
+//
+//        override fun onActivityDestroyed(activity: Activity) {
+//            if (activityCount.decrementAndGet() == 0) {
+//                Log.i(TAG, "onActivityDestroyed: $activity")
+//            }
+//        }
+//    }
 
     override fun onCreate() {
         super.onCreate()
-        registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
+//        registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
         Log.i(TAG,"onCreate: App. uid=${android.os.Process.myUid()}, pid=${android.os.Process.myPid()}")
     }
 

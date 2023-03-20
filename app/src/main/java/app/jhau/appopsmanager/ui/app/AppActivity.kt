@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
@@ -20,8 +21,8 @@ import app.jhau.appopsmanager.ui.appsetting.AppSettingActivity
 import app.jhau.appopsmanager.ui.base.BaseActivity
 import app.jhau.appopsmanager.ui.setting.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>() {
@@ -104,7 +105,12 @@ class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>() {
         binding.rvApp.adapter = AppAdapter(this::onAppClick, this::onLoadIcon)
     }
 
-    private fun onLoadIcon(pkgName: String) = viewModel.loadIcon(pkgName)
+    private fun onLoadIcon(pkgName: String, icon: ImageView) = lifecycleScope.launch(Dispatchers.IO) {
+        val iconDrawable = viewModel.loadIcon(pkgName)
+        withContext(Dispatchers.Main) {
+            icon.setImageDrawable(iconDrawable)
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)

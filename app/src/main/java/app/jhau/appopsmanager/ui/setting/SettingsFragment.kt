@@ -22,7 +22,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
         findPreference<Preference>("kill_server")?.setOnPreferenceClickListener {
-            MaterialAlertDialogBuilder(requireActivity()).setTitle("Are you sure?")
+            MaterialAlertDialogBuilder(requireActivity())
+                .setMessage("Are you sure?")
                 .setPositiveButton("ok") { _, _ -> killServer() }.show()
             true
         }

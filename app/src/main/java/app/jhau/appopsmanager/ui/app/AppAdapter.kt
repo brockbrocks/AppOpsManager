@@ -2,13 +2,14 @@ package app.jhau.appopsmanager.ui.app
 
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.widget.ImageView
 import app.jhau.appopsmanager.BuildConfig
 import app.jhau.appopsmanager.databinding.ItemAppBinding
 import app.jhau.appopsmanager.ui.base.BaseListAdapter
 
 class AppAdapter(
     private val onAppClick: (String) -> Unit,
-    private val onLoadIcon: (String) -> Drawable?
+    private val onLoadIcon: (String, ImageView) -> Unit
 ) : BaseListAdapter<AppItemUiState, ItemAppBinding>() {
 
     override fun areItemsTheSame(oldItem: AppItemUiState, newItem: AppItemUiState): Boolean {
@@ -24,8 +25,7 @@ class AppAdapter(
     override fun onBindViewHolder(holder: ViewHolder<ItemAppBinding>, pos: Int) {
         holder.binding.apply {
             val appItemUiState = items[pos]
-            val icon = onLoadIcon(appItemUiState.packageName)
-            appIcon.setImageDrawable(icon)
+            onLoadIcon(appItemUiState.packageName, appIcon)
             appName.text = if (BuildConfig.DEBUG) {
                 appItemUiState.appName + " (UID:${appItemUiState.uid})"
             } else {
