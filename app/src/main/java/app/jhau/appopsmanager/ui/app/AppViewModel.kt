@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.jhau.appopsmanager.data.repository.PackageInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -55,7 +56,7 @@ class AppViewModel @Inject constructor(
     }
 
     fun setSortType(sortType: SortType) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val curFilterTypes = _appUiState.value.filterTypes
             val displayPkgs = pkgs.values.filter { filterLogic(it, curFilterTypes) }
                 .sortedWith { o1, o2 -> sortLogic(o1, o2, sortType) }
@@ -64,7 +65,7 @@ class AppViewModel @Inject constructor(
     }
 
     fun addFilter(filterType: FilterType) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val curSortType = _appUiState.value.sortType
             val newFilterTypes = _appUiState.value.filterTypes.toMutableSet()
             newFilterTypes.add(filterType)
@@ -75,7 +76,7 @@ class AppViewModel @Inject constructor(
     }
 
     fun removeFilter(filterType: FilterType) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val curSortType = _appUiState.value.sortType
             val newFilterTypes = _appUiState.value.filterTypes.toMutableSet()
             newFilterTypes.remove(filterType)
@@ -86,7 +87,7 @@ class AppViewModel @Inject constructor(
     }
 
     fun fetchPackageInfoList(update: Boolean = false) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val fetchPkgs = pkgInfoRepo.getPackageInfoList(refresh = update)
             pkgs = linkedMapOf<String, PackageInfo>().apply {
                 fetchPkgs.forEach { this[it.packageName] = it }
@@ -131,7 +132,7 @@ class AppViewModel @Inject constructor(
     }
 
     fun searchApp(content: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val retPkgs = pkgs.values.filter {
                 it.packageName.contains(content)
                         || it.applicationInfo.uid.toString().contains(content)
@@ -151,7 +152,7 @@ class AppViewModel @Inject constructor(
     }
 
     fun clearSearch() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val sortType = _appUiState.value.sortType
             val filterTypes = _appUiState.value.filterTypes
             val displayPkgs = pkgs.values.filter { filterLogic(it, filterTypes) }

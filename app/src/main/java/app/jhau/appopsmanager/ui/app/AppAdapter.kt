@@ -1,6 +1,5 @@
 package app.jhau.appopsmanager.ui.app
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import app.jhau.appopsmanager.BuildConfig
