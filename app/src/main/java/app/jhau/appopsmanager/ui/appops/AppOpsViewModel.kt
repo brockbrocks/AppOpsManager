@@ -25,7 +25,6 @@ class AppOpsViewModel @AssistedInject constructor(
     val uid: Int = pkgInfo.applicationInfo.uid
     val pkgName: String = pkgInfo.packageName
 
-    val opNames: Array<String> = iServerManager.appOpsManagerHidden.opNames
     val modeNames: Array<String> = iServerManager.appOpsManagerHidden.modeNames
 
     init {

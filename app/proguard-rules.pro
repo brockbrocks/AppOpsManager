@@ -22,3 +22,12 @@
 -printconfiguration ./build/tmp/r8/full-r8-config.txt
 -printusage ./build/tmp/r8/usage.txt
 -printseeds ./build/tmp/r8/seeds.txt
+
+-keep public class app.jhau.appopsmanager.App {
+    public void onSetIServerToApplication(android.os.IBinder);
+    * get*();
+}
+
+-keep public class app.jhau.appopsmanager.databinding.** {
+    * inflate(android.view.LayoutInflater, android.view.ViewGroup, boolean);
+}

@@ -8,6 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,7 @@ import androidx.annotation.RequiresApi;
 
 import com.android.internal.app.IAppOpsService;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,14 +66,22 @@ public class AppOpsManagerHidden extends IAppOpsManagerHidden.Stub implements Pa
     @Override
     public List<PackageOps> getUidOps(int uid, @Nullable int[] ops) throws RemoteException {
         if (mRemote != null) return mRemote.getUidOps(uid, ops);
-        List<AppOpsManager$PackageOps> pkgOpsList = appOpsSvc.getUidOps(uid, ops);
-        if (pkgOpsList == null) return Collections.emptyList();
+        try {
+            //
+            // Before Android Q, there will be some weird bugs caused by remote AppOpsService.
+            // So I embed it inside a try-catch statement
+            //
+            List<AppOpsManager$PackageOps> pkgOpsList = appOpsSvc.getUidOps(uid, ops);
+            if (pkgOpsList == null) return Collections.emptyList();
 
-        List<PackageOps> ret = new ArrayList<>();
-        for (AppOpsManager$PackageOps pkgOps : pkgOpsList) {
-            ret.add(new PackageOps(pkgOps));
+            List<PackageOps> ret = new ArrayList<>();
+            for (AppOpsManager$PackageOps pkgOps : pkgOpsList) {
+                ret.add(new PackageOps(pkgOps));
+            }
+            return ret;
+        } catch (Throwable e) {
+            return Collections.emptyList();
         }
-        return ret;
     }
 
     @Override

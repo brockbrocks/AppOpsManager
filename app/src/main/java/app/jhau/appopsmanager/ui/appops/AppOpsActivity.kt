@@ -118,7 +118,7 @@ class AppOpsActivity : BaseActivity<ActivityAppOpsBinding, AppOpsViewModel>() {
         }
         //lastDuration
         if (opUiState.lastDuration > 0) {
-            vb.lastDuration.text = "lastDuration: ${opUiState.lastDuration}"
+            vb.lastDuration.text = "lastDuration: ${opUiState.lastDuration}ms"
         } else {
             vb.lastDuration.visibility = View.GONE
         }
