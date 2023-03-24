@@ -9,9 +9,4 @@ app_process是Android系统进入Java世界的入口。我们可以通过adb来�
 部分手机厂商的定制系统，对adb进行了权限限制，使得应用无法正常工作。一般来说也提供了该限制的开关（eg. MIUI上的"USB调试(安全设置)"），请留意你的手机是否有与该语义类似的开关。</br>
 <img src="preview/Screenshot_miui.png" width="250">
 ## 截图
-<img src="preview/Screenshot_apps.png" width="250">
-<img src="preview/Screenshot_app_setting.png" width="250">
-<img src="preview/Screenshot_perms.png" width="250">
-<img src="preview/Screenshot_appops.png" width="250">
-<img src="preview/Screenshot_appops_1.png" width="250">
-<img src="preview/Screenshot_appops_2.png" width="250">
+<img src="preview/Screenshot_apps.png" width="250"> <img src="preview/Screenshot_app_setting.png" width="250"> <img src="preview/Screenshot_perms.png" width="250"> <img src="preview/Screenshot_appops.png" width="250"> <img src="preview/Screenshot_appops_1.png" width="250"> <img src="preview/Screenshot_appops_2.png" width="250">
