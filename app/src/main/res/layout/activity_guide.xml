@@ -29,7 +29,7 @@
                         android:id="@+id/tv_line1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="ADB"
+                        android:text="ADB activation"
                         android:textSize="22sp"
                         app:layout_constraintBottom_toTopOf="@id/space1"
                         app:layout_constraintEnd_toEndOf="parent"

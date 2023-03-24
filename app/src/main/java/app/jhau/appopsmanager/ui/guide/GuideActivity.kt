@@ -13,28 +13,46 @@ import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.ui.app.AppActivity
 import app.jhau.server.IServerActivatedObserver
 import app.jhau.server.util.StarterUtil
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 class GuideActivity : AppCompatActivity() {
+    private var front = AtomicBoolean(false)
+    private var activeEventCount = AtomicInteger(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_guide)
         initView()
         //Register ServerActivatedObserver
-        (application as App).iServerActivatedObserver = object : IServerActivatedObserver.Stub(){
+        (application as App).iServerActivatedObserver = object : IServerActivatedObserver.Stub() {
             override fun onActivated() {
-                val intent = Intent(applicationContext, AppActivity::class.java)
-                intent.action = Intent.ACTION_VIEW
-                startActivity(intent)
-                finish()
+                activeEventCount.incrementAndGet()
+                if (front.get()) startAppActivity()
             }
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        front.set(true)
+        if (activeEventCount.get() > 0) startAppActivity()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        front.set(false)
+    }
+
+    private fun startAppActivity() {
+        val intent = Intent(applicationContext, AppActivity::class.java)
+        intent.action = Intent.ACTION_VIEW
+        startActivity(intent)
+        finish()
+    }
+
     private fun initView() {
-        supportActionBar?.apply {
-            title = "Guide"
-        }
+        supportActionBar?.hide()
         findViewById<TextView>(R.id.tv_line2)?.text = StarterUtil.getCommand(this)
         findViewById<Button>(R.id.btn_copy)?.setOnClickListener {
             val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager

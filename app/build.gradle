@@ -18,12 +18,6 @@ android {
     }
 
     signingConfigs {
-        debug {
-            keyAlias 'key0'
-            keyPassword '123456'
-            storePassword '123456'
-            storeFile file('keystore/release')
-        }
         release {
             keyAlias 'key0'
             keyPassword '123456'
