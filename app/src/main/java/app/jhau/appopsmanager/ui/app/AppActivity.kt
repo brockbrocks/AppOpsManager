@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -15,6 +16,8 @@ import androidx.core.content.PermissionChecker
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener
 import app.jhau.appopsmanager.R
 import app.jhau.appopsmanager.databinding.ActivityAppBinding
 import app.jhau.appopsmanager.ui.appsetting.AppSettingActivity
@@ -23,11 +26,12 @@ import app.jhau.appopsmanager.ui.setting.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.util.LinkedList
 
 @AndroidEntryPoint
 class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>() {
-    private val TAG = "AppActivity"
     private lateinit var menu: Menu
+    private val attachedChildView = LinkedList<View>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +107,40 @@ class AppActivity : BaseActivity<ActivityAppBinding, AppViewModel>() {
 
     private fun initView() {
         binding.rvApp.adapter = AppAdapter(this::onAppClick, this::onLoadIcon)
+        setupAppIconLoadOptimize(binding.rvApp, attachedChildView)
+    }
+
+    private fun setupAppIconLoadOptimize(
+        recyclerView: RecyclerView,
+        attachedChildView: LinkedList<View>
+    ) {
+        recyclerView.addOnChildAttachStateChangeListener(object : OnChildAttachStateChangeListener {
+            override fun onChildViewAttachedToWindow(view: View) {
+                attachedChildView.add(view)
+            }
+
+            override fun onChildViewDetachedFromWindow(view: View) {
+                attachedChildView.remove(view)
+            }
+        })
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING || newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    (binding.rvApp.adapter as AppAdapter).apply {
+                        if (!loadOptimize) loadOptimize = true
+                    }
+                }
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    (binding.rvApp.adapter as AppAdapter).apply {
+                        if (loadOptimize) loadOptimize = false
+                    }
+                    for (child in attachedChildView) {
+                        onLoadIcon(child.tag as String, child.findViewById(R.id.app_icon))
+                    }
+                }
+            }
+        })
     }
 
     private fun onLoadIcon(pkgName: String, icon: ImageView) {
